@@ -2820,11 +2820,39 @@ Log Out
 <input type="email" id="regEmail" data-i18n="email" placeholder="Email" required>
 <input type="password" id="regPassword" data-i18n="password" placeholder="Password" required>
 <p class="message" id="regMsg"></p>
-<button type="submit" data-i18n="signUp">Sign Up</button>
+<div style="display:flex;align-items:flex-start;gap:10px;margin:12px 0 4px;font-size:13.5px;color:var(--muted);">
+<input type="checkbox" id="termsCheckbox" style="margin-top:3px;accent-color:var(--primary);width:15px;height:15px;flex-shrink:0;">
+<label for="termsCheckbox" id="termsCheckboxLabel" style="cursor:pointer;line-height:1.5;">
+  <span data-i18n="agreeToTerms">I agree to the</span> <a href="#" id="tosLink" style="color:var(--primary);text-decoration:underline;font-weight:500;" data-i18n="termsOfService">Terms of Service</a>
+</label>
+</div>
+<button type="submit" id="registerSubmitBtn" data-i18n="signUp" disabled style="opacity:0.5;cursor:not-allowed;">Sign Up</button>
 </form>
 </div>
 </div>
 
+<div class="modal" id="tosModal">
+<div class="modal-content" style="max-width:680px;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;">
+<span class="close" onclick="closeModal(tosModal)">×</span>
+<h2 data-i18n="tosTitle" style="margin-bottom:16px;font-size:1.2rem;">IH Flow – Terms of Service</h2>
+<div style="overflow-y:auto;flex:1;padding-right:8px;font-size:13.5px;color:var(--muted);line-height:1.8;">
+<p><strong>1. Acceptance of Terms</strong><br>By accessing or using IH Flow (“Service”), operated by IH Flow (“Company”, “we”, “us”), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our Service.</p>
+<p><strong>2. Description of Service</strong><br>IH Flow is a SaaS platform that allows e-commerce businesses and Instagram creators to automate Instagram DM responses, connect product catalogs, and manage customer interactions through an AI-powered bot interface.</p>
+<p><strong>3. Account Registration</strong><br>To use IH Flow you must create an account. You agree to: provide accurate and complete information during registration; keep your login credentials secure and confidential; notify us immediately of any unauthorized access to your account; and be responsible for all activity that occurs under your account.</p>
+<p><strong>4. Instagram &amp; Meta Platform Compliance</strong><br>You agree to use IH Flow in full compliance with Meta’s Platform Terms and Instagram’s Community Guidelines. You are solely responsible for ensuring your use of automated messaging complies with Meta’s policies. IH Flow is not responsible for any suspension or restriction of your Instagram account resulting from your use of our platform.</p>
+<p><strong>5. Acceptable Use</strong><br>You agree NOT to use IH Flow to: send spam or unsolicited messages; harass, threaten, or harm other users or customers; distribute illegal, fraudulent, or misleading content; violate any applicable local, national, or international law or regulation; or attempt to gain unauthorized access to our systems or other users’ accounts.</p>
+<p><strong>6. Subscription &amp; Payments</strong><br>IH Flow offers subscription plans. By subscribing, you agree to pay the applicable fees. Subscriptions automatically renew unless cancelled before the renewal date. We reserve the right to change pricing with reasonable notice. Refunds are handled on a case-by-case basis at our discretion.</p>
+<p><strong>7. Intellectual Property</strong><br>All content, features, and functionality of IH Flow — including but not limited to software, design, text, and logos — are owned by IH Flow and are protected by applicable intellectual property laws. You are granted a limited, non-exclusive, non-transferable license to use the Service for your business purposes.</p>
+<p><strong>8. User Content</strong><br>You retain ownership of all content you upload to IH Flow, including product images, descriptions, and bot responses. By uploading content, you grant IH Flow a limited license to store, process, and display that content solely for the purpose of providing the Service.</p>
+<p><strong>9. Limitation of Liability</strong><br>To the maximum extent permitted by law, IH Flow shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or goodwill, arising from your use of or inability to use the Service.</p>
+<p><strong>10. Disclaimer of Warranties</strong><br>The Service is provided on an “as is” and “as available” basis without warranties of any kind, either express or implied. We do not warrant that the Service will be uninterrupted, error-free, or completely secure.</p>
+<p><strong>11. Termination</strong><br>We reserve the right to suspend or terminate your account at our sole discretion if you violate these Terms. You may cancel your account at any time through your account settings. Upon termination, your right to use the Service will immediately cease.</p>
+<p><strong>12. Governing Law</strong><br>These Terms shall be governed by and construed in accordance with the laws of Algeria. Any disputes arising from these Terms shall be subject to the exclusive jurisdiction of the courts of Algeria.</p>
+<p><strong>13. Changes to Terms</strong><br>We reserve the right to modify these Terms at any time. We will provide notice of significant changes by posting the updated Terms on our website. Your continued use of the Service after changes constitutes acceptance of the new Terms.</p>
+<p><strong>14. Contact</strong><br>For questions about these Terms, please contact us:<br>Email: <a href="mailto:support@ihflow.com" style="color:var(--primary);">support@ihflow.com</a><br>Website: <a href="https://www.ihflow.com" target="_blank" style="color:var(--primary);">https://www.ihflow.com</a></p>
+</div>
+</div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -2959,6 +2987,10 @@ const translations = {
     accountAlreadyExists: "This account already exists. Please log in instead.",
     invalidEmailDomain: "This email domain doesn't look right. Please use a valid email (e.g. user@gmail.com).",
     signUp: "Sign up",
+    agreeToTerms: "I agree to the",
+    termsOfService: "Terms of Service",
+    mustAcceptTerms: "You must accept the Terms of Service to create an account.",
+    tosTitle: "IH Flow – Terms of Service",
     // Dashboard
     dashboard: "Dashboard",
     myBots: "My Bots",
@@ -3313,6 +3345,10 @@ const translations = {
     accountAlreadyExists: "هذا الحساب موجود بالفعل. يرجى تسجيل الدخول.",
     invalidEmailDomain: "هذا الإيميل غير صحيح. استخدم إيميل صالح (مثال: user@gmail.com).",
     signUp: "سجّل",
+    agreeToTerms: "أوافق على",
+    termsOfService: "شروط الخدمة",
+    mustAcceptTerms: "يجب قبول شروط الخدمة لإنشاء حساب.",
+    tosTitle: "IH Flow – شروط الخدمة",
     dashboard: "لوحة التحكم",
     myBots: "البوتات",
     newBot: "بوت جديد",
@@ -3650,6 +3686,10 @@ const translations = {
     accountAlreadyExists: "Ce compte existe déjà. Veuillez vous connecter.",
     invalidEmailDomain: "Ce domaine d'email ne semble pas correct. Utilisez un email valide (ex: user@gmail.com).",
     signUp: "S'inscrire",
+    agreeToTerms: "J'accepte les",
+    termsOfService: "Conditions d'utilisation",
+    mustAcceptTerms: "Vous devez accepter les Conditions d'utilisation pour créer un compte.",
+    tosTitle: "IH Flow – Conditions d'utilisation",
     dashboard: "Tableau de Bord",
     myBots: "Mes Bots",
     newBot: "Nouveau Bot",
@@ -4090,6 +4130,22 @@ function applyTranslations(){
   
   // Update auth modals
   const registerModal = document.getElementById('registerModal');
+  const tosModal = document.getElementById('tosModal');
+  
+  // Terms checkbox toggle
+  const termsCheckbox = document.getElementById('termsCheckbox');
+  const registerSubmitBtn = document.getElementById('registerSubmitBtn');
+  const tosLink = document.getElementById('tosLink');
+  if(termsCheckbox && registerSubmitBtn){
+    termsCheckbox.addEventListener('change', function(){
+      registerSubmitBtn.disabled = !this.checked;
+      registerSubmitBtn.style.opacity = this.checked ? '1' : '0.5';
+      registerSubmitBtn.style.cursor = this.checked ? 'pointer' : 'not-allowed';
+    });
+  }
+  if(tosLink && tosModal){
+    tosLink.addEventListener('click', function(e){ e.preventDefault(); openModal(tosModal); });
+  }
   if(registerModal){
     const title = registerModal.querySelector('h2');
     const nameInput = registerModal.querySelector('input[type="text"]');
@@ -4390,7 +4446,15 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
 })();
 
 // === Modals helpers ===
-function openModal(modal){ modal.style.display="flex"; }
+function openModal(modal){
+  if(modal) modal.style.display="flex";
+  if(modal && modal.id === "registerModal"){
+    const cb = document.getElementById("termsCheckbox");
+    const btn = document.getElementById("registerSubmitBtn");
+    if(cb){ cb.checked = false; }
+    if(btn){ btn.disabled = true; btn.style.opacity = "0.5"; btn.style.cursor = "not-allowed"; }
+  }
+}
 function closeModal(modal){ 
   modal.style.display="none"; 
   const msg = modal.querySelector('.message');
@@ -7610,6 +7674,13 @@ async function register(){
 
   console.log("Register function called with:", { regUsername, regEmail });
 
+  const termsCheckbox = document.getElementById("termsCheckbox");
+  if(termsCheckbox && !termsCheckbox.checked){
+    regMsg.textContent = t("mustAcceptTerms");
+    regMsg.className = "message error";
+    return;
+  }
+
   if(!regUsername || !regEmail || !regPassword){
     regMsg.textContent = "Please fill all fields";
     regMsg.className = "message error";
@@ -7631,7 +7702,9 @@ async function register(){
     options: {
       emailRedirectTo: window.location.href.split('?')[0].split('#')[0],
       data: {
-        username: regUsername
+        username: regUsername,
+        terms_accepted: true,
+        terms_accepted_at: new Date().toISOString()
       }
     }
   });

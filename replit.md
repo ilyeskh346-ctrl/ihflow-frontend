@@ -12,3 +12,12 @@ A static single-page landing website for IH Flow, an Instagram DM automation pla
 
 ## Deployment
 - Configured as a **static** deployment with `publicDir: "."`.
+
+## Key Features
+- **Bot creation wizard** with activity types: Car, E-commerce
+- **Car activity type**: Custom product table (Car Name, Color, Motor Type, Description, Qty, Price)
+- **Orders view**: Dynamically shows color and motor type columns for Car bots
+- **Realtime orders**: Supabase Realtime subscription auto-updates orders table
+- **Terms of Service**: Signup form requires checkbox acceptance before account creation; ToS modal with full 14-section text; terms_accepted + terms_accepted_at stored in Supabase user metadata
+- **Internationalization**: EN / AR / FR for all UI text including ToS-related strings
+- **Supabase**: `https://muhxkvtniuinrspwhzhn.supabase.co`
