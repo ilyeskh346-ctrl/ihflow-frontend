@@ -5127,6 +5127,7 @@ function navigateToView(viewName, botId = null, addToHistory = true){
       document.getElementById("ordersView").style.display = "block";
       setActiveSidebar(document.getElementById('sidebarOrders'));
       loadOrders();
+      setupOrdersRealtime();
       if(addToHistory) pushToHistory('orders');
       currentView = 'orders';
       break;
@@ -5144,6 +5145,7 @@ function navigateToView(viewName, botId = null, addToHistory = true){
 
 // === Hide All Views Helper ===
 function hideAllViews(){
+  if(ordersRealtimeChannel){ supabaseClient.removeChannel(ordersRealtimeChannel); ordersRealtimeChannel = null; }
   const views = ["welcomeView", "statsView", "autoRepliesView", "botsView", "botEditorView", "templatesView", "dynamicVarsView", "nicheView", "nicheTemplatesView", "productsView", "ordersView", "accountView"];
   views.forEach(id => {
     const el = document.getElementById(id);
@@ -6449,8 +6451,21 @@ async function loadDashboardStats(){
 
 // === ORDERS FUNCTIONS ===
 let allOrdersData = [];
-
 let orderBotsList = [];
+let ordersRealtimeChannel = null;
+
+async function setupOrdersRealtime(){
+  if(ordersRealtimeChannel){
+    await supabaseClient.removeChannel(ordersRealtimeChannel);
+    ordersRealtimeChannel = null;
+  }
+  ordersRealtimeChannel = supabaseClient
+    .channel("orders-realtime")
+    .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, () => {
+      loadOrders();
+    })
+    .subscribe();
+}
 
 async function loadOrders(){
   try {
