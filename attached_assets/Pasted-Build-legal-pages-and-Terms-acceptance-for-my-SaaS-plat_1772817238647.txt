@@ -1,0 +1,141 @@
+Build legal pages and Terms acceptance for my SaaS platform **IH Flow**.
+
+IH Flow is an AI SaaS platform that helps e-commerce businesses and Instagram creators automate Instagram DM responses, connect product catalogs, and manage customer conversations.
+
+I want the following features implemented:
+
+---
+
+1. TERMS ACCEPTANCE IN SIGNUP
+
+Add a checkbox to the signup form:
+
+"I agree to the Terms of Service"
+
+Requirements:
+
+* The **Create Account** button must remain disabled until the checkbox is checked.
+* The words **Terms of Service** should be clickable and open the Terms page.
+* If the user tries to submit without accepting, show the error:
+
+"You must accept the Terms of Service to create an account."
+
+Store this in the database when the account is created:
+
+termsAccepted: true
+termsAcceptedAt: timestamp
+
+---
+
+2. CREATE A LEGAL SECTION UNDER "ORDERS"
+
+Inside the Orders section of the dashboard create a **Legal submenu** containing:
+
+Orders
+└ Legal
+├ Terms of Service
+├ Privacy Policy
+└ Cookie Policy
+
+Each item should open its corresponding page.
+
+---
+
+3. TERMS OF SERVICE PAGE
+
+Create a professional Terms of Service page containing the following sections:
+
+Acceptance of Terms
+Description of Service
+Account Registration
+Instagram & Meta Platform Compliance
+Acceptable Use
+Subscription & Payments
+Intellectual Property
+User Content
+Limitation of Liability
+Disclaimer of Warranties
+Termination
+Governing Law (Algeria)
+Changes to Terms
+Contact
+
+Contact information:
+
+Email: [support@ihflow.com](mailto:support@ihflow.com)
+Website: https://www.ihflow.com
+
+Also include a clause stating:
+
+"Users are responsible for complying with Instagram and Meta platform policies. IH Flow is not responsible for any suspension or restriction of Instagram accounts."
+
+---
+
+4. PRIVACY POLICY PAGE
+
+Create a professional Privacy Policy page that explains:
+
+Information We Collect
+
+* Account information (name, email)
+* Instagram account data
+* Messages and automation data
+* Product catalog data
+* Usage analytics
+* Cookies
+
+How We Use Data
+
+* Provide the service
+* Improve AI automation
+* Process payments
+* Customer support
+* Security and fraud prevention
+
+Third-Party Services
+
+* Meta / Instagram API
+* Payment providers
+* AI providers
+* Cloud hosting
+
+Data Security
+Data Retention
+User Rights (access, correction, deletion)
+Changes to Policy
+Contact information
+
+---
+
+5. COOKIE POLICY PAGE
+
+Create a Cookie Policy page explaining:
+
+What cookies are
+How IH Flow uses cookies
+Authentication cookies
+Security cookies
+Analytics cookies
+Third-party cookies
+How users can manage cookies in their browser
+Policy updates
+Contact information
+
+---
+
+6. UI DESIGN
+
+* Make all pages clean and modern.
+* Format them like professional SaaS legal pages.
+* Ensure they are responsive.
+* Add navigation buttons inside the Orders → Legal section.
+
+---
+
+7. SECURITY
+
+Ensure users must accept Terms before creating an account.
+
+---
+
+Make the implementation production-ready and consistent with a modern SaaS dashboard UI.
