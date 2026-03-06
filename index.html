@@ -24,7 +24,7 @@
   --border: rgba(56,189,248,0.2);
 }
 * {box-sizing:border-box; margin:0; padding:0;}
-html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;caret-color:transparent;overflow-x:hidden;}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Inter','Noto Sans Arabic',system-ui,-apple-system,sans-serif;caret-color:transparent;overflow-x:hidden;}
 input, textarea { caret-color: var(--primary); font-family: inherit; }
 a{color:inherit;text-decoration:none;}
 .container{max-width:1200px;margin:0 auto;padding:0 24px;}
@@ -1895,6 +1895,15 @@ table thead th{position:sticky;top:0;z-index:1;}
   text-align:right;
 }
 [dir="rtl"] .sidebar{left:auto;right:0;border-right:none;border-left:1px solid var(--border);}
+[dir="rtl"] .dash-wrap{margin-left:0;margin-right:240px;}
+[dir="rtl"] .sidebar-item,[dir="rtl"] .sidebar-subitem{flex-direction:row-reverse;}
+[dir="rtl"] .sidebar-item svg,[dir="rtl"] .sidebar-subitem svg{margin-left:0;}
+[dir="rtl"] .modal-content{text-align:right;}
+[dir="rtl"] .modal-content input,[dir="rtl"] .modal-content textarea,[dir="rtl"] .modal-content select{text-align:right;}
+[dir="rtl"] .toast-container{left:unset;right:24px;}
+[dir="rtl"] input,[dir="rtl"] textarea,[dir="rtl"] select{direction:rtl;}
+[dir="rtl"] .stats-view{direction:rtl;}
+[dir="rtl"] .canvas{direction:rtl;}
 @media(max-width:768px){
   [dir="rtl"] .sidebar{transform:translateX(100%);}
   [dir="rtl"] .sidebar.mobile-open{transform:translateX(0);}
@@ -1989,7 +1998,7 @@ table thead th{position:sticky;top:0;z-index:1;}
 <nav class="sidebar-nav">
 <div class="sidebar-item" id="sidebarAccount" onclick="navigateToView('account')">
 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-<span>Account Center</span>
+<span data-i18n="sidebarAccountCenter">Account Center</span>
 </div>
 <div class="sidebar-item" id="sidebarCreateBot" onclick="document.getElementById('createBotModal').style.display='flex'" style="background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(168,85,247,0.15));border:1px solid rgba(99,102,241,0.3);border-radius:10px;margin:4px 0;">
 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
@@ -2045,9 +2054,9 @@ table thead th{position:sticky;top:0;z-index:1;}
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;flex-wrap:wrap;gap:16px;">
 <div>
 <h2 style="margin-bottom:6px;font-size:26px;font-weight:800;letter-spacing:-0.5px;">
-<span style="background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Overview</span>
+<span data-i18n="overviewTitle" style="background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Overview</span>
 </h2>
-<p style="color:var(--muted);font-size:14px;">Real-time insights across your bots</p>
+<p data-i18n="overviewDesc" style="color:var(--muted);font-size:14px;">Real-time insights across your bots</p>
 </div>
 <select id="dashBotFilter" onchange="loadDashboardStats()" style="padding:10px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;min-width:180px;">
 <option value="all">All Bots</option>
@@ -2063,7 +2072,7 @@ table thead th{position:sticky;top:0;z-index:1;}
 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
 </div>
 <div>
-<p style="color:var(--muted);font-size:14px;margin:0;">Total Orders</p>
+<p data-i18n="totalOrders" style="color:var(--muted);font-size:14px;margin:0;">Total Orders</p>
 <h3 id="dashOrdersCount" style="font-size:34px;font-weight:700;margin:6px 0 0 0;">—</h3>
 </div>
 </div>
@@ -2076,7 +2085,7 @@ table thead th{position:sticky;top:0;z-index:1;}
 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
 </div>
 <div>
-<p style="color:var(--muted);font-size:14px;margin:0;">Today's Messages</p>
+<p data-i18n="todaysMessages" style="color:var(--muted);font-size:14px;margin:0;">Today's Messages</p>
 <h3 id="dashTodayMessages" style="font-size:34px;font-weight:700;margin:6px 0 0 0;">—</h3>
 </div>
 </div>
@@ -2088,7 +2097,7 @@ table thead th{position:sticky;top:0;z-index:1;}
 <div id="botsView" class="stats-view">
 <h2 style="margin-bottom:24px;" data-i18n="allBots">All Bots</h2>
 <div id="botsListView" class="bots-list"></div>
-<button class="btn-primary" onclick="navigateToView('dashboard')" style="background:var(--bg-secondary);border:1px solid var(--border);color:var(--text);margin-top:20px;">Back to Dashboard</button>
+<button class="btn-primary" data-i18n="backToDashboard" onclick="navigateToView('dashboard')" style="background:var(--bg-secondary);border:1px solid var(--border);color:var(--text);margin-top:20px;">Back to Dashboard</button>
 </div>
 <div id="botEditorView" class="stats-view"></div>
 
@@ -2157,7 +2166,7 @@ table thead th{position:sticky;top:0;z-index:1;}
 <table style="width:100%;border-collapse:collapse;min-width:900px;table-layout:fixed;">
 <thead>
 <tr id="ordersTableHead" style="background:var(--bg-secondary);border-bottom:2px solid var(--primary);">
-<th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--primary);text-align:center;border:1px solid var(--border);width:16%;text-transform:uppercase;letter-spacing:0.5px;">Customer Name</th>
+<th data-i18n="customerName" style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--primary);text-align:center;border:1px solid var(--border);width:16%;text-transform:uppercase;letter-spacing:0.5px;">Customer Name</th>
 <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--primary);text-align:center;border:1px solid var(--border);width:12%;text-transform:uppercase;letter-spacing:0.5px;">Phone</th>
 <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--primary);text-align:center;border:1px solid var(--border);width:10%;text-transform:uppercase;letter-spacing:0.5px;">State</th>
 <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--primary);text-align:center;border:1px solid var(--border);width:18%;text-transform:uppercase;letter-spacing:0.5px;">Address</th>
@@ -2171,7 +2180,7 @@ table thead th{position:sticky;top:0;z-index:1;}
 <tr>
 <td colspan="8" style="padding:40px;text-align:center;color:var(--muted);">
 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:16px;opacity:0.5;"><path d="M16 16h6"/><path d="M19 13v6"/><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/><path d="m7.5 4.27 9 5.15"/><path d="M3.29 7 12 12l8.71-5"/><path d="M12 22V12"/></svg>
-<p>Loading orders...</p>
+<p data-i18n="loadingOrders">Loading orders...</p>
 </td>
 </tr>
 </tbody>
@@ -2267,9 +2276,9 @@ table thead th{position:sticky;top:0;z-index:1;}
 <div id="accountView" class="stats-view" style="display:none;">
 <div style="margin-bottom:32px;">
 <h2 style="margin-bottom:6px;font-size:26px;font-weight:800;letter-spacing:-0.5px;">
-<span style="background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Account Center</span>
+<span data-i18n="accountCenterTitle" style="background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Account Center</span>
 </h2>
-<p style="color:var(--muted);font-size:14px;">Manage your profile, security & subscription</p>
+<p data-i18n="accountCenterDesc" style="color:var(--muted);font-size:14px;">Manage your profile, security & subscription</p>
 </div>
 
 <div style="display:flex;flex-direction:column;gap:24px;">
@@ -2281,15 +2290,15 @@ table thead th{position:sticky;top:0;z-index:1;}
 <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,rgba(99,102,241,0.2),rgba(168,85,247,0.2));display:flex;align-items:center;justify-content:center;">
 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
 </div>
-<h3 style="font-size:16px;font-weight:700;margin:0;">Profile</h3>
+<h3 data-i18n="profileCard" style="font-size:16px;font-weight:700;margin:0;">Profile</h3>
 </div>
 <div style="display:flex;flex-direction:column;gap:14px;">
 <div>
-<label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Name</label>
+<label data-i18n="nameLabel" style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Name</label>
 <div id="accName" style="width:100%;padding:10px 14px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;box-sizing:border-box;min-height:20px;">—</div>
 </div>
 <div>
-<label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Email</label>
+<label data-i18n="emailLabel" style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Email</label>
 <div id="accEmail" style="width:100%;padding:10px 14px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;box-sizing:border-box;min-height:20px;">—</div>
 </div>
 </div>
@@ -2302,11 +2311,11 @@ table thead th{position:sticky;top:0;z-index:1;}
 <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,rgba(34,197,94,0.2),rgba(6,182,212,0.2));display:flex;align-items:center;justify-content:center;">
 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
 </div>
-<h3 style="font-size:16px;font-weight:700;margin:0;">Subscription & Billing</h3>
+<h3 data-i18n="subscriptionBilling" style="font-size:16px;font-weight:700;margin:0;">Subscription & Billing</h3>
 </div>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:20px;">
 <div style="background:var(--bg-secondary);border-radius:12px;padding:16px;">
-<p style="color:var(--muted);font-size:12px;margin:0 0 6px 0;">Current Plan</p>
+<p data-i18n="currentPlan" style="color:var(--muted);font-size:12px;margin:0 0 6px 0;">Current Plan</p>
 <p id="accPlan" style="font-size:18px;font-weight:700;margin:0;">—</p>
 </div>
 <div style="background:var(--bg-secondary);border-radius:12px;padding:16px;">
@@ -2314,13 +2323,13 @@ table thead th{position:sticky;top:0;z-index:1;}
 <p id="accSubStatus" style="font-size:18px;font-weight:700;margin:0;">—</p>
 </div>
 <div style="background:var(--bg-secondary);border-radius:12px;padding:16px;">
-<p style="color:var(--muted);font-size:12px;margin:0 0 6px 0;">Renewal Date</p>
+<p data-i18n="renewalDate" style="color:var(--muted);font-size:12px;margin:0 0 6px 0;">Renewal Date</p>
 <p id="accRenewal" style="font-size:18px;font-weight:700;margin:0;">—</p>
 </div>
 </div>
 <div style="display:flex;gap:12px;flex-wrap:wrap;">
-<button onclick="upgradePlan()" style="padding:12px 28px;background:var(--gradient);color:#fff;border:none;border-radius:10px;font-weight:600;font-size:14px;cursor:pointer;">Upgrade Plan</button>
-<button onclick="cancelSubscription()" style="padding:12px 28px;background:var(--bg-secondary);border:1px solid var(--border);color:var(--text);border-radius:10px;font-weight:600;font-size:14px;cursor:pointer;">Cancel Subscription</button>
+<button onclick="upgradePlan()" style="padding:12px 28px;background:var(--gradient);color:#fff;border:none;border-radius:10px;font-weight:600;font-size:14px;cursor:pointer;" data-i18n="upgradePlan">Upgrade Plan</button>
+<button onclick="cancelSubscription()" style="padding:12px 28px;background:var(--bg-secondary);border:1px solid var(--border);color:var(--text);border-radius:10px;font-weight:600;font-size:14px;cursor:pointer;" data-i18n="cancelSubscription">Cancel Subscription</button>
 </div>
 </div>
 
@@ -2331,18 +2340,18 @@ table thead th{position:sticky;top:0;z-index:1;}
 <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,rgba(239,68,68,0.15),rgba(249,115,22,0.15));display:flex;align-items:center;justify-content:center;">
 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
 </div>
-<h3 style="font-size:16px;font-weight:700;margin:0;">Security</h3>
+<h3 data-i18n="securityCard" style="font-size:16px;font-weight:700;margin:0;">Security</h3>
 </div>
 <div style="display:flex;flex-direction:column;gap:14px;">
 <div>
-<label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">New Password</label>
+<label data-i18n="newPasswordLabel" style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">New Password</label>
 <input type="password" id="accNewPass" placeholder="Enter new password" style="width:100%;padding:10px 14px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;box-sizing:border-box;">
 </div>
 <div>
-<label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Confirm New Password</label>
+<label data-i18n="confirmNewPasswordLabel" style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Confirm New Password</label>
 <input type="password" id="accConfirmPass" placeholder="Confirm new password" style="width:100%;padding:10px 14px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;box-sizing:border-box;">
 </div>
-<button onclick="changePassword()" style="width:auto;padding:8px 20px;background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;border:none;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;">Change Password</button>
+<button onclick="changePassword()" style="width:auto;padding:8px 20px;background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;border:none;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;" data-i18n="changePasswordBtn">Change Password</button>
 <p id="securityMsg" style="font-size:13px;text-align:center;margin:0;display:none;"></p>
 <div style="border-top:1px solid var(--border);margin-top:10px;padding-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
 <button onclick="showLogoutConfirm()" style="padding:8px 20px;background:var(--bg-secondary);border:1px solid var(--border);color:var(--text);border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:6px;">
@@ -3013,6 +3022,34 @@ const translations = {
   en: {
     code: "EN",
     dir: "ltr",
+    noOrdersFound: "No orders found",
+    ordersCount: "orders found",
+    overviewTitle: "Overview",
+    overviewDesc: "Real-time insights across your bots",
+    totalOrders: "Total Orders",
+    todaysMessages: "Today's Messages",
+    accountCenterTitle: "Account Center",
+    accountCenterDesc: "Manage your profile, security & subscription",
+    profileCard: "Profile",
+    nameLabel: "Name",
+    subscriptionBilling: "Subscription & Billing",
+    currentPlan: "Current Plan",
+    renewalDate: "Renewal Date",
+    upgradePlan: "Upgrade Plan",
+    cancelSubscription: "Cancel Subscription",
+    securityCard: "Security",
+    newPasswordLabel: "New Password",
+    confirmNewPasswordLabel: "Confirm New Password",
+    changePasswordBtn: "Change Password",
+    customerName: "Customer Name",
+    phoneCol: "Phone",
+    stateCol: "State",
+    addressCol: "Address",
+    productCol: "Product",
+    sizeCol: "Size",
+    statusCol: "Status",
+    loadingOrders: "Loading orders...",
+    sidebarAccountCenter: "Account Center",
     // Landing page
     heroTitle: 'Turn Instagram conversations into <span class="gradient-text">instant replies</span>',
     heroDesc: "Reply to DMs, send links, and capture leads automatically. Built for creators and brands who want results, not complexity.",
@@ -3381,6 +3418,34 @@ const translations = {
   ar: {
     code: "AR",
     dir: "rtl",
+    noOrdersFound: "لا توجد طلبات",
+    ordersCount: "طلبات",
+    overviewTitle: "نظرة عامة",
+    overviewDesc: "رؤى فورية عبر بوتاتك",
+    totalOrders: "إجمالي الطلبات",
+    todaysMessages: "رسائل اليوم",
+    accountCenterTitle: "مركز الحساب",
+    accountCenterDesc: "إدارة ملفك الشخصي والأمان والاشتراك",
+    profileCard: "الملف الشخصي",
+    nameLabel: "الاسم",
+    subscriptionBilling: "الاشتراك والفواتير",
+    currentPlan: "الخطة الحالية",
+    renewalDate: "تاريخ التجديد",
+    upgradePlan: "ترقية الخطة",
+    cancelSubscription: "إلغاء الاشتراك",
+    securityCard: "الأمان",
+    newPasswordLabel: "كلمة مرور جديدة",
+    confirmNewPasswordLabel: "تأكيد كلمة المرور الجديدة",
+    changePasswordBtn: "تغيير كلمة المرور",
+    customerName: "اسم العميل",
+    phoneCol: "الهاتف",
+    stateCol: "الولاية",
+    addressCol: "العنوان",
+    productCol: "المنتج",
+    sizeCol: "الحجم",
+    statusCol: "الحالة",
+    loadingOrders: "جارٍ تحميل الطلبات...",
+    sidebarAccountCenter: "مركز الحساب",
     heroTitle: 'حوّل محادثات انستغرام إلى <span class="gradient-text">ردود فورية</span>',
     heroDesc: "رد على الرسائل، أرسل روابط، واجمع بيانات العملاء تلقائياً. مصمم للمبدعين والعلامات التجارية.",
     getStarted: "ابدأ مجاناً",
@@ -3725,6 +3790,34 @@ const translations = {
   fr: {
     code: "FR",
     dir: "ltr",
+    noOrdersFound: "Aucune commande trouvée",
+    ordersCount: "commandes trouvées",
+    overviewTitle: "Aperçu",
+    overviewDesc: "Informations en temps réel sur vos bots",
+    totalOrders: "Total des commandes",
+    todaysMessages: "Messages du jour",
+    accountCenterTitle: "Centre de compte",
+    accountCenterDesc: "Gérez votre profil, sécurité & abonnement",
+    profileCard: "Profil",
+    nameLabel: "Nom",
+    subscriptionBilling: "Abonnement & Facturation",
+    currentPlan: "Plan actuel",
+    renewalDate: "Date de renouvellement",
+    upgradePlan: "Améliorer le plan",
+    cancelSubscription: "Annuler l'abonnement",
+    securityCard: "Sécurité",
+    newPasswordLabel: "Nouveau mot de passe",
+    confirmNewPasswordLabel: "Confirmer le nouveau mot de passe",
+    changePasswordBtn: "Changer le mot de passe",
+    customerName: "Nom du client",
+    phoneCol: "Téléphone",
+    stateCol: "État",
+    addressCol: "Adresse",
+    productCol: "Produit",
+    sizeCol: "Taille",
+    statusCol: "Statut",
+    loadingOrders: "Chargement des commandes...",
+    sidebarAccountCenter: "Centre de compte",
     heroTitle: 'Transformez vos conversations Instagram en <span class="gradient-text">réponses instantanées</span>',
     heroDesc: "Répondez aux DMs, envoyez des liens et capturez des leads automatiquement. Conçu pour les créateurs et les marques.",
     getStarted: "Commencer Gratuitement",
@@ -4084,6 +4177,8 @@ function setLanguage(lang){
   document.getElementById('currentLang').textContent = translations[lang].code;
   document.documentElement.dir = translations[lang].dir;
   applyTranslations();
+  // Refresh dynamic table headers if orders view is visible
+  if(document.getElementById("ordersTableHead")) updateOrdersTableHead(currentIsCarMode);
   // Reset and restart chat animation with new language
   if(chatContainer) {
     chatContainer.innerHTML = '';
@@ -6730,6 +6825,7 @@ async function loadDashboardStats(){
 
 // === ORDERS FUNCTIONS ===
 let allOrdersData = [];
+let currentIsCarMode = false;
 let orderBotsList = [];
 let ordersRealtimeChannel = null;
 
@@ -6797,6 +6893,7 @@ function filterOrdersByBot(){
     const bot = orderBotsList.find(b => b.id === filter);
     isCar = bot && bot.activity_type && bot.activity_type.toLowerCase() === "car";
   }
+  currentIsCarMode = isCar;
   updateOrdersTableHead(isCar);
   renderOrders(filtered, isCar);
 }
@@ -6807,26 +6904,26 @@ function updateOrdersTableHead(isCar){
   const thStyle = 'padding:14px 12px;font-size:13px;font-weight:700;color:var(--primary);text-align:center;border:1px solid var(--border);text-transform:uppercase;letter-spacing:0.5px;';
   if(isCar){
     head.innerHTML = `
-      <th style="${thStyle}width:16%;">Customer Name</th>
-      <th style="${thStyle}width:12%;">Phone</th>
-      <th style="${thStyle}width:10%;">State</th>
-      <th style="${thStyle}width:14%;">Address</th>
-      <th style="${thStyle}width:12%;">Product</th>
-      <th style="${thStyle}width:7%;">Qty</th>
+      <th style="${thStyle}width:16%;">${t('customerName')}</th>
+      <th style="${thStyle}width:12%;">${t('phoneCol')}</th>
+      <th style="${thStyle}width:10%;">${t('stateCol')}</th>
+      <th style="${thStyle}width:14%;">${t('addressCol')}</th>
+      <th style="${thStyle}width:12%;">${t('productCol')}</th>
+      <th style="${thStyle}width:7%;">${t('quantity')}</th>
       <th style="${thStyle}width:10%;">${t('colors')}</th>
       <th style="${thStyle}width:14%;">${t('motorType')}</th>
-      <th style="${thStyle}width:15%;">Status</th>
+      <th style="${thStyle}width:15%;">${t('statusCol')}</th>
     `;
   } else {
     head.innerHTML = `
-      <th style="${thStyle}width:16%;">Customer Name</th>
-      <th style="${thStyle}width:12%;">Phone</th>
-      <th style="${thStyle}width:10%;">State</th>
-      <th style="${thStyle}width:18%;">Address</th>
-      <th style="${thStyle}width:14%;">Product</th>
-      <th style="${thStyle}width:7%;">Qty</th>
-      <th style="${thStyle}width:8%;">Size</th>
-      <th style="${thStyle}width:15%;">Status</th>
+      <th style="${thStyle}width:16%;">${t('customerName')}</th>
+      <th style="${thStyle}width:12%;">${t('phoneCol')}</th>
+      <th style="${thStyle}width:10%;">${t('stateCol')}</th>
+      <th style="${thStyle}width:18%;">${t('addressCol')}</th>
+      <th style="${thStyle}width:14%;">${t('productCol')}</th>
+      <th style="${thStyle}width:7%;">${t('quantity')}</th>
+      <th style="${thStyle}width:8%;">${t('sizeCol')}</th>
+      <th style="${thStyle}width:15%;">${t('statusCol')}</th>
     `;
   }
 }
@@ -6834,12 +6931,12 @@ function updateOrdersTableHead(isCar){
 function renderOrders(orders, isCar = false){
   const container = document.getElementById("ordersContainer");
   const countEl = document.getElementById("ordersCount");
-  countEl.textContent = orders.length + " order" + (orders.length !== 1 ? "s" : "");
+  countEl.textContent = orders.length + " " + t('ordersCount');
 
   if(!orders || orders.length === 0){
     container.innerHTML = `<tr><td colspan="${isCar ? 9 : 8}" style="padding:40px;text-align:center;color:var(--muted);">
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:16px;opacity:0.5;"><path d="M16 16h6"/><path d="M19 13v6"/><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/><path d="m7.5 4.27 9 5.15"/><path d="M3.29 7 12 12l8.71-5"/><path d="M12 22V12"/></svg>
-      <p>No orders found</p></td></tr>`;
+      <p>${t('noOrdersFound')}</p></td></tr>`;
     return;
   }
 

@@ -20,5 +20,7 @@ A static single-page landing website for IH Flow, an Instagram DM automation pla
 - **Realtime orders**: Supabase Realtime subscription auto-updates orders table
 - **Terms of Service**: Signup form requires checkbox acceptance before account creation; ToS modal with full 14-section text; terms_accepted + terms_accepted_at stored in Supabase user metadata
 - **Legal section in dashboard**: Sidebar shows Legal submenu under Orders with three pages: Terms of Service, Privacy Policy, Cookie Policy — each a full professional SaaS legal page
-- **Internationalization**: EN / AR / FR for all UI text including ToS-related strings
+- **Internationalization**: EN / AR / FR with 340+ translation keys covering all dashboard UI text (Overview, Total Orders, Today's Messages, Account Center, Profile, Subscription & Billing, Security, Orders table headers, etc.)
+- **RTL layout**: Full Arabic RTL support — sidebar flips to right, `dash-wrap` uses `margin-right:240px` in RTL mode, inputs/modals all respect direction, sidebar items reflect row order
+- **Dynamic table headers**: Orders table headers re-translate when language is switched (uses `t()` function and `currentIsCarMode` global to re-render on language change)
 - **Supabase**: `https://muhxkvtniuinrspwhzhn.supabase.co`
