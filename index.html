@@ -2733,7 +2733,7 @@ Log Out
 <!-- Products Table -->
 <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
 <!-- Table Header -->
-<div style="display:grid;grid-template-columns:70px 1fr 1.2fr 0.7fr 0.7fr 0.5fr 0.7fr 70px;gap:1px;background:var(--border);border-bottom:1px solid var(--border);">
+<div id="step3ProductsHeader" style="display:grid;grid-template-columns:70px 1fr 1.2fr 0.7fr 0.7fr 0.5fr 0.7fr 70px;gap:1px;background:var(--border);border-bottom:1px solid var(--border);">
 <div style="background:var(--card);padding:12px 10px;font-size:12px;font-weight:600;color:var(--primary);text-align:center;" data-i18n="image">Image</div>
 <div style="background:var(--card);padding:12px 10px;font-size:12px;font-weight:600;color:var(--primary);text-align:center;" data-i18n="productType">Type</div>
 <div style="background:var(--card);padding:12px 10px;font-size:12px;font-weight:600;color:var(--primary);text-align:center;" data-i18n="productName">Name</div>
@@ -4516,6 +4516,9 @@ function goToStep3() {
     step2.style.display = 'none';
     step3.style.display = 'block';
     
+    const actType = (document.getElementById('newBotActivityType').value || '').toLowerCase();
+    updateStep3ProductsTable(actType === 'car');
+    
     setTimeout(() => {
       step3.style.opacity = '1';
       step3.style.transform = 'translateX(0)';
@@ -4526,6 +4529,69 @@ function goToStep3() {
   document.getElementById('stepIndicator2').style.background = 'var(--primary)';
   document.getElementById('stepIndicator3').style.background = 'var(--primary)';
 }
+
+function isCarMode() {
+  return (document.getElementById('newBotActivityType').value || '').toLowerCase() === 'car';
+}
+
+function updateStep3ProductsTable(isCar) {
+  const hdrEl = document.getElementById('step3ProductsHeader');
+  if(!hdrEl) return;
+  const hs = 'background:var(--card);padding:12px 10px;font-size:12px;font-weight:600;color:var(--primary);text-align:center;';
+  if(isCar){
+    hdrEl.style.gridTemplateColumns = '70px 1.5fr 0.7fr 0.5fr 0.7fr 1fr 1.2fr 70px';
+    hdrEl.innerHTML = `
+      <div style="${hs}">${t('image')}</div>
+      <div style="${hs}">${t('carName')}</div>
+      <div style="${hs}">${t('colors')}</div>
+      <div style="${hs}">${t('quantity')}</div>
+      <div style="${hs}">${t('price')}</div>
+      <div style="${hs}">${t('motorType')}</div>
+      <div style="${hs}">${t('description')}</div>
+      <div style="${hs}">${t('actions')}</div>
+    `;
+    document.getElementById('productsContainer').innerHTML = buildCarProductRow();
+  } else {
+    hdrEl.style.gridTemplateColumns = '70px 1fr 1.2fr 0.7fr 0.7fr 0.5fr 0.7fr 70px';
+    hdrEl.innerHTML = `
+      <div style="${hs}">${t('image')}</div>
+      <div style="${hs}">${t('productType')}</div>
+      <div style="${hs}">${t('productName')}</div>
+      <div style="${hs}">${t('sizes')}</div>
+      <div style="${hs}">${t('colors')}</div>
+      <div style="${hs}">${t('quantity')}</div>
+      <div style="${hs}">${t('price')}</div>
+      <div style="${hs}">${t('actions')}</div>
+    `;
+  }
+}
+
+function buildCarProductRow() {
+  const cs = 'background:var(--card);padding:8px;';
+  const is = 'width:100%;padding:10px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;text-align:center;';
+  return `<div class="product-row car-row" style="display:grid;grid-template-columns:70px 1.5fr 0.7fr 0.5fr 0.7fr 1fr 1.2fr 70px;gap:1px;background:var(--border);border-bottom:1px solid var(--border);">
+    <div style="${cs}display:flex;align-items:center;justify-content:center;">
+      <div class="img-container" style="position:relative;width:50px;height:50px;">
+        <label style="width:50px;height:50px;background:var(--bg-secondary);border:2px dashed var(--border);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+          <input type="file" accept="image/*" style="display:none;" onchange="previewProductImage(this)">
+          <span class="img-placeholder" style="color:var(--text-secondary);font-size:20px;">+</span>
+          <img class="img-preview" style="width:100%;height:100%;object-fit:cover;display:none;">
+        </label>
+        <button type="button" class="img-delete-btn" onclick="deleteProductImage(this)" style="display:none;position:absolute;top:-5px;right:-5px;width:20px;height:20px;background:linear-gradient(135deg,#ef4444,#dc2626);border:2px solid rgba(255,255,255,0.9);border-radius:50%;color:#fff;cursor:pointer;font-size:11px;line-height:1;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">×</button>
+      </div>
+    </div>
+    <div style="${cs}"><input type="text" data-car="name" style="${is}" placeholder="${t('carName')}"></div>
+    <div style="${cs}"><input type="text" data-car="colors" style="${is}" placeholder="Red, Black"></div>
+    <div style="${cs}"><input type="number" data-car="quantity" style="${is}" placeholder="1"></div>
+    <div style="${cs}"><input type="text" data-car="price" style="${is}" placeholder="$0"></div>
+    <div style="${cs}"><input type="text" data-car="motor_type" style="${is}" placeholder="V6, V8..."></div>
+    <div style="${cs}"><input type="text" data-car="description" style="${is}" placeholder="${t('description')}..."></div>
+    <div style="${cs}display:flex;align-items:center;justify-content:center;">
+      <button type="button" onclick="this.closest('.product-row').remove()" style="width:28px;height:28px;background:rgba(239,68,68,0.1);border:none;border-radius:6px;color:#ef4444;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;" title="Delete">×</button>
+    </div>
+  </div>`;
+}
+
 
 function goToStep2FromStep3() {
   const step2 = document.getElementById('step2');
@@ -4551,6 +4617,7 @@ function goToStep2FromStep3() {
 
 function addProductRow() {
   const container = document.getElementById('productsContainer');
+  if(isCarMode()){ container.insertAdjacentHTML('beforeend', buildCarProductRow()); return; }
   const newRow = document.createElement('div');
   newRow.className = 'product-row';
   newRow.style.cssText = 'display:grid;grid-template-columns:70px 1fr 1.2fr 0.7fr 0.7fr 0.5fr 0.7fr 70px;gap:1px;background:var(--border);border-bottom:1px solid var(--border);';
@@ -8214,24 +8281,43 @@ async function submitCreateBot() {
   const productRows = productsContainer.querySelectorAll(".product-row");
   const products = [];
   
+  const isCar = isCarMode();
   productRows.forEach(row => {
-    const inputs = row.querySelectorAll('input[type="text"], input[type="number"]');
     const imgPreview = row.querySelector('.img-preview');
-    
-    if(inputs.length >= 6) {
-      const product = {
-        type: inputs[0].value.trim(),
-        name: inputs[1].value.trim(),
-        sizes: inputs[2].value.trim(),
-        colors: inputs[3].value.trim(),
-        quantity: parseInt(inputs[4].value) || 0,
-        price: inputs[5].value.trim(),
-        image_url: imgPreview && imgPreview.style.display !== 'none' ? imgPreview.src : null
-      };
-      if(product.name) {
-        products.push(product);
+    let product = null;
+    if(isCar){
+      const getName = row.querySelector('[data-car="name"]');
+      const getColors = row.querySelector('[data-car="colors"]');
+      const getQty = row.querySelector('[data-car="quantity"]');
+      const getPrice = row.querySelector('[data-car="price"]');
+      const getMotor = row.querySelector('[data-car="motor_type"]');
+      const getDesc = row.querySelector('[data-car="description"]');
+      if(getName && getName.value.trim()){
+        product = {
+          name: getName.value.trim(),
+          colors: getColors ? getColors.value.trim() : '',
+          quantity: getQty ? parseInt(getQty.value) || 0 : 0,
+          price: getPrice ? getPrice.value.trim() : '',
+          motor_type: getMotor ? getMotor.value.trim() : '',
+          description: getDesc ? getDesc.value.trim() : '',
+          image_url: imgPreview && imgPreview.style.display !== 'none' ? imgPreview.src : null
+        };
+      }
+    } else {
+      const inputs = row.querySelectorAll('input[type="text"], input[type="number"]');
+      if(inputs.length >= 6 && inputs[1].value.trim()){
+        product = {
+          type: inputs[0].value.trim(),
+          name: inputs[1].value.trim(),
+          sizes: inputs[2].value.trim(),
+          colors: inputs[3].value.trim(),
+          quantity: parseInt(inputs[4].value) || 0,
+          price: inputs[5].value.trim(),
+          image_url: imgPreview && imgPreview.style.display !== 'none' ? imgPreview.src : null
+        };
       }
     }
+    if(product) products.push(product);
   });
   
   if(!botName || !businessName){
@@ -8267,12 +8353,15 @@ async function submitCreateBot() {
       const productsToInsert = products.map(p => ({
         bot_id: newBot.id,
         image: p.image_url,
-        type: p.type,
+        type: p.type || null,
         name: p.name,
         sizes: p.sizes ? p.sizes.split(',').map(s => s.trim()) : [],
         colors: p.colors ? p.colors.split(',').map(c => c.trim()) : [],
-        qty: p.quantity,
-        price: parseFloat(p.price.replace(/[^0-9.]/g, '')) || 0
+        quantity: p.quantity || 0,
+        qty: p.quantity || 0,
+        price: parseFloat((p.price || '0').replace(/[^0-9.]/g, '')) || 0,
+        motor_type: p.motor_type || null,
+        description: p.description || null
       }));
       
       const { error: productsError } = await supabaseClient.from("products").insert(productsToInsert);
