@@ -1,0 +1,138 @@
+Terms of Service
+Last updated: March 2026
+
+1. Acceptance of Terms
+By accessing or using IH Flow ("Service"), operated by IH Flow ("Company", "we", "us"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our Service.
+
+2. Description of Service
+IH Flow is a SaaS platform that allows e-commerce businesses and Instagram creators to automate Instagram DM responses, connect product catalogs, and manage customer interactions through an AI-powered bot interface.
+
+3. Account Registration
+To use IH Flow you must create an account. You agree to:
+
+Provide accurate and complete information during registration.
+Keep your login credentials secure and confidential.
+Notify us immediately of any unauthorized access to your account.
+Be responsible for all activity that occurs under your account.
+4. Instagram & Meta Platform Compliance
+You agree to use IH Flow in full compliance with Meta's Platform Terms and Instagram's Community Guidelines. You are solely responsible for ensuring your use of automated messaging complies with Meta's policies. IH Flow is not responsible for any suspension or restriction of your Instagram account resulting from your use of our platform.
+
+5. Acceptable Use
+You agree NOT to use IH Flow to:
+
+Send spam or unsolicited messages.
+Harass, threaten, or harm other users or customers.
+Distribute illegal, fraudulent, or misleading content.
+Violate any applicable local, national, or international law or regulation.
+Attempt to gain unauthorized access to our systems or other users' accounts.
+6. Subscription & Payments
+IH Flow offers subscription plans. By subscribing, you agree to pay the applicable fees. Subscriptions automatically renew unless cancelled before the renewal date. We reserve the right to change pricing with reasonable notice. Refunds are handled on a case-by-case basis at our discretion.
+
+7. Intellectual Property
+All content, features, and functionality of IH Flow — including but not limited to software, design, text, and logos — are owned by IH Flow and are protected by applicable intellectual property laws. You are granted a limited, non-exclusive, non-transferable license to use the Service for your business purposes.
+
+8. User Content
+You retain ownership of all content you upload to IH Flow, including product images, descriptions, and bot responses. By uploading content, you grant IH Flow a limited license to store, process, and display that content solely for the purpose of providing the Service.
+
+9. Limitation of Liability
+To the maximum extent permitted by law, IH Flow shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or goodwill, arising from your use of or inability to use the Service.
+
+10. Disclaimer of Warranties
+The Service is provided on an "as is" and "as available" basis without warranties of any kind, either express or implied. We do not warrant that the Service will be uninterrupted, error-free, or completely secure.
+
+11. Termination
+We reserve the right to suspend or terminate your account at our sole discretion if you violate these Terms. You may cancel your account at any time through your account settings. Upon termination, your right to use the Service will immediately cease.
+
+12. Governing Law
+These Terms shall be governed by and construed in accordance with the laws of Algeria. Any disputes arising from these Terms shall be subject to the exclusive jurisdiction of the courts of Algeria.
+
+13. Changes to Terms
+We reserve the right to modify these Terms at any time. We will provide notice of significant changes by posting the updated Terms on our website. Your continued use of the Service after changes constitutes acceptance of the new Terms.
+
+14. Contact
+For questions about these Terms, please contact us:
+support@ihflow.com  |  www.ihflow.com
+
+Privacy Policy
+Last updated: March 2026
+
+1. Information We Collect
+We collect the following types of information when you use IH Flow:
+
+Account information: Name, email address, and username provided during registration.
+Instagram account data: Account identifiers and tokens required to operate the DM automation.
+Messages and automation data: DM templates, bot responses, and conversation logs.
+Product catalog data: Product names, images, prices, and descriptions you upload.
+Usage analytics: How you interact with our platform, feature usage, and performance metrics.
+Cookies: Session tokens and preference data stored in your browser.
+2. How We Use Your Data
+Provide and operate the IH Flow service.
+Improve AI automation accuracy and bot performance.
+Process subscription payments and manage billing.
+Respond to customer support requests.
+Detect and prevent security threats and fraudulent activity.
+3. Third-Party Services
+IH Flow integrates with third-party services necessary to deliver the platform:
+
+Meta / Instagram API: Required for DM automation functionality.
+Payment providers: For secure subscription billing.
+AI providers: To power bot response generation.
+Cloud hosting: Infrastructure and data storage.
+These services have their own privacy policies and data practices.
+
+4. Data Security
+We implement industry-standard security measures including encryption in transit and at rest, access controls, and regular security audits to protect your data. No system is completely secure, and we cannot guarantee absolute data security.
+
+5. Data Retention
+We retain your data for as long as your account is active or as needed to provide services. If you delete your account, we will remove your personal data within 30 days, except where retention is required by law.
+
+6. Your Rights
+You have the right to:
+
+Access: Request a copy of the personal data we hold about you.
+Correction: Request correction of inaccurate or incomplete data.
+Deletion: Request deletion of your personal data (right to be forgotten).
+Portability: Receive your data in a structured, machine-readable format.
+To exercise any of these rights, contact us at support@ihflow.com.
+
+7. Changes to This Policy
+We may update this Privacy Policy periodically. We will notify you of significant changes by posting the updated policy on our platform. Continued use of the Service after changes constitutes acceptance.
+
+8. Contact
+For privacy-related questions:
+support@ihflow.com  |  www.ihflow.com
+
+Cookie Policy
+Last updated: March 2026
+
+1. What Are Cookies?
+Cookies are small text files placed on your device when you visit a website. They allow the website to remember your preferences, keep you logged in, and understand how you use the service.
+
+2. How IH Flow Uses Cookies
+IH Flow uses cookies for the following purposes:
+
+3. Authentication Cookies
+These cookies are essential for keeping you signed in to your IH Flow account. They store your session token and are required for the platform to function. Without these cookies, you would need to log in on every page visit.
+
+4. Security Cookies
+Security cookies help us detect and prevent fraudulent activity, protect your account from unauthorized access, and enforce our Terms of Service. These cookies are strictly necessary and cannot be disabled.
+
+5. Analytics Cookies
+We use analytics cookies to understand how users interact with IH Flow — which features are used most, where users encounter issues, and how to improve the platform. This data is aggregated and anonymized.
+
+6. Third-Party Cookies
+Some third-party services integrated with IH Flow (such as payment providers and analytics tools) may also set cookies on your device. These are governed by their respective cookie and privacy policies.
+
+7. Managing Cookies
+You can manage or disable cookies through your browser settings. Note that disabling essential cookies may prevent IH Flow from functioning correctly. Common browser cookie settings:
+
+Chrome: Settings → Privacy and security → Cookies
+Firefox: Preferences → Privacy & Security
+Safari: Preferences → Privacy
+Edge: Settings → Cookies and site permissions
+8. Policy Updates
+We may update this Cookie Policy from time to time. Changes will be posted on this page with an updated revision date.
+
+9. Contact
+For questions about our use of cookies:
+support@ihflow.com  |  www.ihflow.com
