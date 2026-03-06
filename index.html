@@ -5429,7 +5429,7 @@ function hideAllViews(){
   views.forEach(id => {
     const el = document.getElementById(id);
     if(el){
-      if(id === "welcomeView" || id === "productsView" || id === "ordersView" || id === "accountView") el.style.display = "none";
+      if(id === "welcomeView" || id === "productsView" || id === "ordersView" || id === "accountView" || id === "tosView" || id === "privacyView" || id === "cookieView") el.style.display = "none";
       else el.classList.remove("show");
     }
   });
