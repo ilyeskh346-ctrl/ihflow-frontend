@@ -2672,12 +2672,6 @@ Log Out
 <datalist id="activityTypeList">
 <option value="Car">
 <option value="E-commerce">
-<option value="Services">
-<option value="Restaurant">
-<option value="Retail">
-<option value="Health & Wellness">
-<option value="Education">
-<option value="Real Estate">
 </datalist>
 </div>
 <div>
@@ -8114,15 +8108,9 @@ window.openBot = async function(botId){
         <label>${t('activityType')}</label>
         <input id="editActivityType" value="${data.activity_type || ''}" list="editActivityTypeList">
         <datalist id="editActivityTypeList">
-          <option value="Car">
+    <option value="Car">
     <option value="E-commerce">
-          <option value="Services">
-          <option value="Restaurant">
-          <option value="Retail">
-          <option value="Health & Wellness">
-          <option value="Education">
-          <option value="Real Estate">
-        </datalist>
+    </datalist>
       </div>
       <div class="editor-section">
         <label>${t('phoneNumber')}</label>
