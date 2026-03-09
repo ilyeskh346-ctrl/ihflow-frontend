@@ -21,6 +21,8 @@ A static single-page landing website for IH Flow, an Instagram DM automation pla
 - **Terms of Service**: Signup form requires checkbox acceptance before account creation; ToS modal with full 14-section text; terms_accepted + terms_accepted_at stored in Supabase user metadata
 - **Legal section in dashboard**: Sidebar shows Legal submenu under Orders with three pages: Terms of Service, Privacy Policy, Cookie Policy — each a full professional SaaS legal page
 - **Internationalization**: EN / AR / FR with 340+ translation keys covering all dashboard UI text (Overview, Total Orders, Today's Messages, Account Center, Profile, Subscription & Billing, Security, Orders table headers, etc.)
-- **RTL layout**: Full Arabic RTL support — sidebar flips to right, `dash-wrap` uses `margin-right:240px` in RTL mode, inputs/modals all respect direction, sidebar items reflect row order
-- **Dynamic table headers**: Orders table headers re-translate when language is switched (uses `t()` function and `currentIsCarMode` global to re-render on language change)
+- **RTL layout**: Full Arabic RTL support — sidebar stays LEFT in all languages, text direction flips RTL, inputs/modals/canvas all respect direction; `[dir="rtl"] .sidebar{left:0;right:auto}` keeps layout intact
+- **Dynamic table headers**: Orders table headers re-translate when language is switched (uses `t()` function and `currentActiveColumns` global to re-render on language change)
+- **Smart Orders columns**: `ORDER_COLUMNS` array + `computeActiveColumns(orders)` auto-hide any column that is NULL across all visible orders; always shows: customer_name, phone_number, status; optional: state, address, product_name, quantity, size, color, motor_type, details (jsonb)
+- **FAQs page**: Full CRUD dashboard page — Supabase `faqs` table (id, bot_id, question, answer, created_at); sidebar item with question mark icon; bot-selector dropdown; add/edit modal; delete with confirm; `loadFaqs`, `filterFaqsByBot`, `renderFaqs`, `openFaqModal`, `closeFaqModal`, `saveFaq`, `deleteFaq`, `escHtml` functions
 - **Supabase**: `https://muhxkvtniuinrspwhzhn.supabase.co`
