@@ -7969,8 +7969,8 @@ async function handleForgotPassword(event){
   msg.textContent = "";
   
   try {
-    const baseUrl = window.location.href.split('?')[0].split('#')[0];
-    const redirectUrl = baseUrl + '?type=recovery';
+    const baseUrl = window.location.origin + window.location.pathname;
+    const redirectUrl = baseUrl;
     console.log("Recovery redirectTo:", redirectUrl);
     const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
       redirectTo: redirectUrl
