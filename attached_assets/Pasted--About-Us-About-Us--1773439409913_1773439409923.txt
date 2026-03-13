@@ -1,0 +1,81 @@
+أضف صفحة "About Us" في الداشبورد بنفس تصميم باقي الصفحات.
+
+**في السايدبار:**
+أضف رابط "About Us" في القائمة مثل باقي الصفحات.
+
+**محتوى الصفحة بثلاث لغات (EN / FR / AR):**
+
+---
+
+English:
+About IH Flow
+
+IH Flow is an Instagram DM automation platform owned by and operated 
+under Anis Restaurant Project. Born from a real business need, 
+IH Flow was built to solve a simple but powerful problem: 
+how to handle hundreds of customer conversations on Instagram 
+without losing time or missing a single order.
+
+Our platform empowers businesses of all sizes — from local stores 
+to growing e-commerce brands — to automate their Instagram DMs, 
+answer frequently asked questions instantly, and capture orders 
+automatically through smart chatbot technology.
+
+At IH Flow, we believe that every business deserves a tool that 
+works for them 24/7, even when they're offline. Our mission is 
+to make automation simple, affordable, and accessible for everyone.
+
+IH Flow — Automate your conversations. Grow your business.
+
+---
+
+Français:
+À propos d'IH Flow
+
+IH Flow est une plateforme d'automatisation des messages directs 
+Instagram, détenue et exploitée dans le cadre du Projet Restaurant Anis.
+Née d'un besoin réel, IH Flow a été conçue pour résoudre un problème 
+simple mais puissant : comment gérer des centaines de conversations 
+clients sur Instagram sans perdre de temps ni manquer une seule commande.
+
+Notre plateforme permet aux entreprises de toutes tailles — des 
+boutiques locales aux marques e-commerce en pleine croissance — 
+d'automatiser leurs DM Instagram, de répondre instantanément aux 
+questions fréquentes et de capturer automatiquement les commandes 
+grâce à une technologie de chatbot intelligente.
+
+Chez IH Flow, nous croyons que chaque entreprise mérite un outil 
+qui travaille pour elle 24h/24 et 7j/7, même hors ligne. Notre mission 
+est de rendre l'automatisation simple, abordable et accessible à tous.
+
+IH Flow — Automatisez vos conversations. Développez votre business.
+
+---
+
+العربية:
+عن IH Flow
+
+IH Flow هي منصة لأتمتة رسائل Instagram المباشرة، مملوكة وتابعة 
+لمشروع مطعم أنيس. وُلدت من حاجة تجارية حقيقية، وتم بناؤها 
+لحل مشكلة بسيطة لكن قوية: كيفية إدارة مئات محادثات العملاء 
+على Instagram دون إضاعة الوقت أو تفويت طلب واحد.
+
+تمكّن منصتنا الشركات بجميع أحجامها — من المتاجر المحلية 
+إلى العلامات التجارية للتجارة الإلكترونية المتنامية — من أتمتة 
+رسائل Instagram المباشرة، والإجابة الفورية على الأسئلة الشائعة، 
+والتقاط الطلبات تلقائياً من خلال تقنية الشات بوت الذكية.
+
+في IH Flow، نؤمن بأن كل شركة تستحق أداة تعمل لصالحها 
+على مدار الساعة طوال أيام الأسبوع، حتى في وضع عدم الاتصال. 
+مهمتنا هي جعل الأتمتة بسيطة وبأسعار معقولة ومتاحة للجميع.
+
+IH Flow — أتمت محادثاتك. نمّ أعمالك.
+
+---
+
+**التصميم:**
+- نفس ستايل باقي صفحات الداشبورد
+- اللغة تتغير حسب اللغة المختارة في الموقع EN/FR/AR
+- إضافة About Us في السايدبار
+
+ابدأ بإضافة هذه الصفحة بدون تغيير أي شيء آخر.
