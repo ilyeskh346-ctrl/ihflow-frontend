@@ -7854,7 +7854,8 @@ async function loadWorkspaceStats(){
   
   const { data: bots } = await supabaseClient.from("bots").select("id").eq("user_id", user.id);
   const botCount = bots ? bots.length : 0;
-  document.getElementById("statBots").textContent = botCount;
+  const statBotsEl = document.getElementById("statBots");
+  if(statBotsEl) statBotsEl.textContent = botCount;
   
   // Count messages from all bots
   let totalMessages = 0;
@@ -7863,7 +7864,8 @@ async function loadWorkspaceStats(){
     const { count } = await supabaseClient.from("messages").select("*", { count: 'exact', head: true }).in("bot_id", botIds);
     totalMessages = count || 0;
   }
-  document.getElementById("statMessages").textContent = totalMessages;
+  const statMsgsEl = document.getElementById("statMessages");
+  if(statMsgsEl) statMsgsEl.textContent = totalMessages;
 }
 
 function toggleMobileSidebar(){
