@@ -1905,6 +1905,7 @@ table thead th{position:sticky;top:0;z-index:1;}
 }
 
 </style>
+<style>.footer-link{color:var(--text);font-size:14px;font-weight:500;text-decoration:none;opacity:0.8;transition:opacity 0.2s,color 0.2s;padding:4px 0;}.footer-link:hover{opacity:1;color:var(--primary);}.footer-sep{color:var(--border);font-size:16px;margin:0 6px;user-select:none;}</style>
 </head>
 <body>
 <div class="toast-container" id="toastContainer"></div>
@@ -1976,16 +1977,15 @@ table thead th{position:sticky;top:0;z-index:1;}
 </section>
 
 <footer style="border-top:1px solid var(--border);padding:32px 24px;text-align:center;background:var(--bg-secondary);">
-<style>.footer-link{color:var(--text);font-size:14px;font-weight:500;text-decoration:none;opacity:0.8;transition:opacity 0.2s,color 0.2s;padding:4px 0;}.footer-link:hover{opacity:1;color:var(--primary);}.footer-sep{color:var(--border);font-size:16px;margin:0 6px;user-select:none;}</style>
 <div style="max-width:1100px;margin:0 auto;">
 <div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px;margin-bottom:16px;">
-<a href="#" onclick="openModal(aboutModal);return false;" class="footer-link" data-i18n="aboutUs">About Us</a>
+<a href="#" onclick="openModal(document.getElementById('aboutModal'));return false;" class="footer-link" data-i18n="aboutUs">About Us</a>
 <span class="footer-sep">|</span>
-<a href="#" onclick="openModal(tosModal);return false;" class="footer-link" data-i18n="termsOfService">Terms of Service</a>
+<a href="#" onclick="openModal(document.getElementById('tosModal'));return false;" class="footer-link" data-i18n="termsOfService">Terms of Service</a>
 <span class="footer-sep">|</span>
-<a href="#" onclick="openModal(privacyModal);return false;" class="footer-link" data-i18n="privacyPolicy">Privacy Policy</a>
+<a href="#" onclick="openModal(document.getElementById('privacyModal'));return false;" class="footer-link" data-i18n="privacyPolicy">Privacy Policy</a>
 <span class="footer-sep">|</span>
-<a href="#" onclick="openModal(cookieModal);return false;" class="footer-link" data-i18n="cookiePolicy">Cookie Policy</a>
+<a href="#" onclick="openModal(document.getElementById('cookieModal'));return false;" class="footer-link" data-i18n="cookiePolicy">Cookie Policy</a>
 </div>
 <p style="color:var(--muted);font-size:12px;margin:0;">&copy; 2026 IH Flow. All rights reserved.</p>
 </div>
@@ -2884,7 +2884,7 @@ Log Out
 <div style="display:flex;align-items:flex-start;gap:10px;margin:12px 0 4px;font-size:13.5px;color:var(--muted);">
 <input type="checkbox" id="termsCheckbox" style="margin-top:3px;accent-color:var(--primary);width:15px;height:15px;flex-shrink:0;">
 <label for="termsCheckbox" id="termsCheckboxLabel" style="cursor:pointer;line-height:1.5;">
-  <span data-i18n="agreeToTerms">I agree to the</span> <a href="#" id="tosLink" style="color:var(--primary);text-decoration:underline;font-weight:500;" data-i18n="termsOfService">Terms of Service</a> <span>&amp;</span> <a href="#" onclick="openModal(privacyModal);return false;" style="color:var(--primary);text-decoration:underline;font-weight:500;" data-i18n="privacyPolicy">Privacy Policy</a>
+  <span data-i18n="agreeToTerms">I agree to the</span> <a href="#" id="tosLink" style="color:var(--primary);text-decoration:underline;font-weight:500;" data-i18n="termsOfService">Terms of Service</a> <span>&amp;</span> <a href="#" onclick="openModal(document.getElementById('privacyModal'));return false;" style="color:var(--primary);text-decoration:underline;font-weight:500;" data-i18n="privacyPolicy">Privacy Policy</a>
 </label>
 </div>
 <button type="submit" id="registerSubmitBtn" data-i18n="signUp" disabled style="opacity:0.5;cursor:not-allowed;">Sign Up</button>
