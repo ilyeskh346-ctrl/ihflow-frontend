@@ -1,0 +1,41 @@
+1. Acceptance of Terms
+By accessing or using IH Flow ("Service"), operated by IH Flow ("Company", "we", "us"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our Service.
+2. Description of Service
+IH Flow is a SaaS platform that allows e-commerce businesses and Instagram creators to automate Instagram DM responses, connect product catalogs, and manage customer interactions through an AI-powered bot interface.
+3. Account Registration
+To use IH Flow you must create an account. You agree to:
+Provide accurate and complete information during registration.
+Keep your login credentials secure and confidential.
+Notify us immediately of any unauthorized access to your account.
+Be responsible for all activity that occurs under your account.
+
+4. Instagram & Meta Platform Compliance
+You agree to use IH Flow in full compliance with Meta's Platform Terms and Instagram's Community Guidelines. You are solely responsible for ensuring your use of automated messaging complies with Meta's policies. IH Flow is not responsible for any suspension or restriction of your Instagram account resulting from your use of our platform.
+5. Acceptable Use
+You agree NOT to use IH Flow to:
+Send spam or unsolicited messages.
+Harass, threaten, or harm other users or customers.
+Distribute illegal, fraudulent, or misleading content.
+Violate any applicable local, national, or international law or regulation.
+Attempt to gain unauthorized access to our systems or other users' accounts.
+
+6. Subscription & Payments
+IH Flow offers subscription plans. By subscribing, you agree to pay the applicable fees. Subscriptions automatically renew unless cancelled before the renewal date. We reserve the right to change pricing with reasonable notice. Refunds are handled on a case-by-case basis at our discretion.
+7. Intellectual Property
+All content, features, and functionality of IH Flow — including but not limited to software, design, text, and logos — are owned by IH Flow and are protected by applicable intellectual property laws. You are granted a limited, non-exclusive, non-transferable license to use the Service for your business purposes.
+8. User Content
+You retain ownership of all content you upload to IH Flow, including product images, descriptions, and bot responses. By uploading content, you grant IH Flow a limited license to store, process, and display that content solely for the purpose of providing the Service.
+9. Limitation of Liability
+To the maximum extent permitted by law, IH Flow shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or goodwill, arising from your use of or inability to use the Service.
+10. Disclaimer of Warranties
+The Service is provided on an "as is" and "as available" basis without warranties of any kind, either express or implied. We do not warrant that the Service will be uninterrupted, error-free, or completely secure.
+11. Termination
+We reserve the right to suspend or terminate your account at our sole discretion if you violate these Terms. You may cancel your account at any time through your account settings. Upon termination, your right to use the Service will immediately cease.
+12. Governing Law
+These Terms shall be governed by and construed in accordance with the laws of Algeria. Any disputes arising from these Terms shall be subject to the exclusive jurisdiction of the courts of Algeria.
+13. Changes to Terms
+We reserve the right to modify these Terms at any time. We will provide notice of significant changes by posting the updated Terms on our website. Your continued use of the Service after changes constitutes acceptance of the new Terms.
+14. Contact
+For questions about these Terms, please contact us:
+Email: support@ihflow.com
+Website: https://www.ihflow.com
