@@ -1930,9 +1930,9 @@ table thead th{position:sticky;top:0;z-index:1;}
 
 </div>
 <div class="nav-right">
-<a class="cta primary" href="#" onclick="openModal(registerModal); return false;">Get Started</a>
-<a class="cta" href="#" onclick="openModal(registerModal); return false;" style="background:transparent;border:1px solid var(--primary);color:var(--primary);">Sign Up</a>
-<button onclick="openModal(loginModal)">Login</button>
+<a class="cta primary" href="#" onclick="openModal(document.getElementById('registerModal')); return false;">Get Started</a>
+<a class="cta" href="#" onclick="openModal(document.getElementById('registerModal')); return false;" style="background:transparent;border:1px solid var(--primary);color:var(--primary);">Sign Up</a>
+<button onclick="openModal(document.getElementById('loginModal'))">Login</button>
 </div>
 </div>
 </header>
@@ -1945,7 +1945,7 @@ table thead th{position:sticky;top:0;z-index:1;}
 <h1>Turn Instagram conversations into <span class="gradient-text">instant replies</span></h1>
 <p>Reply to DMs, send links, and capture leads automatically. Built for creators and brands who want results, not complexity.</p>
 <div class="hero-cta">
-<a href="#" class="btn-primary" onclick="openModal(registerModal); return false;">Get Started Free</a>
+<a href="#" class="btn-primary" onclick="openModal(document.getElementById('registerModal')); return false;">Get Started Free</a>
 </div>
 </div>
 <div class="phone-mockup">
@@ -4460,7 +4460,7 @@ function applyTranslations(){
     if(passInputs[0]) passInputs[0].placeholder = t('password');
     if(passInputs[1]) passInputs[1].placeholder = t('confirmPassword');
     if(submitBtn) submitBtn.textContent = t('createAccount');
-    if(switchText) switchText.innerHTML = t('alreadyHaveAccount') + ' <a href="#" onclick="openModal(loginModal); return false;">' + t('signIn') + '</a>';
+    if(switchText) switchText.innerHTML = t('alreadyHaveAccount') + ' <a href="#" onclick="openModal(document.getElementById('loginModal')); return false;">' + t('signIn') + '</a>';
   }
   
   const loginModalEl = document.getElementById('loginModal');
@@ -4475,7 +4475,7 @@ function applyTranslations(){
     if(emailInput) emailInput.placeholder = t('email');
     if(passInput) passInput.placeholder = t('password');
     if(submitBtn) submitBtn.textContent = t('signIn');
-    if(switchText) switchText.innerHTML = t('dontHaveAccount') + ' <a href="#" onclick="openModal(registerModal); return false;">' + t('signUp') + '</a>';
+    if(switchText) switchText.innerHTML = t('dontHaveAccount') + ' <a href="#" onclick="openModal(document.getElementById('registerModal')); return false;">' + t('signUp') + '</a>';
   }
   
   // Update dashboard elements
