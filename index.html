@@ -2017,6 +2017,10 @@ table thead th{position:sticky;top:0;z-index:1;}
 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
 <span data-i18n="faqs">FAQs</span>
 </div>
+<div class="sidebar-item" id="sidebarAbout" onclick="navigateToView('about')">
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+<span data-i18n="aboutUs">About Us</span>
+</div>
 <div class="legal-group" id="legalGroup">
 <div class="legal-group-label" data-i18n="legal">Legal</div>
 <div class="sidebar-subitem" id="sidebarTos" onclick="navigateToView('tos')">
@@ -2299,6 +2303,29 @@ table thead th{position:sticky;top:0;z-index:1;}
 </tbody>
 </table>
 </div>
+</div>
+</div>
+
+<!-- About Us View -->
+<div id="aboutView" class="stats-view" style="display:none;">
+<div style="margin-bottom:28px;">
+<h2 data-i18n="aboutUs">About Us</h2>
+</div>
+<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:36px;max-width:760px;">
+<div style="display:flex;align-items:center;gap:18px;margin-bottom:28px;">
+<div style="width:56px;height:56px;border-radius:14px;background:var(--gradient);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+</div>
+<div>
+<h3 style="margin:0;font-size:20px;font-weight:700;">IH Flow</h3>
+<p style="margin:4px 0 0;color:var(--muted);font-size:14px;">Instagram DM Automation Platform</p>
+</div>
+</div>
+<h4 data-i18n="aboutTitle" style="margin:0 0 18px;font-size:17px;font-weight:700;color:var(--text);"></h4>
+<p data-i18n="aboutPara1" style="color:var(--text);font-size:15px;line-height:1.9;margin-bottom:18px;"></p>
+<p data-i18n="aboutPara2" style="color:var(--text);font-size:15px;line-height:1.9;margin-bottom:18px;"></p>
+<p data-i18n="aboutPara3" style="color:var(--text);font-size:15px;line-height:1.9;margin-bottom:24px;"></p>
+<p data-i18n="aboutTagline" style="font-size:15px;font-weight:600;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:0;"></p>
 </div>
 </div>
 
@@ -3082,6 +3109,12 @@ const translations = {
     faqSaved: "FAQ saved",
     faqDeleted: "FAQ deleted",
     confirmDeleteFaq: "Delete this FAQ?",
+    aboutUs: "About Us",
+    aboutTitle: "About IH Flow",
+    aboutPara1: "IH Flow is an Instagram DM automation platform owned by and operated under Anis Restaurant Project. Born from a real business need, IH Flow was built to solve a simple but powerful problem: how to handle hundreds of customer conversations on Instagram without losing time or missing a single order.",
+    aboutPara2: "Our platform empowers businesses of all sizes — from local stores to growing e-commerce brands — to automate their Instagram DMs, answer frequently asked questions instantly, and capture orders automatically through smart chatbot technology.",
+    aboutPara3: "At IH Flow, we believe that every business deserves a tool that works for them 24/7, even when they're offline. Our mission is to make automation simple, affordable, and accessible for everyone.",
+    aboutTagline: "IH Flow — Automate your conversations. Grow your business.",
     detailsCol: "Details",
     selectBotFaqs: "Select a bot to view FAQs",
     saveFaq: "Save FAQ",
@@ -3493,6 +3526,12 @@ const translations = {
     faqSaved: "تم حفظ السؤال",
     faqDeleted: "تم حذف السؤال",
     confirmDeleteFaq: "حذف هذا السؤال؟",
+    aboutUs: "من نحن",
+    aboutTitle: "عن IH Flow",
+    aboutPara1: "IH Flow هي منصة لأتمتة رسائل Instagram المباشرة، مملوكة وتابعة لمشروع مطعم أنيس. وُلدت من حاجة تجارية حقيقية، وتم بناؤها لحل مشكلة بسيطة لكن قوية: كيفية إدارة مئات محادثات العملاء على Instagram دون إضاعة الوقت أو تفويت طلب واحد.",
+    aboutPara2: "تمكّن منصتنا الشركات بجميع أحجامها — من المتاجر المحلية إلى العلامات التجارية للتجارة الإلكترونية المتنامية — من أتمتة رسائل Instagram المباشرة، والإجابة الفورية على الأسئلة الشائعة، والتقاط الطلبات تلقائياً من خلال تقنية الشات بوت الذكية.",
+    aboutPara3: "في IH Flow، نؤمن بأن كل شركة تستحق أداة تعمل لصالحها على مدار الساعة طوال أيام الأسبوع، حتى في وضع عدم الاتصال. مهمتنا هي جعل الأتمتة بسيطة وبأسعار معقولة ومتاحة للجميع.",
+    aboutTagline: "IH Flow — أتمت محادثاتك. نمّ أعمالك.",
     detailsCol: "تفاصيل",
     selectBotFaqs: "اختر بوتاً لعرض الأسئلة",
     saveFaq: "حفظ السؤال",
@@ -3880,6 +3919,12 @@ const translations = {
     faqSaved: "FAQ sauvegardée",
     faqDeleted: "FAQ supprimée",
     confirmDeleteFaq: "Supprimer cette FAQ?",
+    aboutUs: "À propos",
+    aboutTitle: "À propos d'IH Flow",
+    aboutPara1: "IH Flow est une plateforme d'automatisation des messages directs Instagram, détenue et exploitée dans le cadre du Projet Restaurant Anis. Née d'un besoin réel, IH Flow a été conçue pour résoudre un problème simple mais puissant : comment gérer des centaines de conversations clients sur Instagram sans perdre de temps ni manquer une seule commande.",
+    aboutPara2: "Notre plateforme permet aux entreprises de toutes tailles — des boutiques locales aux marques e-commerce en pleine croissance — d'automatiser leurs DM Instagram, de répondre instantanément aux questions fréquentes et de capturer automatiquement les commandes grâce à une technologie de chatbot intelligente.",
+    aboutPara3: "Chez IH Flow, nous croyons que chaque entreprise mérite un outil qui travaille pour elle 24h/24 et 7j/7, même hors ligne. Notre mission est de rendre l'automatisation simple, abordable et accessible à tous.",
+    aboutTagline: "IH Flow — Automatisez vos conversations. Développez votre business.",
     detailsCol: "Détails",
     selectBotFaqs: "Sélectionnez un bot pour voir les FAQs",
     saveFaq: "Enregistrer FAQ",
@@ -5581,6 +5626,13 @@ function navigateToView(viewName, botId = null, addToHistory = true){
       if(addToHistory) pushToHistory('faqs');
       currentView = 'faqs';
       break;
+    case 'about':
+      hideAllViews();
+      document.getElementById('aboutView').style.display = 'block';
+      setActiveSidebar(document.getElementById('sidebarAbout'));
+      if(addToHistory) pushToHistory('about');
+      currentView = 'about';
+      break;
     case 'botEditor':
       if(botId){
         openBot(botId);
@@ -5620,12 +5672,12 @@ function navigateToView(viewName, botId = null, addToHistory = true){
 // === Hide All Views Helper ===
 function hideAllViews(){
   if(ordersRealtimeChannel){ supabaseClient.removeChannel(ordersRealtimeChannel); ordersRealtimeChannel = null; }
-  const views = ["welcomeView", "statsView", "autoRepliesView", "botsView", "botEditorView", "templatesView", "dynamicVarsView", "nicheView", "nicheTemplatesView", "productsView", "ordersView", "faqsView", "accountView", "tosView", "privacyView", "cookieView"];
+  const views = ["welcomeView", "statsView", "autoRepliesView", "botsView", "botEditorView", "templatesView", "dynamicVarsView", "nicheView", "nicheTemplatesView", "productsView", "ordersView", "faqsView", "aboutView", "accountView", "tosView", "privacyView", "cookieView"];
   document.querySelectorAll('.sidebar-subitem').forEach(el => el.classList.remove('active'));
   views.forEach(id => {
     const el = document.getElementById(id);
     if(el){
-      if(id === "welcomeView" || id === "productsView" || id === "ordersView" || id === "faqsView" || id === "accountView" || id === "tosView" || id === "privacyView" || id === "cookieView") el.style.display = "none";
+      if(id === "welcomeView" || id === "productsView" || id === "ordersView" || id === "faqsView" || id === "aboutView" || id === "accountView" || id === "tosView" || id === "privacyView" || id === "cookieView") el.style.display = "none";
       else el.classList.remove("show");
     }
   });
@@ -7802,7 +7854,8 @@ async function loadWorkspaceStats(){
   
   const { data: bots } = await supabaseClient.from("bots").select("id").eq("user_id", user.id);
   const botCount = bots ? bots.length : 0;
-  document.getElementById("statBots").textContent = botCount;
+  const statBotsEl = document.getElementById("statBots");
+  if(statBotsEl) statBotsEl.textContent = botCount;
   
   // Count messages from all bots
   let totalMessages = 0;
@@ -7811,7 +7864,8 @@ async function loadWorkspaceStats(){
     const { count } = await supabaseClient.from("messages").select("*", { count: 'exact', head: true }).in("bot_id", botIds);
     totalMessages = count || 0;
   }
-  document.getElementById("statMessages").textContent = totalMessages;
+  const statMsgsEl = document.getElementById("statMessages");
+  if(statMsgsEl) statMsgsEl.textContent = totalMessages;
 }
 
 function toggleMobileSidebar(){
