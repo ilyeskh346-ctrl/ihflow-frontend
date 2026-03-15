@@ -1975,13 +1975,17 @@ table thead th{position:sticky;top:0;z-index:1;}
 </div>
 </section>
 
-<footer style="border-top:1px solid var(--border);padding:28px 24px;text-align:center;background:var(--bg-secondary);">
+<footer style="border-top:1px solid var(--border);padding:32px 24px;text-align:center;background:var(--bg-secondary);">
+<style>.footer-link{color:var(--text);font-size:14px;font-weight:500;text-decoration:none;opacity:0.8;transition:opacity 0.2s,color 0.2s;padding:4px 0;}.footer-link:hover{opacity:1;color:var(--primary);}.footer-sep{color:var(--border);font-size:16px;margin:0 6px;user-select:none;}</style>
 <div style="max-width:1100px;margin:0 auto;">
-<div style="display:flex;gap:28px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;">
-<a href="#" onclick="openModal(aboutModal);return false;" style="color:var(--muted);font-size:13px;text-decoration:none;" data-i18n="aboutUs">About Us</a>
-<a href="#" onclick="openModal(tosModal);return false;" style="color:var(--muted);font-size:13px;text-decoration:none;" data-i18n="termsOfService">Terms of Service</a>
-<a href="#" onclick="openModal(privacyModal);return false;" style="color:var(--muted);font-size:13px;text-decoration:none;" data-i18n="privacyPolicy">Privacy Policy</a>
-<a href="#" onclick="openModal(cookieModal);return false;" style="color:var(--muted);font-size:13px;text-decoration:none;" data-i18n="cookiePolicy">Cookie Policy</a>
+<div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px;margin-bottom:16px;">
+<a href="#" onclick="openModal(aboutModal);return false;" class="footer-link" data-i18n="aboutUs">About Us</a>
+<span class="footer-sep">|</span>
+<a href="#" onclick="openModal(tosModal);return false;" class="footer-link" data-i18n="termsOfService">Terms of Service</a>
+<span class="footer-sep">|</span>
+<a href="#" onclick="openModal(privacyModal);return false;" class="footer-link" data-i18n="privacyPolicy">Privacy Policy</a>
+<span class="footer-sep">|</span>
+<a href="#" onclick="openModal(cookieModal);return false;" class="footer-link" data-i18n="cookiePolicy">Cookie Policy</a>
 </div>
 <p style="color:var(--muted);font-size:12px;margin:0;">&copy; 2026 IH Flow. All rights reserved.</p>
 </div>
@@ -2289,11 +2293,11 @@ table thead th{position:sticky;top:0;z-index:1;}
 <div style="display:flex;flex-direction:column;gap:14px;">
 <div>
 <label data-i18n="newPasswordLabel" style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">New Password</label>
-<input type="password" id="accNewPass" placeholder="Enter new password" style="width:100%;padding:10px 14px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;box-sizing:border-box;">
+<div style="position:relative;"><input type="password" id="accNewPass" placeholder="Enter new password" style="width:100%;padding:10px 40px 10px 14px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;box-sizing:border-box;"><button type="button" onclick="togglePass('accNewPass')" id="eye_accNewPass" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:0;display:flex;align-items:center;transition:color 0.2s;" title="Show/Hide password"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
 </div>
 <div>
 <label data-i18n="confirmNewPasswordLabel" style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Confirm New Password</label>
-<input type="password" id="accConfirmPass" placeholder="Confirm new password" style="width:100%;padding:10px 14px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;box-sizing:border-box;">
+<div style="position:relative;"><input type="password" id="accConfirmPass" placeholder="Confirm new password" style="width:100%;padding:10px 40px 10px 14px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;box-sizing:border-box;"><button type="button" onclick="togglePass('accConfirmPass')" id="eye_accConfirmPass" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:0;display:flex;align-items:center;transition:color 0.2s;" title="Show/Hide password"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
 </div>
 <button onclick="changePassword()" style="width:auto;padding:8px 20px;background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;border:none;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;" data-i18n="changePasswordBtn">Change Password</button>
 <p id="securityMsg" style="font-size:13px;text-align:center;margin:0;display:none;"></p>
@@ -2390,7 +2394,7 @@ Log Out
 <p style="color:var(--muted);font-size:13px;margin:0 0 24px 0;line-height:1.5;">All your bots, orders, profile data, and subscription will be permanently deleted.</p>
 <div style="display:flex;gap:12px;">
 <button onclick="closeAccountModal('deleteModal')" style="flex:1;padding:12px;background:var(--bg-secondary);border:1px solid var(--border);color:var(--text);border-radius:10px;font-weight:600;font-size:14px;cursor:pointer;">Cancel</button>
-<button onclick="confirmDeleteAccount()" style="flex:1;padding:12px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none;border-radius:10px;font-weight:600;font-size:14px;cursor:pointer;">Yes, Delete Everything</button>
+<button id="deleteAccountConfirmBtn" onclick="confirmDeleteAccount()" style="flex:1;padding:12px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none;border-radius:10px;font-weight:600;font-size:14px;cursor:pointer;">Yes, Delete Everything</button>
 </div>
 </div>
 </div>
@@ -2418,7 +2422,7 @@ Log Out
 <h2 data-i18n="welcomeBack">Welcome Back</h2>
 <form id="loginForm" onsubmit="handleLogin(event)">
 <input type="email" id="loginEmail" data-i18n="email" placeholder="Email" required>
-<input type="password" id="loginPassword" data-i18n="password" placeholder="Password" required>
+<div style="position:relative;"><input type="password" id="loginPassword" data-i18n="password" placeholder="Password" required style="padding-right:40px;"><button type="button" onclick="togglePass('loginPassword')" id="eye_loginPassword" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:0;display:flex;align-items:center;transition:color 0.2s;" title="Show/Hide password"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
 <p class="message" id="loginMsg"></p>
 <button type="submit" data-i18n="login">Login</button>
 </form>
@@ -2458,7 +2462,7 @@ Log Out
 <h2 style="margin:0 0 8px 0;" data-i18n="resetPassword">Reset Password</h2>
 </div>
 <form onsubmit="handleResetPassword(event)">
-<input type="password" id="resetNewPassword" placeholder="New Password" required style="width:100%;padding:14px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;margin-bottom:12px;box-sizing:border-box;" data-i18n="newPassword">
+<div style="position:relative;"><input type="password" id="resetNewPassword" placeholder="New Password" required style="width:100%;padding:14px 40px 14px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;margin-bottom:12px;box-sizing:border-box;" data-i18n="newPassword"><button type="button" onclick="togglePass('resetNewPassword')" id="eye_resetNewPassword" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:0;display:flex;align-items:center;transition:color 0.2s;" title="Show/Hide password"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
 <input type="password" id="resetConfirmPassword" placeholder="Confirm New Password" required style="width:100%;padding:14px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;margin-bottom:12px;box-sizing:border-box;" data-i18n="confirmNewPassword">
 <p class="message" id="resetMsg"></p>
 <button type="submit" style="width:100%;padding:14px;background:var(--gradient);border:none;border-radius:10px;color:#fff;font-weight:600;font-size:15px;cursor:pointer;" data-i18n="resetPassword">Reset Password</button>
@@ -2875,7 +2879,7 @@ Log Out
 <form id="registerForm" onsubmit="handleRegister(event)">
 <input type="text" id="regUsername" data-i18n="username" placeholder="Username" required>
 <input type="email" id="regEmail" data-i18n="email" placeholder="Email" required>
-<input type="password" id="regPassword" data-i18n="password" placeholder="Password" required>
+<div style="position:relative;"><input type="password" id="regPassword" data-i18n="password" placeholder="Password" required style="padding-right:40px;"><button type="button" onclick="togglePass('regPassword')" id="eye_regPassword" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:0;display:flex;align-items:center;transition:color 0.2s;" title="Show/Hide password"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
 <p class="message" id="regMsg"></p>
 <div style="display:flex;align-items:flex-start;gap:10px;margin:12px 0 4px;font-size:13.5px;color:var(--muted);">
 <input type="checkbox" id="termsCheckbox" style="margin-top:3px;accent-color:var(--primary);width:15px;height:15px;flex-shrink:0;">
@@ -6799,31 +6803,44 @@ async function confirmLogout(){
 
 async function confirmDeleteAccount(){
   closeAccountModal("deleteModal");
+  const delBtn = document.getElementById('deleteAccountConfirmBtn');
+  if(delBtn){ delBtn.disabled = true; delBtn.textContent = 'Deleting...'; }
   try {
     const { data: { user } } = await supabaseClient.auth.getUser();
     if(!user) return;
 
+    // Delete FAQs by user_id and by bot_id
+    await supabaseClient.from("faqs").delete().eq("user_id", user.id);
+
+    // Delete orders
+    await supabaseClient.from("orders").delete().eq("business_id", user.id);
+
+    // Delete bot-related data
     const { data: userBots } = await supabaseClient.from("bots").select("id").eq("user_id", user.id);
     const botIds = (userBots || []).map(b => b.id);
-
     if(botIds.length > 0){
       await supabaseClient.from("bot_prompt").delete().in("bot_id", botIds);
+      await supabaseClient.from("faqs").delete().in("bot_id", botIds);
     }
 
+    // Delete remaining user data
     await supabaseClient.from("instagram_connections").delete().eq("user_id", user.id);
-    await supabaseClient.from("orders").delete().eq("business_id", user.id);
     await supabaseClient.from("products").delete().eq("user_id", user.id);
     await supabaseClient.from("bots").delete().eq("user_id", user.id);
     await supabaseClient.from("profiles").delete().eq("user_id", user.id);
     await supabaseClient.from("subscriptions").delete().eq("user_id", user.id);
+
+    // Attempt to delete auth user via RPC
+    try { await supabaseClient.rpc('delete_user'); } catch(_){}
 
     await supabaseClient.auth.signOut();
     location.reload();
   } catch(e){
     console.error("Error deleting account:", e);
     showToast("error", t('error'), t('deleteAccountFailed') || "Failed to delete account. Please try again.");
+    if(delBtn){ delBtn.disabled = false; delBtn.textContent = 'Yes, Delete Everything'; }
   }
-}
+}}
 
 function upgradePlan(){
   alert("Upgrade plan feature coming soon! Contact support for plan changes.");
@@ -9049,6 +9066,18 @@ document.addEventListener('keydown', function(e) {
     }
   }
 });
+
+function togglePass(fieldId){
+  const inp = document.getElementById(fieldId);
+  const btn = document.getElementById('eye_' + fieldId);
+  if(!inp || !btn) return;
+  const isHidden = inp.type === 'password';
+  inp.type = isHidden ? 'text' : 'password';
+  btn.innerHTML = isHidden
+    ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+    : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+  btn.style.color = isHidden ? 'var(--text)' : 'var(--muted)';
+}
 </script>
 </body>
 </html>
