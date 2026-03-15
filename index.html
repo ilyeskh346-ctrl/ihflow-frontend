@@ -2418,7 +2418,7 @@ Log Out
 
 <div class="modal" id="loginModal">
 <div class="modal-content">
-<span class="close" onclick="closeModal(loginModal)">×</span>
+<span class="close" onclick="closeModal(document.getElementById('loginModal'))">×</span>
 <h2 data-i18n="welcomeBack">Welcome Back</h2>
 <form id="loginForm" onsubmit="handleLogin(event)">
 <input type="email" id="loginEmail" data-i18n="email" placeholder="Email" required>
@@ -2427,7 +2427,7 @@ Log Out
 <button type="submit" data-i18n="login">Login</button>
 </form>
 <p style="text-align:center;margin-top:12px;">
-<a href="#" onclick="event.preventDefault();closeModal(loginModal);openForgotPasswordModal();" style="color:var(--primary);font-size:13px;text-decoration:none;" data-i18n="forgotPassword">Forgot Password?</a>
+<a href="#" onclick="event.preventDefault();closeModal(document.getElementById('loginModal'));openForgotPasswordModal();" style="color:var(--primary);font-size:13px;text-decoration:none;" data-i18n="forgotPassword">Forgot Password?</a>
 </p>
 </div>
 </div>
@@ -2435,7 +2435,7 @@ Log Out
 <!-- Forgot Password Modal -->
 <div class="modal" id="forgotPasswordModal">
 <div class="modal-content" style="max-width:420px;">
-<span class="close" onclick="closeModal(forgotPasswordModal)">&times;</span>
+<span class="close" onclick="closeModal(document.getElementById('forgotPasswordModal'))">&times;</span>
 <div style="text-align:center;margin-bottom:20px;">
 <div style="width:60px;height:60px;background:var(--gradient-subtle);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
@@ -2454,7 +2454,7 @@ Log Out
 <!-- Reset Password Modal -->
 <div class="modal" id="resetPasswordModal">
 <div class="modal-content" style="max-width:420px;">
-<span class="close" onclick="closeModal(resetPasswordModal)">&times;</span>
+<span class="close" onclick="closeModal(document.getElementById('resetPasswordModal'))">&times;</span>
 <div style="text-align:center;margin-bottom:20px;">
 <div style="width:60px;height:60px;background:var(--gradient-subtle);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
@@ -2481,7 +2481,7 @@ Log Out
 <!-- Edit Product Modal -->
 <div class="modal" id="editProductModal">
 <div class="modal-content" style="max-width:500px;">
-<span class="close" onclick="closeModal(editProductModal)">&times;</span>
+<span class="close" onclick="closeModal(document.getElementById('editProductModal'))">&times;</span>
 <div style="text-align:center;margin-bottom:24px;">
 <div style="width:60px;height:60px;background:var(--gradient-subtle);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -2534,7 +2534,7 @@ Log Out
 </div>
 
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;">
-<button type="button" onclick="closeModal(editProductModal)" style="padding:14px;background:var(--bg-secondary);color:var(--text);border:1px solid var(--border);border-radius:10px;font-weight:600;cursor:pointer;" data-i18n="cancel">Cancel</button>
+<button type="button" onclick="closeModal(document.getElementById('editProductModal'))" style="padding:14px;background:var(--bg-secondary);color:var(--text);border:1px solid var(--border);border-radius:10px;font-weight:600;cursor:pointer;" data-i18n="cancel">Cancel</button>
 <button type="button" id="saveProductBtn" onclick="saveProductChanges()" style="padding:14px;background:var(--gradient);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer;" data-i18n="saveChanges">Save Changes</button>
 </div>
 </div>
@@ -2694,7 +2694,7 @@ Log Out
 <!-- Create Bot Modal -->
 <div class="modal" id="createBotModal">
 <div class="modal-content" style="width:95vw;max-width:1200px;max-height:95vh;overflow-y:auto;padding:60px;">
-<span class="close" onclick="closeModal(createBotModal); resetBotFormStep();">×</span>
+<span class="close" onclick="closeModal(document.getElementById('createBotModal')); resetBotFormStep();">×</span>
 
 <!-- Step Indicator -->
 <div style="display:flex;justify-content:center;gap:8px;margin-bottom:20px;">
@@ -2874,7 +2874,7 @@ Log Out
 
 <div class="modal" id="registerModal">
 <div class="modal-content">
-<span class="close" onclick="closeModal(registerModal)">×</span>
+<span class="close" onclick="closeModal(document.getElementById('registerModal'))">×</span>
 <h2 data-i18n="createAccount">Create Account</h2>
 <form id="registerForm" onsubmit="handleRegister(event)">
 <input type="text" id="regUsername" data-i18n="username" placeholder="Username" required>
@@ -2894,7 +2894,7 @@ Log Out
 
 <div class="modal" id="tosModal">
 <div class="modal-content" style="max-width:680px;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;">
-<span class="close" onclick="closeModal(tosModal)">×</span>
+<span class="close" onclick="closeModal(document.getElementById('tosModal'))">×</span>
 <h2 data-i18n="tosTitle" style="margin-bottom:16px;font-size:1.2rem;">IH Flow – Terms of Service</h2>
 <div style="overflow-y:auto;flex:1;padding-right:8px;font-size:13.5px;color:var(--muted);line-height:1.8;">
 <p><strong>1. Acceptance of Terms</strong><br>By accessing or using IH Flow (“Service”), operated by IH Flow (“Company”, “we”, “us”), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our Service.</p>
@@ -2917,7 +2917,7 @@ Log Out
 <!-- Privacy Policy Modal -->
 <div class="modal" id="privacyModal">
 <div class="modal-content" style="max-width:680px;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;">
-<span class="close" onclick="closeModal(privacyModal)">&times;</span>
+<span class="close" onclick="closeModal(document.getElementById('privacyModal'))">&times;</span>
 <h2 style="margin-bottom:16px;font-size:1.2rem;" data-i18n="privacyPolicy">Privacy Policy</h2>
 <div style="overflow-y:auto;flex:1;padding-right:8px;font-size:13.5px;color:var(--muted);line-height:1.8;">
 <p><strong>1. Introduction</strong><br>Welcome to IH Flow. We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, and share information when you use our platform at ihflow.com.</p>
@@ -2938,7 +2938,7 @@ Log Out
 <!-- Cookie Policy Modal -->
 <div class="modal" id="cookieModal">
 <div class="modal-content" style="max-width:680px;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;">
-<span class="close" onclick="closeModal(cookieModal)">&times;</span>
+<span class="close" onclick="closeModal(document.getElementById('cookieModal'))">&times;</span>
 <h2 style="margin-bottom:16px;font-size:1.2rem;" data-i18n="cookiePolicy">Cookie Policy</h2>
 <div style="overflow-y:auto;flex:1;padding-right:8px;font-size:13.5px;color:var(--muted);line-height:1.8;">
 <p><strong>1. What Are Cookies?</strong><br>Cookies are small text files placed on your device when you visit a website. They allow the website to remember your preferences, keep you logged in, and understand how you use the service.</p>
@@ -2957,7 +2957,7 @@ Log Out
 <!-- About Us Modal -->
 <div class="modal" id="aboutModal">
 <div class="modal-content" style="max-width:660px;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;">
-<span class="close" onclick="closeModal(aboutModal)">&times;</span>
+<span class="close" onclick="closeModal(document.getElementById('aboutModal'))">&times;</span>
 <h2 style="margin-bottom:20px;font-size:1.2rem;" data-i18n="aboutUs">About Us</h2>
 <div style="overflow-y:auto;flex:1;padding-right:8px;">
 <div style="display:flex;align-items:center;gap:14px;margin-bottom:22px;">
