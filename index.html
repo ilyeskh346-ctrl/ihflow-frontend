@@ -2033,6 +2033,10 @@ table thead th{position:sticky;top:0;z-index:1;}
 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
 <span data-i18n="faqs">FAQs</span>
 </div>
+<div class="sidebar-item" id="sidebarIgConnected" onclick="navigateToView('igConnected')">
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+<span data-i18n="igConnectedPage">Instagram</span>
+</div>
 </nav>
 <div class="sidebar-footer">
 <div id="igSidebarConnect" class="sidebar-item instagram-connect" onclick="openInstagramWebhook()" style="display:none;">
@@ -2215,6 +2219,49 @@ table thead th{position:sticky;top:0;z-index:1;}
 </thead>
 <tbody id="faqsContainer">
 <tr><td colspan="4" style="padding:40px;text-align:center;color:var(--muted);"><p data-i18n="selectBotFaqs">Select a bot to view FAQs</p></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- Instagram Connected View -->
+<div id="igConnectedView" class="stats-view" style="display:none;">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;flex-wrap:wrap;gap:16px;">
+<div>
+<h2 style="margin-bottom:6px;font-size:26px;font-weight:800;letter-spacing:-0.5px;"><span style="background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;" data-i18n="igConnectedPage">Instagram Connected</span></h2>
+<p style="color:var(--muted);font-size:14px;" data-i18n="igConnectedDesc">Your Instagram account details and conversations</p>
+</div>
+</div>
+<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:24px;position:relative;overflow:hidden;">
+<div style="position:absolute;top:0;right:0;width:180px;height:180px;background:radial-gradient(circle at top right,rgba(99,102,241,0.08),transparent);border-radius:0 0 0 100%;pointer-events:none;"></div>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+<div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,rgba(225,48,108,0.2),rgba(193,53,132,0.2));display:flex;align-items:center;justify-content:center;">
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e1306c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+</div>
+<h3 style="font-size:16px;font-weight:700;margin:0;" data-i18n="igProfile">Instagram Profile</h3>
+</div>
+<div id="igProfileCard"><div style="text-align:center;padding:40px;color:var(--muted);" data-i18n="loading">Loading...</div></div>
+</div>
+<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;">
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+<div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,rgba(99,102,241,0.2),rgba(168,85,247,0.2));display:flex;align-items:center;justify-content:center;">
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+</div>
+<h3 style="font-size:16px;font-weight:700;margin:0;" data-i18n="conversations">Conversations</h3>
+</div>
+<div style="overflow-x:auto;">
+<table style="width:100%;border-collapse:collapse;">
+<thead>
+<tr style="background:var(--bg-secondary);border-bottom:2px solid var(--primary);">
+<th style="padding:14px 16px;font-size:12px;font-weight:700;color:var(--primary);text-align:left;text-transform:uppercase;letter-spacing:0.5px;" data-i18n="senderId">Sender</th>
+<th style="padding:14px 16px;font-size:12px;font-weight:700;color:var(--primary);text-align:left;text-transform:uppercase;letter-spacing:0.5px;" data-i18n="lastMessage">Last Message</th>
+<th style="padding:14px 16px;font-size:12px;font-weight:700;color:var(--primary);text-align:left;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;" data-i18n="lastMessageAt">Last Activity</th>
+<th style="padding:14px 16px;font-size:12px;font-weight:700;color:var(--primary);text-align:left;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;" data-i18n="startedAt">Started At</th>
+</tr>
+</thead>
+<tbody id="igConversationsTable">
+<tr><td colspan="4" style="padding:40px;text-align:center;color:var(--muted);" data-i18n="loading">Loading...</td></tr>
 </tbody>
 </table>
 </div>
@@ -3214,6 +3261,15 @@ const translations = {
     workspace: "Workspace",
     connectInstagram: "Connect Instagram",
     igConnected: "Connected",
+    igConnectedPage: "Instagram",
+    igConnectedDesc: "Your Instagram account details and conversations",
+    igProfile: "Instagram Profile",
+    conversations: "Conversations",
+    senderId: "Sender",
+    lastMessage: "Last Message",
+    lastMessageAt: "Last Activity",
+    startedAt: "Started At",
+    noIgConnected: "No Instagram account connected.",
     disconnectInstagram: "Disconnect Instagram",
     igWarning: "⚠ Your bot won't work without connecting Instagram",
     instagramConnected: "Instagram Connected",
@@ -3624,6 +3680,15 @@ const translations = {
     workspace: "مساحة العمل",
     connectInstagram: "ربط انستغرام",
     igConnected: "متصل",
+    igConnectedPage: "انستغرام",
+    igConnectedDesc: "تفاصيل حساب انستغرام والمحادثات",
+    igProfile: "ملف انستغرام",
+    conversations: "المحادثات",
+    senderId: "المرسل",
+    lastMessage: "آخر رسالة",
+    lastMessageAt: "آخر نشاط",
+    startedAt: "وقت البداية",
+    noIgConnected: "لا يوجد حساب انستغرام مربوط.",
     disconnectInstagram: "فك ربط انستغرام",
     igWarning: "⚠ البوت لن يعمل بدون ربط انستغرام",
     instagramConnected: "انستغرام مربوط",
@@ -4019,6 +4084,15 @@ const translations = {
     workspace: "Espace de Travail",
     connectInstagram: "Connecter Instagram",
     igConnected: "Connecté",
+    igConnectedPage: "Instagram",
+    igConnectedDesc: "Détails de votre compte Instagram et conversations",
+    igProfile: "Profil Instagram",
+    conversations: "Conversations",
+    senderId: "Expéditeur",
+    lastMessage: "Dernier Message",
+    lastMessageAt: "Dernière Activité",
+    startedAt: "Démarré à",
+    noIgConnected: "Aucun compte Instagram connecté.",
     disconnectInstagram: "Déconnecter Instagram",
     igWarning: "⚠ Votre bot ne fonctionnera pas sans connecter Instagram",
     instagramConnected: "Instagram Connecté",
@@ -5588,6 +5662,14 @@ function navigateToView(viewName, botId = null, addToHistory = true){
       if(addToHistory) pushToHistory('faqs');
       currentView = 'faqs';
       break;
+    case 'igConnected':
+      hideAllViews();
+      document.getElementById('igConnectedView').style.display = 'block';
+      setActiveSidebar(document.getElementById('sidebarIgConnected'));
+      loadIgConnectedView();
+      if(addToHistory) pushToHistory('igConnected');
+      currentView = 'igConnected';
+      break;
     case 'botEditor':
       if(botId){
         openBot(botId);
@@ -5603,12 +5685,12 @@ function navigateToView(viewName, botId = null, addToHistory = true){
 // === Hide All Views Helper ===
 function hideAllViews(){
   if(ordersRealtimeChannel){ supabaseClient.removeChannel(ordersRealtimeChannel); ordersRealtimeChannel = null; }
-  const views = ["welcomeView", "statsView", "autoRepliesView", "botsView", "botEditorView", "templatesView", "dynamicVarsView", "nicheView", "nicheTemplatesView", "productsView", "ordersView", "faqsView", "accountView"];
+  const views = ["welcomeView", "statsView", "autoRepliesView", "botsView", "botEditorView", "templatesView", "dynamicVarsView", "nicheView", "nicheTemplatesView", "productsView", "ordersView", "faqsView", "igConnectedView", "accountView"];
   document.querySelectorAll('.sidebar-subitem').forEach(el => el.classList.remove('active'));
   views.forEach(id => {
     const el = document.getElementById(id);
     if(el){
-      if(id === "welcomeView" || id === "productsView" || id === "ordersView" || id === "faqsView" || id === "accountView") el.style.display = "none";
+      if(id === "welcomeView" || id === "productsView" || id === "ordersView" || id === "faqsView" || id === "igConnectedView" || id === "accountView") el.style.display = "none";
       else el.classList.remove("show");
     }
   });
@@ -9088,6 +9170,121 @@ document.addEventListener('keydown', function(e) {
     }
   }
 });
+
+// === Instagram Connected View ===
+async function loadIgConnectedView(){
+  const profileCard = document.getElementById("igProfileCard");
+  const convTable = document.getElementById("igConversationsTable");
+  if(profileCard) profileCard.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">'+t('loading')+'...</div>';
+  if(convTable) convTable.innerHTML = '<tr><td colspan="4" style="padding:40px;text-align:center;color:var(--muted);">'+t('loading')+'...</td></tr>';
+
+  try {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if(!user) return;
+
+    // 1. Fetch instagram connection
+    const { data: igConn, error: igErr } = await supabaseClient
+      .from('instagram_connections')
+      .select('instagram_account_id, access_token')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if(!igConn || igErr){
+      if(profileCard) profileCard.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);" data-i18n="noIgConnected">No Instagram account connected.</div>';
+      if(convTable) convTable.innerHTML = '<tr><td colspan="4" style="padding:40px;text-align:center;color:var(--muted);">—</td></tr>';
+      return;
+    }
+
+    // 2. Fetch profile from Meta API
+    try {
+      const metaRes = await fetch(
+        'https://graph.facebook.com/v19.0/' + igConn.instagram_account_id +
+        '?fields=username,name,biography,followers_count,follows_count,media_count,profile_picture_url,website,account_type' +
+        '&access_token=' + igConn.access_token
+      );
+      const p = await metaRes.json();
+      if(p.error){ throw new Error(p.error.message); }
+
+      const followersStr = (p.followers_count || 0).toLocaleString();
+      const followingStr = (p.follows_count   || 0).toLocaleString();
+      const postsStr     = (p.media_count     || 0).toLocaleString();
+
+      profileCard.innerHTML = `
+        <div style="display:flex;align-items:flex-start;gap:28px;flex-wrap:wrap;">
+          ${p.profile_picture_url
+            ? `<img src="${p.profile_picture_url}" alt="profile" style="width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid var(--primary);flex-shrink:0;">`
+            : `<div style="width:96px;height:96px;border-radius:50%;background:var(--bg-secondary);border:3px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 24 24' fill='none' stroke='var(--muted)' stroke-width='2'><rect x='2' y='2' width='20' height='20' rx='5' ry='5'/><path d='M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z'/><line x1='17.5' y1='6.5' x2='17.51' y2='6.5'/></svg></div>`
+          }
+          <div style="flex:1;min-width:200px;">
+            <div style="font-size:22px;font-weight:800;margin-bottom:2px;">${p.name || ''}</div>
+            <div style="color:var(--primary);font-size:15px;font-weight:600;margin-bottom:12px;">@${p.username || igConn.instagram_account_id}</div>
+            ${p.biography ? `<div style="color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:16px;max-width:500px;">${p.biography.replace(/\n/g,'<br>')}</div>` : ''}
+            <div style="display:flex;gap:28px;flex-wrap:wrap;margin-bottom:16px;">
+              <div style="text-align:center;">
+                <div style="font-size:20px;font-weight:800;color:var(--text);">${followersStr}</div>
+                <div style="color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Followers</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:20px;font-weight:800;color:var(--text);">${followingStr}</div>
+                <div style="color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Following</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:20px;font-weight:800;color:var(--text);">${postsStr}</div>
+                <div style="color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Posts</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap;">
+              ${p.website ? `<a href="${p.website}" target="_blank" rel="noopener" style="color:var(--primary);font-size:13px;text-decoration:none;display:flex;align-items:center;gap:4px;"><svg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71'/><path d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71'/></svg>${p.website}</a>` : ''}
+              ${p.account_type ? `<span style="padding:3px 10px;background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.25);border-radius:20px;font-size:12px;color:var(--primary);font-weight:600;">${p.account_type}</span>` : ''}
+            </div>
+          </div>
+        </div>`;
+    } catch(metaErr){
+      profileCard.innerHTML = `<div style="color:var(--muted);font-size:13px;padding:20px;">Failed to load profile: ${metaErr.message}</div>`;
+    }
+
+    // 3. Fetch conversations
+    try {
+      const { data: convs, error: convErr } = await supabaseClient
+        .from('conversation_sessions')
+        .select('sender_id, messages, last_message_at, created_at')
+        .eq('business_id', igConn.instagram_account_id)
+        .order('last_message_at', { ascending: false });
+
+      if(convErr || !convs || convs.length === 0){
+        convTable.innerHTML = '<tr><td colspan="4" style="padding:40px;text-align:center;color:var(--muted);">No conversations yet.</td></tr>';
+        return;
+      }
+
+      convTable.innerHTML = convs.map((row) => {
+        let lastMsg = '-';
+        if(Array.isArray(row.messages) && row.messages.length > 0){
+          const last = row.messages[row.messages.length - 1];
+          lastMsg = last?.text || last?.content || last?.message || JSON.stringify(last) || '-';
+        } else if(typeof row.messages === 'string'){
+          lastMsg = row.messages;
+        }
+        if(typeof lastMsg === 'string' && lastMsg.length > 80) lastMsg = lastMsg.substring(0, 80) + '…';
+
+        const lastAt  = row.last_message_at ? new Date(row.last_message_at).toLocaleString() : '-';
+        const startAt = row.created_at       ? new Date(row.created_at).toLocaleString()       : '-';
+
+        return `<tr style="border-bottom:1px solid var(--border);transition:background 0.15s;" onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background='transparent'">
+          <td style="padding:14px 16px;font-size:13px;font-weight:600;color:var(--text);">${row.sender_id || '-'}</td>
+          <td style="padding:14px 16px;font-size:13px;color:var(--muted);">${lastMsg}</td>
+          <td style="padding:14px 16px;font-size:12px;color:var(--muted);white-space:nowrap;">${lastAt}</td>
+          <td style="padding:14px 16px;font-size:12px;color:var(--muted);white-space:nowrap;">${startAt}</td>
+        </tr>`;
+      }).join('');
+    } catch(convErr){
+      convTable.innerHTML = `<tr><td colspan="4" style="padding:40px;text-align:center;color:var(--muted);">Failed to load conversations.</td></tr>`;
+    }
+
+  } catch(e){
+    console.error('loadIgConnectedView error:', e);
+  }
+}
+
 
 function togglePass(fieldId){
   const inp = document.getElementById(fieldId);
