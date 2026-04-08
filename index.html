@@ -8540,6 +8540,7 @@ async function startInstagramConnection(){
       webhookData.has_existing_account = 'true';
     }
 
+    webhookData.config_id = '2134696563760402';
     const params = new URLSearchParams(webhookData);
     const webhookUrl = `https://api.ihflow.com/webhook/IG-connect?${params.toString()}`;
 
