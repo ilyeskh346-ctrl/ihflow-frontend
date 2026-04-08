@@ -2264,8 +2264,8 @@ table thead th{position:sticky;top:0;z-index:1;}
 <thead>
 <tr style="background:var(--bg-secondary);border-bottom:2px solid var(--primary);">
 <th style="padding:14px 16px;font-size:12px;font-weight:700;color:var(--primary);text-align:left;text-transform:uppercase;letter-spacing:0.5px;">Sender</th>
-<th style="padding:14px 16px;font-size:12px;font-weight:700;color:var(--primary);text-align:left;text-transform:uppercase;letter-spacing:0.5px;">Customer Message</th>
-<th style="padding:14px 16px;font-size:12px;font-weight:700;color:var(--primary);text-align:left;text-transform:uppercase;letter-spacing:0.5px;">Bot Reply</th>
+<th style="padding:14px 16px;font-size:12px;font-weight:700;color:var(--primary);text-align:left;text-transform:uppercase;letter-spacing:0.5px;">رسالة العميل</th>
+<th style="padding:14px 16px;font-size:12px;font-weight:700;color:var(--primary);text-align:left;text-transform:uppercase;letter-spacing:0.5px;">رد البوت</th>
 <th style="padding:14px 16px;font-size:12px;font-weight:700;color:var(--primary);text-align:left;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;" data-i18n="lastMessageAt">Last Activity</th>
 <th style="padding:14px 16px;font-size:12px;font-weight:700;color:var(--primary);text-align:left;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;" data-i18n="startedAt">Started At</th>
 </tr>
@@ -5262,7 +5262,7 @@ document.addEventListener("click", (e) => {
       showToast('Connecting to Instagram...', 'info');
 
       // 4. استدعاء webhook مع user_id
-      const webhookUrl = `https://api.ihflow.com/webhook/IG-connect?user_id=${userId}&config_id=2134696563760402`;
+      const webhookUrl = `https://api.ihflow.com/webhook/IG-connect?user_id=${userId}`;
 
       console.log('Webhook URL:', webhookUrl);
 
@@ -9301,45 +9301,21 @@ async function loadIgConnectedView(){
         return;
       }
 
-      // Debug: log first row's messages structure
-      if(convs.length > 0){
-        let _sample = convs[0].messages;
-        if(typeof _sample === 'string'){ try{ _sample = JSON.parse(_sample); }catch(e){} }
-        console.log('[IH Flow] messages[0] sample:', JSON.stringify(Array.isArray(_sample) ? _sample.slice(0,2) : _sample));
-      }
-
-      const getContent = (m) => {
-        if(!m) return '';
-        let txt = m.content ?? m.text ?? m.message ?? m.body ?? m.msg ?? '';
-        if(Array.isArray(txt)) txt = txt.map(x => (typeof x === 'string' ? x : (x?.text || x?.content || JSON.stringify(x)))).join(' ');
-        if(typeof txt === 'object' && txt !== null) txt = txt.text || txt.content || JSON.stringify(txt);
-        return String(txt || '').trim();
-      };
-
       const extractMsg = (msgs, role) => {
         if(!Array.isArray(msgs)) return '-';
-        const userRoles  = ['user','human','customer','client'];
-        const botRoles   = ['assistant','bot','ai','system','agent'];
-        const wantedSet  = role === 'user' ? userRoles : botRoles;
+        // Find last message matching the role
         let found = '-';
         for(let i = msgs.length - 1; i >= 0; i--){
           const m = msgs[i];
           if(!m) continue;
-          const r = String(m.role || m.type || m.sender || m.from || m.by || m.author || '').toLowerCase();
-          if(wantedSet.includes(r)){
-            found = getContent(m);
+          const r = m.role || m.type || '';
+          if(r === role || (role === 'user' && r === 'human') || (role === 'assistant' && (r === 'bot' || r === 'ai'))){
+            const txt = m.content || m.text || m.message || '';
+            found = typeof txt === 'string' ? txt : JSON.stringify(txt);
             break;
           }
         }
-        // fallback: if still '-', use positional heuristic (even index = user, odd = bot)
-        if(found === '-' && msgs.length > 0){
-          if(role === 'user' && msgs.length >= 1){
-            found = getContent(msgs[msgs.length % 2 === 0 ? msgs.length - 2 : msgs.length - 1]);
-          } else if(role === 'assistant' && msgs.length >= 2){
-            found = getContent(msgs[msgs.length % 2 === 0 ? msgs.length - 1 : msgs.length - 2]);
-          }
-        }
-        if(found && found.length > 50) found = found.substring(0, 50) + '…';
+        if(found.length > 50) found = found.substring(0, 50) + '…';
         return found || '-';
       };
 
