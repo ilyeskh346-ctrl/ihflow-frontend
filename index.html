@@ -2119,6 +2119,10 @@ table thead th{position:sticky;top:0;z-index:1;}
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
 <span data-i18n="addProduct">Add Product</span>
 </button>
+<button id="igScrapeBtn" onclick="getProductsFromInstagram()" style="padding:10px 16px;background:linear-gradient(135deg,#e1306c,#833ab4);border:none;border-radius:8px;color:#fff;font-size:14px;cursor:pointer;display:none;align-items:center;gap:8px;font-weight:500;">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+<span id="igScrapeBtnText">Get Products from Instagram</span>
+</button>
 </div>
 </div>
 
@@ -5297,6 +5301,7 @@ async function logout(){
   const addProductBtn = document.getElementById("addProductBtn");
   if(addProductBtn){
     addProductBtn.style.display = "none";
+  const _igBtnH=document.getElementById("igScrapeBtn");if(_igBtnH)_igBtnH.style.display="none";
   }
 
   // Reset Bots view state
@@ -7234,6 +7239,7 @@ async function loadAllProducts(){
   // If "all" is selected, show message to select a bot and hide add button
   if(filterValue === "all"){
     if(addBtn) addBtn.style.display = "none";
+    const _igs = document.getElementById("igScrapeBtn"); if(_igs) _igs.style.display = "none";
     resetProductsTableHead();
     container.innerHTML = `<tr>
       <td colspan="8" style="padding:40px;text-align:center;color:var(--muted);">
@@ -7246,6 +7252,8 @@ async function loadAllProducts(){
 
   // Show Add Product button when a bot is selected
   if(addBtn) addBtn.style.display = "flex";
+  const igScrapeBtn = document.getElementById("igScrapeBtn");
+  if(igScrapeBtn) igScrapeBtn.style.display = "flex";
 
   container.innerHTML = `<tr><td colspan="8" style="padding:40px;text-align:center;color:var(--muted);"><p>${t('loadingProducts')}</p></td></tr>`;
 
@@ -7991,6 +7999,7 @@ async function showDashboard(){
   const addProductBtn = document.getElementById("addProductBtn");
   if(addProductBtn){
     addProductBtn.style.display = "none";
+  const _igBtnH=document.getElementById("igScrapeBtn");if(_igBtnH)_igBtnH.style.display="none";
   }
 
   await loadUserProfile();
@@ -9369,6 +9378,59 @@ async function loadIgConnectedView(){
 
   } catch(e){
     console.error('loadIgConnectedView error:', e);
+  }
+}
+
+
+// === Get Products from Instagram ===
+async function getProductsFromInstagram(){
+  const btn = document.getElementById('igScrapeBtn');
+  const btnText = document.getElementById('igScrapeBtnText');
+  if(!btn || !btnText) return;
+
+  // Get selected bot_id from filter
+  const filterValue = document.getElementById('productBotFilter')?.value;
+  if(!filterValue || filterValue === 'all'){
+    showToast('error', 'Error', 'Please select a bot first');
+    return;
+  }
+
+  // Show loading
+  btn.disabled = true;
+  btnText.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Loading...';
+
+  try {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if(!user) throw new Error('Not authenticated');
+
+    // Fetch instagram_account_id
+    const { data: igConn, error: igErr } = await supabaseClient
+      .from('instagram_connections')
+      .select('instagram_account_id')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if(igErr || !igConn) throw new Error('No Instagram account connected');
+
+    // Send POST to webhook
+    const res = await fetch('https://api.ihflow.com/webhook/ig-scrape', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        instagram_account_id: igConn.instagram_account_id,
+        bot_id: filterValue
+      })
+    });
+
+    if(!res.ok) throw new Error('Webhook returned ' + res.status);
+
+    showToast('success', '✅', 'تم إرسال الطلب بنجاح');
+  } catch(e){
+    console.error('igScrape error:', e);
+    showToast('error', '❌', 'حدث خطأ، حاول مرة أخرى');
+  } finally {
+    btn.disabled = false;
+    btnText.textContent = 'Get Products from Instagram';
   }
 }
 
