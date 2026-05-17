@@ -9423,7 +9423,7 @@ async function getProductsFromInstagram(){
     if(igErr || !igConn) throw new Error('No Instagram account connected');
 
     // Send POST to webhook
-    const res = await fetch('https://api.ihflow.com/webhook/ig-scrape', {
+    const res = await fetch('https://api.ihflow.com/webhook/50226b32-81d3-4348-a064-c6be64a22ca6', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
