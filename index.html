@@ -7948,29 +7948,38 @@ async function showDashboard(){
   try {
     const { data: igAccount, error: igError } = await supabaseClient
       .from('instagram_connections')
-      .select('instagram_account_id, access_token')
+      .select('instagram_account_id, ig_username, ig_name, page_access_token')
       .eq('user_id', user.id)
       .maybeSingle();
 
     const igConnect = document.getElementById("igSidebarConnect");
     const igWarning = document.getElementById("igWarningText");
     const igDisconnect = document.getElementById("igSidebarDisconnect");
-
     const igUsernameDisplay = document.getElementById("igUsernameDisplay");
+
     if(igAccount && !igError){
       igConnect.style.display = "flex";
       igWarning.style.display = "none";
       igDisconnect.style.display = "none";
-      // Fetch username from Meta API
-      try {
-        const metaRes = await fetch(`https://graph.facebook.com/v19.0/${igAccount.instagram_account_id}?fields=username&access_token=${igAccount.access_token}`);
-        const metaData = await metaRes.json();
-        const igUsername = metaData.username || igAccount.instagram_account_id;
-        document.getElementById("igUsernameText").textContent = "@" + igUsername;
-      } catch(e) {
-        document.getElementById("igUsernameText").textContent = "@" + (igAccount.instagram_account_id || "instagram");
+
+      // Use ig_username stored in DB directly; fallback to Meta API if missing
+      if(igAccount.ig_username){
+        document.getElementById("igUsernameText").textContent = "@" + igAccount.ig_username;
+        igUsernameDisplay.style.display = "flex";
+      } else if(igAccount.instagram_account_id && igAccount.page_access_token){
+        try {
+          const metaRes = await fetch(`https://graph.facebook.com/v19.0/${igAccount.instagram_account_id}?fields=username&access_token=${igAccount.page_access_token}`);
+          const metaData = await metaRes.json();
+          const igUsername = metaData.username || igAccount.instagram_account_id;
+          document.getElementById("igUsernameText").textContent = "@" + igUsername;
+        } catch(e) {
+          document.getElementById("igUsernameText").textContent = "@" + igAccount.instagram_account_id;
+        }
+        igUsernameDisplay.style.display = "flex";
+      } else {
+        document.getElementById("igUsernameText").textContent = "@instagram";
+        igUsernameDisplay.style.display = "flex";
       }
-      igUsernameDisplay.style.display = "flex";
     } else {
       igConnect.style.display = "flex";
       igWarning.style.display = "block";
