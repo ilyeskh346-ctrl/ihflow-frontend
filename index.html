@@ -9223,10 +9223,10 @@ async function loadIgConnectedView(){
     const { data: { user } } = await supabaseClient.auth.getUser();
     if(!user) return;
 
-    // 1. Fetch instagram connection
+    // 1. Fetch instagram connection (page_access_token stays server-side)
     const { data: igConn, error: igErr } = await supabaseClient
       .from('instagram_connections')
-      .select('instagram_account_id, page_access_token')
+      .select('instagram_account_id')
       .eq('user_id', user.id)
       .maybeSingle();
 
@@ -9236,16 +9236,31 @@ async function loadIgConnectedView(){
       return;
     }
 
-    // 2. Fetch profile from Meta API
-    // TODO: Move this Facebook API call to n8n backend to avoid exposing page_access_token in frontend network requests
+    // 2. Fetch IG profile & posts via n8n proxy (keeps page_access_token server-side)
+    const { data: { session: igSession } } = await supabaseClient.auth.getSession();
+    if(!igSession) return;
+
+    let igProxyData = null;
     try {
-      const metaRes = await fetch(
-        'https://graph.facebook.com/v19.0/' + igConn.instagram_account_id +
-        '?fields=username,name,biography,followers_count,follows_count,media_count,profile_picture_url,website' +
-        '&access_token=' + igConn.page_access_token
-      );
-      const p = await metaRes.json();
-      if(p.error){ throw new Error(p.error.message); }
+      const proxyRes = await fetch('https://api.ihflow.com/webhook/ig-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: igSession.access_token })
+      });
+      if(!proxyRes.ok){ throw new Error('Proxy request failed: ' + proxyRes.status); }
+      igProxyData = await proxyRes.json();
+    } catch(proxyErr){
+      const errDiv = document.createElement("div");
+      errDiv.style.cssText = "color:var(--muted);font-size:13px;padding:20px;";
+      errDiv.textContent = "Failed to load Instagram data: " + proxyErr.message;
+      profileCard.innerHTML = "";
+      profileCard.appendChild(errDiv);
+    }
+
+    // 2a. Render profile card
+    try {
+      const p = (igProxyData && igProxyData.profile) ? igProxyData.profile : {};
+      if(!igProxyData || igProxyData.error){ throw new Error((igProxyData && igProxyData.error) || 'No data returned'); }
 
       const followersStr = (p.followers_count || 0).toLocaleString();
       const followingStr = (p.follows_count   || 0).toLocaleString();
@@ -9297,17 +9312,11 @@ async function loadIgConnectedView(){
       profileCard.appendChild(errDiv);
     }
 
-    // 3. Fetch latest posts
-    // TODO: Move this Facebook API call to n8n backend to avoid exposing page_access_token in frontend network requests
+    // 3. Render latest posts (data already fetched via n8n proxy above)
     try {
       const postsSection = document.getElementById('igPostsSection');
       const postsGrid = document.getElementById('igPostsGrid');
-      const postsRes = await fetch(
-        'https://graph.facebook.com/v19.0/' + igConn.instagram_account_id +
-        '/media?fields=id,media_type,media_url,thumbnail_url,timestamp,like_count,comments_count&limit=12' +
-        '&access_token=' + igConn.page_access_token
-      );
-      const postsData = await postsRes.json();
+      const postsData = (igProxyData && igProxyData.posts) ? { data: igProxyData.posts } : {};
       if(postsData.data && postsData.data.length > 0){
         postsSection.style.display = 'block';
         postsGrid.innerHTML = postsData.data.map(post => {
