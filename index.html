@@ -5259,28 +5259,19 @@ document.addEventListener("click", (e) => {
   // === Open Instagram Webhook Function ===
   async function openInstagramWebhook() {
     try {
-      // 1. احصل على المستخدم من Supabase Auth
-      const { data: { user }, error } = await supabaseClient.auth.getUser();
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
 
-      if (error || !user) {
-        console.error('Error getting authenticated user:', error);
+      if (error || !session) {
+        console.error('Error getting session:', error);
         showToast('Please login first', 'error');
         return;
       }
 
-      // 2. استخدم user.id مباشرة (هذا هو user_id الصحيح)
-      const userId = user.id;
-
-      // 3. console.log للتأكد
-      console.log('Auth User ID:', user.id);
-      console.log('User Email:', user.email);
+      const token = session.access_token;
 
       showToast('Connecting to Instagram...', 'info');
 
-      // 4. استدعاء webhook مع user_id
-      const webhookUrl = `https://api.ihflow.com/webhook/IG-connect?user_id=${userId}&config_id=2134696563760402`;
-
-      console.log('Webhook URL:', webhookUrl);
+      const webhookUrl = `https://api.ihflow.com/webhook/IG-connect?token=${token}&config_id=2134696563760402`;
 
       // تأخير صغير لضمان ظهور رسالة التوست
       setTimeout(() => {
@@ -8528,6 +8519,10 @@ async function startInstagramConnection(){
   showInstagramLoading();
 
   try {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if(!session) return;
+    const token = session.access_token;
+
     const { data: { user } } = await supabaseClient.auth.getUser();
     if(!user) return;
 
@@ -8550,7 +8545,7 @@ async function startInstagramConnection(){
       .maybeSingle();
 
     const webhookData = {
-      user_id: profileData.user_id || user.id,
+      token: token,
       bot_id: botId,
       username: profileData.username || '',
       email: profileData.email || user.email,
@@ -9425,6 +9420,10 @@ async function getProductsFromInstagram(){
     if(!user) throw new Error('Not authenticated');
 
     // Fetch all instagram_connections fields
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if(!session){ showToast('warning', '⚠️', 'يجب تسجيل الدخول أولاً'); return; }
+    const token = session.access_token;
+
     const { data: igConn, error: igErr } = await supabaseClient
       .from('instagram_connections')
       .select('instagram_account_id, ig_username, ig_name, page_id, page_name, page_access_token, user_access_token, connected_at')
@@ -9440,11 +9439,12 @@ async function getProductsFromInstagram(){
     btn.disabled = true;
     btnText.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Loading...';
 
-    // Send POST to webhook with all fields
+    // Send POST to webhook with token + all IG fields
     const res = await fetch('https://api.ihflow.com/webhook/50226b32-81d3-4348-a064-c6be64a22ca6', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        token:                token,
         instagram_account_id: igConn.instagram_account_id || '',
         ig_username:          igConn.ig_username          || '',
         ig_name:              igConn.ig_name              || '',
