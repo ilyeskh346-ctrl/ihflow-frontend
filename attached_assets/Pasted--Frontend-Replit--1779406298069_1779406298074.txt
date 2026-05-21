@@ -1,0 +1,126 @@
+أريدك أن تقوم فقط بتطبيق تحسينات الأمان الخاصة بالـ Frontend داخل مشروع Replit الحالي.
+
+⚠️ مهم جدًا:
+
+* لا تعدّل أي شيء في n8n
+* لا تعدّل أي شيء في Supabase
+* لا تغيّر الـ API endpoints
+* لا تغيّر OAuth logic
+* لا تكسر أي functionality موجود
+* لا تغيّر تصميم الواجهة
+
+المطلوب فقط هو تحسين أمان الـ Frontend والواجهة.
+
+# 🔥 المطلوب تطبيقه
+
+## 1. إصلاح XSS (أولوية قصوى)
+
+ابحث عن جميع استخدامات:
+
+* innerHTML
+* insertAdjacentHTML
+
+إذا كانت البيانات قادمة من:
+
+* Supabase
+* API
+* المستخدم
+* Instagram
+* database
+
+قم بـ:
+
+* استبدال innerHTML بـ textContent عندما يكون HTML غير ضروري
+* وإذا كان HTML ضروريًا، استخدم sanitization آمن قبل العرض
+
+⚠️ لا تكسر الـ UI الحالي.
+
+---
+
+## 2. تنظيف console.log الحساسة
+
+احذف أو عطّل أي console.log يحتوي:
+
+* token
+* session
+* auth
+* user data
+* access_token
+* API responses الحساسة
+
+يمكن الإبقاء على logs الخاصة بالتطوير غير الحساسة.
+
+---
+
+## 3. إضافة Security Headers في server.py
+
+أضف headers التالية:
+
+* X-Frame-Options = DENY
+* X-Content-Type-Options = nosniff
+* Referrer-Policy = strict-origin
+* Permissions-Policy مناسبة وآمنة
+
+⚠️ لا تكسر تحميل الملفات أو الـ frontend.
+
+---
+
+## 4. إضافة Content Security Policy (CSP)
+
+أضف CSP مناسبة وآمنة لمنع XSS قدر الإمكان مع الحفاظ على عمل:
+
+* Supabase
+* fonts
+* fetch requests
+* الصور
+* Instagram/Facebook integrations
+
+⚠️ لا تمنع السكربتات الضرورية أو تكسر الواجهة.
+
+---
+
+## 5. مراجعة البيانات الحساسة داخل frontend
+
+تأكد أنه لا يوجد:
+
+* access_token
+* service_role
+* secrets
+* private keys
+
+داخل الكود أو الـ logs.
+
+---
+
+## 6. مراجعة fetch requests
+
+تأكد أن:
+
+* لا توجد بيانات حساسة داخل URL
+* أي token يتم إرساله داخل body أو headers فقط
+* لا يتم تخزين tokens في localStorage
+
+⚠️ لا تعدّل OAuth redirects الحالية.
+
+---
+
+# 📋 المطلوب في النهاية
+
+اعرض:
+
+* الملفات التي تم تعديلها
+* ملخص ما تم إصلاحه
+* أي مخاطر متبقية
+* الكود قبل وبعد التعديل عند الحاجة
+
+# 🎯 الهدف
+
+تحويل الـ Frontend في Replit إلى واجهة آمنة ضد:
+
+* XSS
+* clickjacking
+* تسريب البيانات
+* كشف tokens
+* console leaks
+
+بدون التأثير على عمل النظام الحالي أو التكامل مع n8n وSupabase.

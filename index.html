@@ -4671,9 +4671,7 @@ let currentUserProfile = null;
 let isPasswordRecovery = false;
 
 supabaseClient.auth.onAuthStateChange((event, session) => {
-  console.log("Auth state change:", event);
   if(event === 'PASSWORD_RECOVERY'){
-    console.log("PASSWORD_RECOVERY event detected!");
     isPasswordRecovery = true;
     history.replaceState(null, '', window.location.pathname);
     document.getElementById("resetPasswordModal").style.display = "flex";
@@ -4693,30 +4691,19 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
     const isAuthCallback = hasHashToken || authCode || hasTokenHash;
     const isRecovery = authType === 'recovery' || urlHash.includes('type=recovery');
 
-    console.log("Auth callback check:", { isAuthCallback, hasHashToken, hasCode: !!authCode, hasTokenHash: !!hasTokenHash, authType, isRecovery });
-
     function showRecoveryModal(){
-      console.log("Showing reset password modal...");
       isPasswordRecovery = true;
       history.replaceState(null, '', window.location.pathname);
       document.getElementById("resetPasswordModal").style.display = "flex";
     }
 
     if(isAuthCallback){
-      console.log("Auth callback detected, processing...");
-
-      if(isRecovery){
-        console.log("Recovery detected from URL params/hash");
-      }
-
       if(hasTokenHash){
-        console.log("Token hash detected, verifying OTP...", { tokenHash: tokenHash?.substring(0,10)+'...', authType });
         try {
           const { data: verifyData, error: verifyError } = await supabaseClient.auth.verifyOtp({
             token_hash: tokenHash,
             type: authType
           });
-          console.log("OTP verify result:", !!verifyData?.session, verifyError?.message);
           if(verifyError) console.error("OTP verify error:", verifyError.message);
         } catch(otpErr) {
           console.error("OTP verify exception:", otpErr);
@@ -4724,7 +4711,6 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
 
         if(isRecovery || isPasswordRecovery){
           const { data: { session: otpSession } } = await supabaseClient.auth.getSession();
-          console.log("Recovery session after OTP:", !!otpSession);
           if(otpSession){
             showRecoveryModal();
           } else {
@@ -4736,7 +4722,6 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
       }
 
       if(isRecovery && !hasTokenHash && !authCode && !hasHashToken){
-        console.log("Recovery flag in URL but no auth tokens, trying getSession...");
         const { data: { session: fallbackSession } } = await supabaseClient.auth.getSession();
         if(fallbackSession){
           showRecoveryModal();
@@ -4748,14 +4733,11 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
       }
 
       if(authCode){
-        console.log("PKCE code detected, exchanging for session...");
         const { data: exchangeData, error: exchangeError } = await supabaseClient.auth.exchangeCodeForSession(authCode);
-        console.log("Code exchange result:", exchangeData, exchangeError);
         if(exchangeError) console.error("Code exchange error:", exchangeError);
 
         if(isRecovery || isPasswordRecovery){
           const { data: { session: recSession } } = await supabaseClient.auth.getSession();
-          console.log("Recovery session check:", !!recSession);
           if(recSession){
             showRecoveryModal();
           } else {
@@ -4769,7 +4751,6 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
         await new Promise(r => setTimeout(r, 1500));
 
         if(isPasswordRecovery){
-          console.log("PASSWORD_RECOVERY event caught after delay");
           return;
         }
       }
@@ -4783,19 +4764,16 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
         await new Promise(r => setTimeout(r, 1500));
 
         if(isPasswordRecovery){
-          console.log("PASSWORD_RECOVERY event caught after hash delay");
           return;
         }
       }
 
       const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
-      console.log("Session after callback:", session, sessionError);
 
       if(session && session.user){
         const amrEntries = session.user.amr || [];
         const hasRecoveryAmr = amrEntries.some(a => a.method === 'recovery' || a.method === 'otp');
         const userMeta = session.user.user_metadata || {};
-        console.log("AMR check:", amrEntries, "hasRecoveryAmr:", hasRecoveryAmr, "recovery_sent_at:", session.user.recovery_sent_at);
 
         if(hasRecoveryAmr || isPasswordRecovery || isRecovery){
           showRecoveryModal();
@@ -4803,30 +4781,24 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
         }
 
         const user = session.user;
-        console.log("Confirmed user:", user.id, user.email);
 
         const username = user.user_metadata?.username || user.email.split('@')[0];
 
         const { data: existingProfile, error: selectError } = await supabaseClient.from("profiles").select("user_id").eq("user_id", user.id).maybeSingle();
-        console.log("Profile check:", { existingProfile, selectError });
 
         if(existingProfile && !selectError){
-          console.log("Profile exists, updating username...");
           const { error: updateError } = await supabaseClient.from("profiles").update({
             username: username,
             email: user.email
           }).eq("user_id", user.id);
           if(updateError) console.error("Profile update error:", updateError);
-          else console.log("Profile updated successfully");
         } else {
-          console.log("No profile found, creating via upsert...");
           const { error: upsertError } = await supabaseClient.from("profiles").upsert([{
             user_id: user.id,
             username: username,
             email: user.email
           }], { onConflict: 'user_id' });
           if(upsertError) console.error("Profile upsert error:", upsertError);
-          else console.log("Profile created successfully");
         }
 
         await supabaseClient.auth.signOut();
@@ -4838,13 +4810,10 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
     } else {
       const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
       if(userError || !user){
-        console.log("No valid session found or session expired, showing landing page");
         if(userError) {
-          console.log("Session error:", userError.message);
           await supabaseClient.auth.signOut();
         }
       } else {
-        console.log("Valid session found for:", user.email);
         showDashboard();
       }
     }
@@ -6980,7 +6949,10 @@ async function loadDashboardStats(){
     if(!dashBotsLoaded){
       select.innerHTML = '<option value="all">All Bots</option>';
       bots.forEach(bot => {
-        select.innerHTML += `<option value="${bot.id}">${bot.name}</option>`;
+        const opt = document.createElement('option');
+        opt.value = bot.id;
+        opt.textContent = bot.name;
+        select.appendChild(opt);
       });
       dashBotsLoaded = true;
     }
@@ -7059,7 +7031,10 @@ async function loadOrders(){
     const select = document.getElementById("orderBotFilter");
     select.innerHTML = '<option value="all">All Bots</option>';
     bots.forEach(bot => {
-      select.innerHTML += `<option value="${bot.id}">${bot.name}</option>`;
+      const opt = document.createElement('option');
+      opt.value = bot.id;
+      opt.textContent = bot.name;
+      select.appendChild(opt);
     });
 
     const { data: orders, error } = await supabaseClient
@@ -7225,7 +7200,10 @@ async function populateProductBotFilter(){
   select.innerHTML = `<option value="all">${t('chooseBot')}</option>`;
   if(bots && bots.length > 0){
     bots.forEach(bot => {
-      select.innerHTML += `<option value="${bot.id}">${bot.name}</option>`;
+      const opt = document.createElement('option');
+      opt.value = bot.id;
+      opt.textContent = bot.name;
+      select.appendChild(opt);
     });
   }
 }
@@ -7333,7 +7311,12 @@ async function loadFaqs(){
     faqBotsList = bots || [];
     const sel = document.getElementById("faqBotFilter");
     sel.innerHTML = `<option value="" data-i18n="chooseBot">${t('chooseBot')}</option>`;
-    faqBotsList.forEach(b => { sel.innerHTML += `<option value="${b.id}">${b.name}</option>`; });
+    faqBotsList.forEach(b => {
+      const opt = document.createElement('option');
+      opt.value = b.id;
+      opt.textContent = b.name;
+      sel.appendChild(opt);
+    });
     document.getElementById("addFaqBtn").style.display = "none";
     renderFaqs([]);
   }catch(e){ console.error("loadFaqs error:", e); }
@@ -7937,7 +7920,6 @@ async function showDashboard(){
 
   const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
   if(userError || !user){
-    console.log("showDashboard: user not authenticated, returning to landing page", userError?.message);
     await supabaseClient.auth.signOut();
     document.getElementById("landingPage").style.display = "";
     document.getElementById("topNav").style.display = "";
@@ -8137,7 +8119,6 @@ async function handleResetPassword(event){
 
   try {
     const { data: { session: currentSession } } = await supabaseClient.auth.getSession();
-    console.log("Reset password session check:", !!currentSession);
     if(!currentSession){
       msg.textContent = t('resetLinkExpired') || "Your session has expired. Please request a new password reset link.";
       msg.className = "message error";
@@ -8706,8 +8687,22 @@ async function loadBots(){
     }
     const div = document.createElement("div");
     div.className = "project-card";
-    div.innerHTML = `<div style="display:flex;align-items:center;">${imgHTML}<strong>${bot.name}</strong><br><small style="color:var(--muted)">${bot.description || ""}</small></div>
-    <button onclick="openBot('${bot.id}')">${t('open')}</button>`;
+    const infoDiv = document.createElement("div");
+    infoDiv.style.cssText = "display:flex;align-items:center;";
+    infoDiv.innerHTML = imgHTML;
+    const strong = document.createElement("strong");
+    strong.textContent = bot.name;
+    const small = document.createElement("small");
+    small.style.color = "var(--muted)";
+    small.textContent = bot.description || "";
+    infoDiv.appendChild(strong);
+    infoDiv.appendChild(document.createElement("br"));
+    infoDiv.appendChild(small);
+    const openBtn = document.createElement("button");
+    openBtn.textContent = t('open');
+    openBtn.onclick = () => openBot(bot.id);
+    div.appendChild(infoDiv);
+    div.appendChild(openBtn);
     list.appendChild(div);
   }
 }
@@ -9279,7 +9274,11 @@ async function loadIgConnectedView(){
           </div>
         </div>`;
     } catch(metaErr){
-      profileCard.innerHTML = `<div style="color:var(--muted);font-size:13px;padding:20px;">Failed to load profile: ${metaErr.message}</div>`;
+      const errDiv = document.createElement("div");
+      errDiv.style.cssText = "color:var(--muted);font-size:13px;padding:20px;";
+      errDiv.textContent = "Failed to load profile: " + metaErr.message;
+      profileCard.innerHTML = "";
+      profileCard.appendChild(errDiv);
     }
 
     // 3. Fetch latest posts
