@@ -1,0 +1,215 @@
+أريدك أن تقوم الآن بتطبيق وتحسين نظام الأمان الكامل الخاص بالمشروع الحالي مع الحفاظ الكامل على الـ functionality الحالية وعدم كسر أي integrations.
+
+⚠️ مهم جدًا:
+
+* المشروع يستخدم:
+
+  * Replit Frontend (HTML/CSS/JS)
+  * n8n كـ backend عبر webhooks
+  * Supabase كـ Auth + Database
+* لا تغيّر تصميم الواجهة
+* لا تكسر Instagram/Facebook OAuth flow
+* لا تغيّر منطق النظام الحالي إلا إذا كان متعلقًا بالأمان
+* لا تعدّل Supabase RLS
+* لا تستخدم service_role key داخل frontend أو webhooks
+* أي تغييرات يجب أن تكون backward compatible قدر الإمكان
+
+# 🔥 Architecture الحالي
+
+Frontend → n8n webhooks → Supabase
+
+ويجب تحويله إلى flow آمن يعتمد على:
+
+* Supabase verified sessions
+* token verification
+* webhook protection
+* XSS protection
+
+---
+
+# 🔴 المطلوب تنفيذه بالكامل
+
+## 1. إزالة أي استخدام لـ user_id من frontend
+
+ابحث عن:
+
+* ?user_id=
+* user_id داخل query params
+* profileData.user_id
+* أي اعتماد على user_id قادم من frontend
+
+واستبدله بـ:
+
+* Supabase session access token
+
+استخدم:
+
+const { data: { session } } = await supabase.auth.getSession();
+
+ثم:
+
+const token = session.access_token;
+
+---
+
+## 2. توحيد إرسال token إلى جميع n8n webhooks
+
+جميع requests إلى:
+
+* api.ihflow.com
+* n8n webhooks
+* automation endpoints
+
+يجب أن ترسل:
+
+* token
+* x-api-key
+
+مثال:
+
+fetch(url, {
+method: "POST",
+headers: {
+"Content-Type": "application/json",
+"x-api-key": "REPLACE_WITH_SECRET_KEY"
+},
+body: JSON.stringify({
+token: session.access_token,
+...existingData
+})
+})
+
+⚠️ لا تكسر أي payloads موجودة حاليًا.
+
+---
+
+## 3. OAuth redirects
+
+إذا كان redirect يحتاج URL params:
+
+* اسمح مؤقتًا باستخدام:
+  ?token=
+* لا تستخدم user_id نهائيًا
+
+⚠️ لا تكسر Instagram/Facebook OAuth flow.
+
+---
+
+## 4. إصلاح XSS بالكامل
+
+ابحث عن:
+
+* innerHTML
+* insertAdjacentHTML
+
+إذا كانت البيانات قادمة من:
+
+* Supabase
+* APIs
+* المستخدمين
+* Instagram
+* database
+
+قم بـ:
+
+* استبدال innerHTML بـ textContent عندما يكون HTML غير ضروري
+* أو استخدام sanitization آمن إذا كان HTML مطلوبًا
+
+⚠️ لا تكسر الواجهة الحالية.
+
+---
+
+## 5. تنظيف البيانات الحساسة
+
+احذف أو عطّل:
+
+* console.log(token)
+* console.log(session)
+* console.log(user)
+* أي logs تحتوي auth data أو API responses حساسة
+
+---
+
+## 6. Security Headers في server.py
+
+أضف:
+
+* X-Frame-Options: DENY
+* X-Content-Type-Options: nosniff
+* Referrer-Policy: strict-origin
+* Permissions-Policy آمنة
+
+---
+
+## 7. إضافة Content Security Policy (CSP)
+
+أضف CSP آمنة ومتوافقة مع:
+
+* Supabase
+* fetch requests
+* fonts
+* Instagram/Facebook integrations
+
+⚠️ لا تكسر السكربتات الحالية.
+
+---
+
+## 8. مراجعة Facebook/Instagram API calls
+
+ابحث عن:
+
+* graph.facebook.com
+* Instagram API calls
+
+إذا كانت ما تزال في frontend:
+
+* ضع TODO واضح لنقلها لاحقًا إلى n8n backend
+* لا تكسر الـ functionality الحالية إذا كان النقل الكامل يحتاج backend changes
+
+---
+
+## 9. حماية جميع webhooks
+
+أي request إلى n8n يجب أن يحتوي:
+
+* token
+* x-api-key
+
+وإذا وجدت webhook غير محمي:
+
+* ضع TODO واضح أن هذا endpoint يحتاج حماية backend داخل n8n
+
+---
+
+## 10. مراجعة التخزين المحلي
+
+تأكد:
+
+* لا يتم تخزين access_token في localStorage
+* لا يتم تخزين secrets داخل frontend
+
+---
+
+# 📋 المطلوب في النهاية
+
+اعرض:
+
+1. جميع الملفات التي تم تعديلها
+2. كل webhooks التي أصبحت محمية
+3. كل الأماكن التي تم فيها إزالة user_id
+4. كل أماكن إصلاح XSS
+5. أي endpoints ما تزال تحتاج backend migration
+6. أي مخاطر متبقية
+7. الكود قبل وبعد عند الحاجة
+
+# 🎯 الهدف النهائي
+
+تحويل النظام إلى SaaS أكثر أمانًا يعتمد على:
+
+* Supabase verified auth
+* secure webhook communication
+* XSS protection
+* protected frontend
+* authenticated n8n workflows
+
+مع الحفاظ على عمل النظام الحالي بالكامل وعدم كسر Instagram automation أو OAuth integrations.

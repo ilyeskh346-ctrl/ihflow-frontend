@@ -3100,9 +3100,15 @@ function showNextMessage() {
   const linkTitle = msg.linkTitleKey ? (t(msg.linkTitleKey) || 'Shop My Look') : '';
 
   if(msg.auto && msg.hasLink) {
-    div.innerHTML = `<span class="bot-label">${autoReplyLabel}</span>${msgText}<div class="ig-msg-link"><span>${msg.linkUrl}</span><strong>${linkTitle}</strong></div>`;
+    const label = document.createElement('span'); label.className = 'bot-label'; label.textContent = autoReplyLabel;
+    const linkWrap = document.createElement('div'); linkWrap.className = 'ig-msg-link';
+    const linkSpan = document.createElement('span'); linkSpan.textContent = msg.linkUrl || '';
+    const linkStrong = document.createElement('strong'); linkStrong.textContent = linkTitle;
+    linkWrap.appendChild(linkSpan); linkWrap.appendChild(linkStrong);
+    div.appendChild(label); div.appendChild(document.createTextNode(msgText)); div.appendChild(linkWrap);
   } else if(msg.auto) {
-    div.innerHTML = `<span class="bot-label">${autoReplyLabel}</span>${msgText}`;
+    const label = document.createElement('span'); label.className = 'bot-label'; label.textContent = autoReplyLabel;
+    div.appendChild(label); div.appendChild(document.createTextNode(msgText));
   } else {
     div.textContent = msgText;
   }
@@ -9220,7 +9226,7 @@ async function loadIgConnectedView(){
     // 1. Fetch instagram connection
     const { data: igConn, error: igErr } = await supabaseClient
       .from('instagram_connections')
-      .select('instagram_account_id, access_token')
+      .select('instagram_account_id, page_access_token')
       .eq('user_id', user.id)
       .maybeSingle();
 
@@ -9231,11 +9237,12 @@ async function loadIgConnectedView(){
     }
 
     // 2. Fetch profile from Meta API
+    // TODO: Move this Facebook API call to n8n backend to avoid exposing page_access_token in frontend network requests
     try {
       const metaRes = await fetch(
         'https://graph.facebook.com/v19.0/' + igConn.instagram_account_id +
         '?fields=username,name,biography,followers_count,follows_count,media_count,profile_picture_url,website' +
-        '&access_token=' + igConn.access_token
+        '&access_token=' + igConn.page_access_token
       );
       const p = await metaRes.json();
       if(p.error){ throw new Error(p.error.message); }
@@ -9244,16 +9251,25 @@ async function loadIgConnectedView(){
       const followingStr = (p.follows_count   || 0).toLocaleString();
       const postsStr     = (p.media_count     || 0).toLocaleString();
 
+      // Sanitize all user-controlled fields from Meta API before rendering
+      const safeName     = escHtml(p.name     || '');
+      const safeUsername = escHtml(p.username || igConn.instagram_account_id || '');
+      const safeBio      = p.biography ? escHtml(p.biography).replace(/\n/g,'<br>') : '';
+      // Validate website URL — only allow http/https to prevent javascript: injection
+      const rawWebsite   = (p.website || '').trim();
+      const safeWebsite  = /^https?:\/\//i.test(rawWebsite) ? escHtml(rawWebsite) : '';
+      const safePicUrl   = escHtml(p.profile_picture_url || '');
+
       profileCard.innerHTML = `
         <div style="display:flex;align-items:flex-start;gap:28px;flex-wrap:wrap;">
-          ${p.profile_picture_url
-            ? `<img src="${p.profile_picture_url}" alt="profile" style="width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid var(--primary);flex-shrink:0;">`
+          ${safePicUrl
+            ? `<img src="${safePicUrl}" alt="profile" style="width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid var(--primary);flex-shrink:0;">`
             : `<div style="width:96px;height:96px;border-radius:50%;background:var(--bg-secondary);border:3px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 24 24' fill='none' stroke='var(--muted)' stroke-width='2'><rect x='2' y='2' width='20' height='20' rx='5' ry='5'/><path d='M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z'/><line x1='17.5' y1='6.5' x2='17.51' y2='6.5'/></svg></div>`
           }
           <div style="flex:1;min-width:200px;">
-            <div style="font-size:22px;font-weight:800;margin-bottom:2px;">${p.name || ''}</div>
-            <div style="color:var(--primary);font-size:15px;font-weight:600;margin-bottom:12px;">@${p.username || igConn.instagram_account_id}</div>
-            ${p.biography ? `<div style="color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:16px;max-width:500px;">${p.biography.replace(/\n/g,'<br>')}</div>` : ''}
+            <div style="font-size:22px;font-weight:800;margin-bottom:2px;">${safeName}</div>
+            <div style="color:var(--primary);font-size:15px;font-weight:600;margin-bottom:12px;">@${safeUsername}</div>
+            ${safeBio ? `<div style="color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:16px;max-width:500px;">${safeBio}</div>` : ''}
             <div style="display:flex;gap:28px;flex-wrap:wrap;margin-bottom:16px;">
               <div style="text-align:center;">
                 <div style="font-size:20px;font-weight:800;color:var(--text);">${followersStr}</div>
@@ -9269,7 +9285,7 @@ async function loadIgConnectedView(){
               </div>
             </div>
             <div style="display:flex;gap:16px;flex-wrap:wrap;">
-              ${p.website ? `<a href="${p.website}" target="_blank" rel="noopener" style="color:var(--primary);font-size:13px;text-decoration:none;display:flex;align-items:center;gap:4px;"><svg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71'/><path d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71'/></svg>${p.website}</a>` : ''}
+              ${safeWebsite ? `<a href="${safeWebsite}" target="_blank" rel="noopener noreferrer" style="color:var(--primary);font-size:13px;text-decoration:none;display:flex;align-items:center;gap:4px;"><svg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71'/><path d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71'/></svg>${safeWebsite}</a>` : ''}
             </div>
           </div>
         </div>`;
@@ -9282,13 +9298,14 @@ async function loadIgConnectedView(){
     }
 
     // 3. Fetch latest posts
+    // TODO: Move this Facebook API call to n8n backend to avoid exposing page_access_token in frontend network requests
     try {
       const postsSection = document.getElementById('igPostsSection');
       const postsGrid = document.getElementById('igPostsGrid');
       const postsRes = await fetch(
         'https://graph.facebook.com/v19.0/' + igConn.instagram_account_id +
         '/media?fields=id,media_type,media_url,thumbnail_url,timestamp,like_count,comments_count&limit=12' +
-        '&access_token=' + igConn.access_token
+        '&access_token=' + igConn.page_access_token
       );
       const postsData = await postsRes.json();
       if(postsData.data && postsData.data.length > 0){
@@ -9441,7 +9458,7 @@ async function getProductsFromInstagram(){
     // Send POST to webhook with token + all IG fields
     const res = await fetch('https://api.ihflow.com/webhook/50226b32-81d3-4348-a064-c6be64a22ca6', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-api-key': 'ihflow-webhook-key' },
       body: JSON.stringify({
         token:                token,
         instagram_account_id: igConn.instagram_account_id || '',
