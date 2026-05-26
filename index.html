@@ -7786,13 +7786,38 @@ async function loadBotsListView(){
 
   const { data: bots } = await supabaseClient.from("bots").select("*").eq("user_id", user.id);
   const container = document.getElementById("botsListView");
+  const createBotSidebarBtn = document.getElementById("sidebarCreateBot");
+
+  // Enforce one-bot-per-user limit
+  const botCount = bots ? bots.length : 0;
+  if(botCount >= 1){
+    if(createBotSidebarBtn){
+      createBotSidebarBtn.style.opacity = "0.4";
+      createBotSidebarBtn.style.pointerEvents = "none";
+      createBotSidebarBtn.style.cursor = "not-allowed";
+      createBotSidebarBtn.onclick = null;
+    }
+  } else {
+    if(createBotSidebarBtn){
+      createBotSidebarBtn.style.opacity = "";
+      createBotSidebarBtn.style.pointerEvents = "";
+      createBotSidebarBtn.style.cursor = "";
+      createBotSidebarBtn.onclick = () => document.getElementById('createBotModal').style.display='flex';
+    }
+  }
 
   if(!bots || bots.length === 0){
     container.innerHTML = '<div class="no-bots-msg">No bots created yet. Create your first bot to get started!</div>';
     return;
   }
 
-  container.innerHTML = bots.map(bot => `
+  // Show bot-limit notice above the list
+  const limitNotice = `<div style="margin-bottom:12px;padding:10px 14px;background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.25);border-radius:10px;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    لديك بوت بالفعل. يمكنك امتلاك بوت واحد فقط.
+  </div>`;
+
+  container.innerHTML = limitNotice + bots.map(bot => `
     <div class="bot-item">
       <div class="bot-item-info">
         <div class="bot-item-icon">
