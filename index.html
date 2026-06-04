@@ -5389,22 +5389,21 @@ document.addEventListener("click", (e) => {
   // === Open Instagram Webhook Function ===
   async function openInstagramWebhook() {
     try {
-      const { data: { session }, error } = await supabaseClient.auth.getSession();
-      if (error || !session) {
+      const { data: { user }, error } = await supabaseClient.auth.getUser();
+      if (error || !user) {
         showToast('error', t('error'), t('mustBeLoggedIn'));
         return;
       }
 
       showToast('info', '🔗', 'Connecting to Instagram...', 3000);
 
-      // POST to server-side proxy — secret never leaves the server
-      const res = await fetch('/api/ig-connect', {
+      const res = await fetch('https://api.ihflow.com/webhook/IG-connect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ access_token: session.access_token }),
+        body: JSON.stringify({ user_id: user.id }),
       });
 
-      const result = await res.json();
+      const result = await res.json().catch(() => ({}));
 
       if (!res.ok) {
         showToast('error', 'Connection Error', result.error || `Server error ${res.status}`, 8000);
@@ -5412,7 +5411,7 @@ document.addEventListener("click", (e) => {
       }
 
       // If n8n returns an OAuth URL, open it in a popup
-      const oauthUrl = result.data?.url || result.data?.oauth_url || result.data?.redirect_url;
+      const oauthUrl = result?.url || result?.oauth_url || result?.redirect_url;
       if (oauthUrl) {
         const popup = window.open(oauthUrl, 'ig_oauth', 'width=620,height=700,top=100,left=200');
         if (!popup) showToast('warning', '⚠️', 'Popup blocked — please allow popups for this site', 6000);
@@ -8830,21 +8829,20 @@ async function startInstagramConnection(){
   showInstagramLoading();
 
   try {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if(!session){
+    const { data: { user }, error } = await supabaseClient.auth.getUser();
+    if(error || !user){
       showToast("error", t('error'), t('mustBeLoggedIn'));
       closeInstagramModal();
       return;
     }
 
-    // POST to server-side proxy — secret never leaves the server
-    const res = await fetch('/api/ig-connect', {
+    const res = await fetch('https://api.ihflow.com/webhook/IG-connect', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ access_token: session.access_token }),
+      body: JSON.stringify({ user_id: user.id }),
     });
 
-    const result = await res.json();
+    const result = await res.json().catch(() => ({}));
 
     if(!res.ok){
       showToast('error', 'Connection Error', result.error || `Server error ${res.status}`, 8000);
@@ -8853,7 +8851,7 @@ async function startInstagramConnection(){
     }
 
     // If n8n returns an OAuth URL, open it in a popup
-    const oauthUrl = result.data?.url || result.data?.oauth_url || result.data?.redirect_url;
+    const oauthUrl = result?.url || result?.oauth_url || result?.redirect_url;
     if(oauthUrl){
       const popup = window.open(oauthUrl, 'ig_oauth', 'width=620,height=700,top=100,left=200');
       if(!popup) showToast('warning', '⚠️', 'Popup blocked — please allow popups for this site', 6000);
