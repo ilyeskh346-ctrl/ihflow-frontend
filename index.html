@@ -2,13 +2,13 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <title>IH Flow — Instagram DM Automation Platform</title>
 <meta name="description" content="Turn Instagram conversations into instant replies, automated links, and captured emails. Built for creators and brands.">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg: #0a1628;
@@ -1904,138 +1904,6 @@ table thead th{position:sticky;top:0;z-index:1;}
   [dir="rtl"] .dash-wrap{margin-right:0 !important;margin-left:0 !important;}
 }
 
-/* ======= COMPREHENSIVE MOBILE DASHBOARD ======= */
-@media(max-width:768px){
-
-  /* ── Canvas: main content container ── */
-  .canvas{
-    padding:68px 16px 32px !important;
-    max-width:100% !important;
-    width:100% !important;
-    box-sizing:border-box !important;
-    overflow-x:hidden !important;
-  }
-
-  /* ── Layout: no overflow at top level ── */
-  html,body{overflow-x:hidden !important;}
-  .dashboard,.dashboard-layout{overflow-x:hidden !important;max-width:100vw;}
-  /* dash-wrap: full width, NO overflow-x:hidden (lets inner scroll work) */
-  .dash-wrap{
-    margin-left:0 !important;
-    margin-right:0 !important;
-    padding:0 !important;
-    width:100% !important;
-    max-width:100vw !important;
-    box-sizing:border-box !important;
-  }
-
-  /* ── Charts: single column ── */
-  .charts-grid{grid-template-columns:1fr !important;}
-
-  /* ── Tables: each wrapper scrolls horizontally ── */
-  /* Do NOT set global table min-width — causes page-wide overflow */
-  .table-wrap,
-  .table-responsive,
-  .orders-table-wrap,
-  .products-table-wrap,
-  .faqs-table-wrap,
-  #igConversationsTable,
-  div[style*="overflow-x:auto"],
-  div[style*="overflow-x: auto"]{
-    overflow-x:auto !important;
-    -webkit-overflow-scrolling:touch;
-    max-width:100% !important;
-  }
-
-  /* ── Instagram posts grid: 2 cols (was 3) ── */
-  #igPostsGrid{grid-template-columns:repeat(2,1fr) !important;}
-
-  /* ── Inputs & selects: full width, min 14px, min 44px tall ── */
-  .canvas input,
-  .canvas select,
-  .canvas textarea,
-  .modal-content input,
-  .modal-content select,
-  .modal-content textarea{
-    width:100% !important;
-    min-height:44px;
-    font-size:14px !important;
-    box-sizing:border-box;
-  }
-
-  /* ── Buttons: min 44px, min 14px font ── */
-  .canvas button,
-  .modal-content button,
-  .btn-primary,
-  .btn-secondary,
-  .btn-outline,
-  .icon-btn,
-  .filter-btn,
-  .bot-action-btn,
-  .sidebar-item{
-    min-height:44px;
-    font-size:14px;
-  }
-
-  /* ── Page headers: stack vertically ── */
-  .view-header,
-  .orders-header,
-  .products-header,
-  .faqs-header,
-  .section-header{
-    flex-direction:column !important;
-    align-items:flex-start !important;
-    gap:12px;
-  }
-  .view-header button,
-  .orders-header button,
-  .products-header button,
-  .faqs-header button,
-  .section-header button{width:100%;justify-content:center;}
-
-  /* ── Bot editor: 2-col → 1-col ── */
-  .bot-editor-grid,.editor-grid,.bot-form-grid{
-    grid-template-columns:1fr !important;
-  }
-
-  /* ── KPI cards ── */
-  .kpi-card{padding:16px;}
-  .kpi-value{font-size:22px;}
-  .kpi-icon{width:44px;height:44px;}
-  .kpi-grid{gap:12px;margin-bottom:20px;}
-
-  /* ── Chart & stat cards ── */
-  .chart-card,.stat-card{padding:16px;}
-
-  /* ── Selects: full width ── */
-  .bot-select,select[onchange]{width:100%;max-width:100%;}
-
-  /* ── Modals: nearly full screen ── */
-  .modal-content{
-    width:95vw !important;
-    max-width:95vw !important;
-    padding:20px !important;
-    margin:16px auto !important;
-    box-sizing:border-box !important;
-  }
-
-  /* ── Typography ── */
-  .canvas h2,.canvas h3{font-size:17px;}
-  .canvas p,.canvas label{font-size:14px;}
-}
-
-@media(max-width:480px){
-  /* Instagram posts: 1 col */
-  #igPostsGrid{grid-template-columns:1fr !important;}
-
-  /* KPI cards */
-  .kpi-card{padding:12px;gap:10px;}
-  .kpi-value{font-size:20px;}
-
-  /* Sidebar width cap */
-  .sidebar{width:85vw;max-width:280px;}
-}
-
 </style>
 <style>.footer-link{color:var(--text);font-size:14px;font-weight:500;text-decoration:none;opacity:0.8;transition:opacity 0.2s,color 0.2s;padding:4px 0;}.footer-link:hover{opacity:1;color:var(--primary);}.footer-sep{color:var(--border);font-size:16px;margin:0 6px;user-select:none;}</style>
 </head>
@@ -3687,13 +3555,7 @@ const translations = {
     motorType: "Motor Type",
     carName: "Car Name",
     description: "Description",
-    motorTypeOrder: "Motor Type",
-    products: "Products",
-    orders: "Orders",
-    statusPending: "Pending",
-    statusConfirmed: "Confirmed",
-    statusDelivered: "Delivered",
-    statusCancelled: "Cancelled"
+    motorTypeOrder: "Motor Type"
   },
   ar: {
     code: "AR",
@@ -4097,13 +3959,7 @@ const translations = {
     motorType: "نوع المحرك",
     carName: "اسم السيارة",
     description: "الوصف",
-    motorTypeOrder: "نوع المحرك",
-    products: "المنتجات",
-    orders: "الطلبيات",
-    statusPending: "قيد الانتظار",
-    statusConfirmed: "مؤكد",
-    statusDelivered: "تم التوصيل",
-    statusCancelled: "ملغي"
+    motorTypeOrder: "نوع المحرك"
   },
   fr: {
     code: "FR",
@@ -4503,13 +4359,7 @@ const translations = {
     motorType: "Type de Moteur",
     carName: "Nom de la Voiture",
     description: "Description",
-    motorTypeOrder: "Type de Moteur",
-    products: "Produits",
-    orders: "Commandes",
-    statusPending: "En attente",
-    statusConfirmed: "Confirmé",
-    statusDelivered: "Livré",
-    statusCancelled: "Annulé"
+    motorTypeOrder: "Type de Moteur"
   }
 };
 
@@ -4551,11 +4401,6 @@ function applyTranslations(){
 
   // Apply direction
   document.documentElement.dir = lang.dir;
-
-  // Switch font family for Arabic
-  document.documentElement.style.fontFamily = (currentLanguage === 'ar')
-    ? "'Cairo', 'Noto Sans Arabic', sans-serif"
-    : "'Inter', system-ui, -apple-system, sans-serif";
 
   // Update elements with data-i18n attribute
   document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -5389,45 +5234,28 @@ document.addEventListener("click", (e) => {
   // === Open Instagram Webhook Function ===
   async function openInstagramWebhook() {
     try {
-      const { data: { user }, error } = await supabaseClient.auth.getUser();
-      if (error || !user) {
-        showToast('error', t('error'), t('mustBeLoggedIn'));
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
+
+      if (error || !session) {
+        console.error('Error getting session:', error);
+        showToast('Please login first', 'error');
         return;
       }
 
-      const { data: botData } = await supabaseClient
-        .from('bots').select('id').eq('user_id', user.id).limit(1).maybeSingle();
+      const token = session.access_token;
 
-      showToast('info', '🔗', 'Connecting to Instagram...', 3000);
+      showToast('Connecting to Instagram...', 'info');
 
-      const res = await fetch('https://api.ihflow.com/webhook/IG-connect', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-ihflow-secret': '13df50d99bbf9b0c8508f14c9a3a454c21b7f236484e00925049fffeedfd3729'
-        },
-        body: JSON.stringify({ bot_id: botData?.id ?? null, user_id: user.id }),
-      });
+      const webhookUrl = `https://api.ihflow.com/webhook/IG-connect?token=${token}&config_id=2134696563760402`;
 
-      const result = await res.json().catch(() => ({}));
-
-      if (!res.ok) {
-        showToast('error', 'Connection Error', result.error || `Server error ${res.status}`, 8000);
-        return;
-      }
-
-      // If n8n returns an OAuth URL, open it in a popup
-      const oauthUrl = result?.url || result?.oauth_url || result?.redirect_url;
-      if (oauthUrl) {
-        const popup = window.open(oauthUrl, 'ig_oauth', 'width=620,height=700,top=100,left=200');
-        if (!popup) showToast('warning', '⚠️', 'Popup blocked — please allow popups for this site', 6000);
-        else showToast('info', '🔗', 'Complete the Instagram login in the popup window', 5000);
-      } else {
-        showToast('success', t('connected'), t('igConnectedSuccess'));
-      }
+      // تأخير صغير لضمان ظهور رسالة التوست
+      setTimeout(() => {
+        window.location.href = webhookUrl;
+      }, 500);
 
     } catch (err) {
-      showToast('error', t('error'), err.message || 'Unknown error', 8000);
+      console.error('Error connecting to Instagram:', err);
+      showToast('Failed to connect to Instagram. Please try again.', 'error');
     }
   }
 
@@ -5650,7 +5478,19 @@ function saveAutoReply(){
   list.appendChild(newCard);
 
   closeAutoReplyModal();
-  showToast('success', 'Success', 'Auto reply saved successfully!');
+  showToast('Auto reply saved successfully!', 'success');
+}
+
+function showToast(message, type){
+  const toast = document.createElement('div');
+  toast.className = 'toast ' + (type || '');
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.classList.add('show'), 10);
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
 }
 
 // === Show Stats View ===
@@ -5762,13 +5602,7 @@ window.addEventListener('popstate', function(event){
   }
 });
 
-async function navigateToView(viewName, botId = null, addToHistory = true){
-  // Guard: warn if leaving bot editor with unsaved changes
-  if(currentView === 'botEditor' && window.botEditorDirty){
-    const leave = await customConfirm('تغييرات غير محفوظة', 'لديك تغييرات غير محفوظة، هل تريد المغادرة؟');
-    if(!leave) return;
-    window.botEditorDirty = false;
-  }
+function navigateToView(viewName, botId = null, addToHistory = true){
   closeMobileSidebar();
   switch(viewName){
     case 'account':
@@ -7294,15 +7128,11 @@ function renderOrders(orders, activeColumns){
   const td = "padding:12px;text-align:center;font-size:13px;border:1px solid var(--border);";
   container.innerHTML = orders.map(order => {
     const status = order.status || "pending";
-    const statusMap = {
-      confirmed: { label: t('statusConfirmed'), style: "background:rgba(34,197,94,0.15);color:#22c55e;border:1px solid rgba(34,197,94,0.4)" },
-      delivered: { label: t('statusDelivered'), style: "background:rgba(99,102,241,0.15);color:#818cf8;border:1px solid rgba(99,102,241,0.4)" },
-      cancelled: { label: t('statusCancelled'), style: "background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.4)" },
-      pending:   { label: t('statusPending'),   style: "background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.4)" }
-    };
-    const statusInfo = statusMap[status] || statusMap.pending;
-    const statusLabel = statusInfo.label;
-    const statusStyle = statusInfo.style;
+    const isConfirmed = (status === "confirmed");
+    const statusLabel = isConfirmed ? "مؤكد" : "غير مؤكد";
+    const statusStyle = isConfirmed
+      ? "background:rgba(34,197,94,0.15);color:#22c55e;border:1px solid rgba(34,197,94,0.4)"
+      : "background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.4)";
     const cells = cols.map(col => {
       if(col.key === 'status'){
         return `<td style="padding:12px;text-align:center;border:1px solid var(--border);">
@@ -7460,21 +7290,16 @@ async function loadAllProducts(){
           </label>
         </div>
       </td>
-      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="type" value="${product.type || ''}" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;"></td>
-      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="name" value="${product.name || ''}" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;font-weight:500;"></td>
-      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="sizes" value="${product.sizes || ''}" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;text-align:center;"></td>
-      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="colors" value="${product.colors || ''}" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;text-align:center;"></td>
-      <td style="padding:6px;border-right:1px solid var(--border);"><input type="number" data-field="qty" value="${product.qty ?? ''}" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;"></td>
-      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="price" value="${product.price || ''}" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--primary);font-size:13px;text-align:center;font-weight:600;"></td>
+      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="type" value="${product.type || ''}" onchange="saveProductField('${product.id}', 'type', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;"></td>
+      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="name" value="${product.name || ''}" onchange="saveProductField('${product.id}', 'name', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;font-weight:500;"></td>
+      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="sizes" value="${product.sizes || ''}" onchange="saveProductField('${product.id}', 'sizes', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;text-align:center;"></td>
+      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="colors" value="${product.colors || ''}" onchange="saveProductField('${product.id}', 'colors', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;text-align:center;"></td>
+      <td style="padding:6px;border-right:1px solid var(--border);"><input type="number" data-field="qty" value="${product.qty ?? ''}" onchange="saveProductField('${product.id}', 'qty', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;"></td>
+      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="price" value="${product.price || ''}" onchange="saveProductField('${product.id}', 'price', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--primary);font-size:13px;text-align:center;font-weight:600;"></td>
       <td style="padding:8px;text-align:center;">
-        <div style="display:flex;gap:6px;justify-content:center;align-items:center;">
-          <button onclick="saveProductRow('${product.id}')" style="width:32px;height:32px;background:rgba(99,102,241,0.1);border:none;border-radius:8px;color:var(--primary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;" title="${t('save')}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-          </button>
-          <button onclick="deleteProduct('${product.id}')" style="width:32px;height:32px;background:rgba(239,68,68,0.1);border:none;border-radius:8px;color:#ef4444;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;" title="${t('delete')}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-          </button>
-        </div>
+        <button onclick="deleteProduct('${product.id}')" style="width:32px;height:32px;background:rgba(239,68,68,0.1);border:none;border-radius:8px;color:#ef4444;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;margin:0 auto;" title="${t('delete')}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+        </button>
       </td>
     </tr>
   `).join('');
@@ -7586,21 +7411,20 @@ async function saveFaq(){
     await filterFaqsByBot();
   }catch(e){
     console.error("saveFaq error:", e);
-    showToast('error', t('error'), e.message || String(e));
+    showToast(t('error') + ': ' + (e.message || e), 'error');
   }
 }
 
 async function deleteFaq(id){
-  const ok = await customConfirm(t('delete'), t('confirmDeleteFaq'));
-  if(!ok) return;
+  if(!confirm(t('confirmDeleteFaq'))) return;
   try{
     const { error } = await supabaseClient.from("faqs").delete().eq("id", id);
     if(error) throw error;
-    showToast('success', t('success'), t('faqDeleted'));
+    showToast(t('faqDeleted'), 'success');
     await filterFaqsByBot();
   }catch(e){
     console.error("deleteFaq error:", e);
-    showToast('error', t('error'), e.message || String(e));
+    showToast(t('error'), 'error');
   }
 }
 
@@ -7648,103 +7472,39 @@ function renderCarProducts(products, container){
           </label>
         </div>
       </td>
-      <td style="${cellStyle}"><input type="text" data-field="name" value="${product.name || ''}" style="${inputStyle}font-weight:500;"></td>
-      <td style="${cellStyle}"><input type="text" data-field="colors" value="${product.colors || ''}" style="${inputStyle}"></td>
-      <td style="${cellStyle}"><input type="number" data-field="qty" value="${product.qty ?? ''}" style="${inputStyle}"></td>
-      <td style="${cellStyle}"><input type="text" data-field="price" value="${product.price || ''}" style="${inputStyle}color:var(--primary);font-weight:600;"></td>
-      <td style="${cellStyle}"><input type="text" data-field="motor_type" value="${product.motor_type || ''}" style="${inputStyle}"></td>
-      <td style="${cellStyle}"><input type="text" data-field="description" value="${product.description || ''}" style="${inputStyle}"></td>
+      <td style="${cellStyle}"><input type="text" data-field="name" value="${product.name || ''}" onchange="saveProductField('${product.id}', 'name', this.value)" style="${inputStyle}font-weight:500;"></td>
+      <td style="${cellStyle}"><input type="text" data-field="colors" value="${product.colors || ''}" onchange="saveProductField('${product.id}', 'colors', this.value)" style="${inputStyle}"></td>
+      <td style="${cellStyle}"><input type="number" data-field="quantity" value="${product.quantity ?? ''}" onchange="saveProductField('${product.id}', 'quantity', this.value)" style="${inputStyle}"></td>
+      <td style="${cellStyle}"><input type="text" data-field="price" value="${product.price || ''}" onchange="saveProductField('${product.id}', 'price', this.value)" style="${inputStyle}color:var(--primary);font-weight:600;"></td>
+      <td style="${cellStyle}"><input type="text" data-field="motor_type" value="${product.motor_type || ''}" onchange="saveProductField('${product.id}', 'motor_type', this.value)" style="${inputStyle}"></td>
+      <td style="${cellStyle}"><input type="text" data-field="description" value="${product.description || ''}" onchange="saveProductField('${product.id}', 'description', this.value)" style="${inputStyle}"></td>
       <td style="padding:8px;text-align:center;">
-        <div style="display:flex;gap:6px;justify-content:center;align-items:center;">
-          <button onclick="saveProductRow('${product.id}')" style="width:32px;height:32px;background:rgba(99,102,241,0.1);border:none;border-radius:8px;color:var(--primary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;" title="${t('save')}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-          </button>
-          <button onclick="deleteProduct('${product.id}')" style="width:32px;height:32px;background:rgba(239,68,68,0.1);border:none;border-radius:8px;color:#ef4444;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;" title="${t('delete')}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-          </button>
-        </div>
+        <button onclick="deleteProduct('${product.id}')" style="width:32px;height:32px;background:rgba(239,68,68,0.1);border:none;border-radius:8px;color:#ef4444;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;" title="${t('delete')}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+        </button>
       </td>
     </tr>
   `).join('');
-}
-
-// === Save All Fields in a Product Row ===
-async function saveProductRow(productId){
-  const row = document.querySelector(`tr[data-id="${productId}"]`);
-  if(!row) return;
-
-  const allBtns = row.querySelectorAll('button');
-  let saveBtn = null;
-  allBtns.forEach(b => { if((b.getAttribute('onclick')||'').startsWith('saveProductRow')) saveBtn = b; });
-
-  const originalHTML = saveBtn ? saveBtn.innerHTML : '';
-  if(saveBtn){
-    saveBtn.disabled = true;
-    saveBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 0.8s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>`;
-  }
-
-  let firstError = null;
-  try {
-    const inputs = row.querySelectorAll('input[data-field]');
-    for(const inp of inputs){
-      const field = inp.dataset.field;
-      const val = inp.value;
-      const updates = {};
-      if(field === 'qty' || field === 'quantity'){
-        // Both map to the "qty" integer column
-        updates['qty'] = val ? parseInt(val) : null;
-      } else if(field === 'sizes' || field === 'colors'){
-        // TEXT columns — store as plain string, not array
-        updates[field] = val || null;
-      } else {
-        updates[field] = val || null;
-      }
-      const { error } = await supabaseClient.from("products").update(updates).eq("id", productId);
-      if(error && !firstError){
-        firstError = { field, code: error.code, msg: error.message, hint: error.hint, details: error.details };
-        console.error("saveProductRow error on field:", field, error);
-      }
-    }
-
-    if(!firstError){
-      if(saveBtn){
-        saveBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`;
-        saveBtn.style.background = "rgba(34,197,94,0.15)";
-        setTimeout(() => {
-          if(saveBtn){ saveBtn.innerHTML = originalHTML; saveBtn.style.background = "rgba(99,102,241,0.1)"; }
-        }, 1500);
-      }
-      showToast("success", t('success'), t('productUpdated'), 5000);
-    } else {
-      const errMsg = `[${firstError.field}] ${firstError.code}: ${firstError.msg}${firstError.hint ? ' — ' + firstError.hint : ''}`;
-      showToast("error", "خطأ في الحفظ", errMsg, 10000);
-      if(saveBtn){ saveBtn.innerHTML = originalHTML; saveBtn.style.background = "rgba(99,102,241,0.1)"; }
-    }
-  } catch(err){
-    console.error("saveProductRow catch:", err);
-    showToast("error", "خطأ", String(err), 10000);
-    if(saveBtn){ saveBtn.innerHTML = originalHTML; saveBtn.style.background = "rgba(99,102,241,0.1)"; }
-  } finally {
-    if(saveBtn) saveBtn.disabled = false;
-  }
 }
 
 // === Save Product Field (inline) ===
 async function saveProductField(productId, field, value){
   try {
     const updates = {};
-    if(field === 'qty' || field === 'quantity'){
-      updates['qty'] = value ? parseInt(value) : null;
+    if(field === 'qty'){
+      updates[field] = value ? parseInt(value) : null;
+    } else if(field === 'sizes' || field === 'colors'){
+      // Convert comma-separated string to array for Supabase
+      updates[field] = value ? value.split(',').map(s => s.trim()) : [];
     } else {
-      // sizes, colors, price, name, type etc. are all TEXT columns
-      updates[field] = value || null;
+      updates[field] = value;
     }
 
     const { error } = await supabaseClient.from("products").update(updates).eq("id", productId);
     if(error) throw error;
 
     // Show subtle success indicator
-    showToast("success", t('success'), t('productUpdated'), 5000);
+    showToast("success", t('success'), t('productUpdated'));
   } catch(err){
     console.error("Save product field error:", err);
     showToast("error", t('error'), t('failedToUpdateProduct'));
@@ -7768,7 +7528,7 @@ async function updateProductImage(productId, input){
     const { error } = await supabaseClient.from("products").update({ image: uploadData.path }).eq("id", productId);
     if(error) throw error;
 
-    showToast("success", t('success'), t('productUpdated'), 5000);
+    showToast("success", t('success'), t('productUpdated'));
     await loadAllProducts();
   } catch(err){
     console.error("Update product image error:", err);
@@ -7778,8 +7538,7 @@ async function updateProductImage(productId, input){
 
 // === Delete Product ===
 async function deleteProduct(productId, botId = null){
-  const ok = await customConfirm(t('delete'), t('confirmDeleteProduct'));
-  if(!ok) return;
+  if(!confirm(t('confirmDeleteProduct'))) return;
 
   try {
     const { error } = await supabaseClient.from("products").delete().eq("id", productId);
@@ -7851,16 +7610,18 @@ async function loadBotProducts(botId){
 async function saveProductFieldInBot(productId, field, value){
   try {
     const updates = {};
-    if(field === 'qty' || field === 'quantity'){
-      updates['qty'] = value ? parseInt(value) : null;
+    if(field === 'qty'){
+      updates[field] = value ? parseInt(value) : null;
+    } else if(field === 'sizes' || field === 'colors'){
+      updates[field] = value ? value.split(',').map(s => s.trim()) : [];
     } else {
-      updates[field] = value || null;
+      updates[field] = value;
     }
 
     const { error } = await supabaseClient.from("products").update(updates).eq("id", productId);
     if(error) throw error;
 
-    showToast("success", t('success'), t('productUpdated'), 5000);
+    showToast("success", t('success'), t('productUpdated'));
   } catch(err){
     console.error("Save product field error:", err);
     showToast("error", t('error'), t('failedToUpdateProduct'));
@@ -7884,7 +7645,7 @@ async function updateProductImageInBot(productId, botId, input){
     const { error } = await supabaseClient.from("products").update({ image: uploadData.path }).eq("id", productId);
     if(error) throw error;
 
-    showToast("success", t('success'), t('productUpdated'), 5000);
+    showToast("success", t('success'), t('productUpdated'));
     await loadBotProducts(botId);
   } catch(err){
     console.error("Update product image error:", err);
@@ -8006,7 +7767,7 @@ async function saveProductChanges(){
     const { error } = await supabaseClient.from("products").update(updates).eq("id", editingProductId);
     if(error) throw error;
 
-    showToast("success", t('success'), t('productUpdated'), 5000);
+    showToast("success", t('success'), t('productUpdated'));
     closeModal(editProductModal);
     await loadAllProducts();
   } catch(err){
@@ -8056,105 +7817,39 @@ async function loadBotsListView(){
     لديك بوت بالفعل. يمكنك امتلاك بوت واحد فقط.
   </div>`;
 
-  container.innerHTML = limitNotice + bots.map(bot => {
-    const isActive = bot.is_active === true;
-    const toggleStyle = isActive
-      ? "background:#22c55e;border-color:#22c55e;"
-      : "background:#4b5563;border-color:#4b5563;";
-    const knobPos = isActive ? "translateX(20px)" : "translateX(2px)";
-    const statusText = isActive ? t('active') : t('inactive');
-    const statusColor = isActive ? "#22c55e" : "var(--muted)";
-    return `
+  container.innerHTML = limitNotice + bots.map(bot => `
     <div class="bot-item">
       <div class="bot-item-info">
         <div class="bot-item-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
         </div>
-        <div style="display:flex;flex-direction:column;gap:2px;">
-          <span class="bot-item-name">${bot.name || 'Unnamed Bot'}</span>
-          <span id="bot-status-text-${bot.id}" style="font-size:11px;color:${statusColor};font-weight:600;">${statusText}</span>
-        </div>
+        <span class="bot-item-name">${bot.name || 'Unnamed Bot'}</span>
       </div>
-      <div class="bot-item-actions" style="display:flex;align-items:center;gap:10px;">
-        <button id="bot-toggle-${bot.id}" onclick="toggleBotActive('${bot.id}', ${isActive})"
-          style="position:relative;width:44px;height:24px;border-radius:12px;border:2px solid;cursor:pointer;transition:all 0.25s ease;padding:0;outline:none;flex-shrink:0;${toggleStyle}">
-          <span style="position:absolute;top:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform 0.25s ease;display:block;transform:${knobPos};"></span>
-        </button>
+      <div class="bot-item-actions">
         <button class="bot-action-btn open" onclick="openBotEditor('${bot.id}')">${t('open')}</button>
         <button class="bot-action-btn delete" onclick="deleteBot('${bot.id}')">${t('delete')}</button>
       </div>
     </div>
-  `}).join('');
-}
-
-async function toggleBotActive(botId, currentlyActive){
-  const newActive = !currentlyActive;
-  const { data: { user } } = await supabaseClient.auth.getUser();
-  if(!user) return;
-
-  const { error } = await supabaseClient
-    .from('bots')
-    .update({ is_active: newActive })
-    .eq('id', botId)
-    .eq('user_id', user.id);
-
-  if(error){
-    showToast('error', t('error'), t('failedToSave'));
-    return;
-  }
-
-  // Update UI without full reload
-  const btn = document.getElementById('bot-toggle-' + botId);
-  const statusEl = document.getElementById('bot-status-text-' + botId);
-  if(btn){
-    btn.style.background = newActive ? '#22c55e' : '#4b5563';
-    btn.style.borderColor = newActive ? '#22c55e' : '#4b5563';
-    btn.querySelector('span').style.transform = newActive ? 'translateX(20px)' : 'translateX(2px)';
-    btn.setAttribute('onclick', `toggleBotActive('${botId}', ${newActive})`);
-  }
-  if(statusEl){
-    statusEl.textContent = newActive ? t('active') : t('inactive');
-    statusEl.style.color = newActive ? '#22c55e' : 'var(--muted)';
-  }
+  `).join('');
 }
 
 // === Confirm Modal System ===
 let pendingConfirmAction = null;
-let confirmResolve = null;
 const confirmModal = document.getElementById("confirmModal");
 
 function showConfirmModal(title, message, action){
   document.getElementById("confirmTitle").textContent = title;
   document.getElementById("confirmMessage").textContent = message;
   pendingConfirmAction = action;
-  confirmResolve = null;
   confirmModal.style.display = "flex";
-}
-
-// Promise-based confirm — replaces native confirm() with SaaS modal
-function customConfirm(title, message){
-  document.getElementById("confirmTitle").textContent = title;
-  document.getElementById("confirmMessage").textContent = message;
-  pendingConfirmAction = null;
-  confirmModal.style.display = "flex";
-  return new Promise(resolve => { confirmResolve = resolve; });
 }
 
 function closeConfirmModal(){
   confirmModal.style.display = "none";
   pendingConfirmAction = null;
-  if(confirmResolve){ confirmResolve(false); confirmResolve = null; }
 }
 
 async function executeConfirmAction(){
-  if(confirmResolve){
-    // Promise mode
-    const res = confirmResolve;
-    confirmResolve = null;
-    confirmModal.style.display = "none";
-    res(true);
-    return;
-  }
   if(pendingConfirmAction){
     const btn = document.getElementById("confirmDeleteBtn");
     btn.textContent = "Deleting...";
@@ -8197,8 +7892,9 @@ function deleteBot(botId){
         const editorView = document.getElementById("botEditorView");
         if(editorView) editorView.innerHTML = "";
 
-        showToast("success", t('deleted'), t('botDeleted'), 2000);
-        setTimeout(() => window.location.reload(), 1500);
+        showToast("success", t('deleted'), t('botDeleted'));
+        await loadBotsListView();
+        loadBots();
 
       } catch(err){
         showToast("error", t('error'), t('failedToDelete'));
@@ -8835,45 +8531,99 @@ async function startInstagramConnection(){
   showInstagramLoading();
 
   try {
-    const { data: { user }, error } = await supabaseClient.auth.getUser();
-    if(error || !user){
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if(!session) return;
+    const token = session.access_token;
+
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if(!user) return;
+
+    const { data: profileData } = await supabaseClient
+      .from('profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .single();
+
+    if(!profileData){
       showToast("error", t('error'), t('mustBeLoggedIn'));
       closeInstagramModal();
       return;
     }
 
-    const res = await fetch('https://api.ihflow.com/webhook/IG-connect', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-ihflow-secret': '13df50d99bbf9b0c8508f14c9a3a454c21b7f236484e00925049fffeedfd3729'
-      },
-      body: JSON.stringify({ bot_id: botId, user_id: user.id }),
-    });
+    const { data: existingAccount } = await supabaseClient
+      .from('instagram_connections')
+      .select('*')
+      .eq('user_id', user.id)
+      .maybeSingle();
 
-    const result = await res.json().catch(() => ({}));
+    const webhookData = {
+      token: token,
+      bot_id: botId,
+      username: profileData.username || '',
+      email: profileData.email || user.email,
+      profile_created_at: profileData.created_at || '',
+      timestamp: new Date().toISOString()
+    };
 
-    if(!res.ok){
-      showToast('error', 'Connection Error', result.error || `Server error ${res.status}`, 8000);
+    if(existingAccount){
+      webhookData.existing_ig_id = existingAccount.ig_id || '';
+      webhookData.existing_ig_username = existingAccount.ig_username || '';
+      webhookData.existing_ig_business_id = existingAccount.ig_business_id || '';
+      webhookData.existing_page_id = existingAccount.page_id || '';
+      webhookData.has_existing_account = 'true';
+    }
+
+    webhookData.config_id = '2134696563760402';
+    const params = new URLSearchParams(webhookData);
+    const webhookUrl = `https://api.ihflow.com/webhook/IG-connect?${params.toString()}`;
+
+    const webhookWindow = window.open(webhookUrl, 'InstagramWebhook', 'width=600,height=700,left=100,top=100');
+
+    if(!webhookWindow){
+      showToast("error", "Blocked", "Popup was blocked. Please allow popups for this site.");
       closeInstagramModal();
       return;
     }
 
-    // If n8n returns an OAuth URL, open it in a popup
-    const oauthUrl = result?.url || result?.oauth_url || result?.redirect_url;
-    if(oauthUrl){
-      const popup = window.open(oauthUrl, 'ig_oauth', 'width=620,height=700,top=100,left=200');
-      if(!popup) showToast('warning', '⚠️', 'Popup blocked — please allow popups for this site', 6000);
-      else showToast('info', '🔗', 'Complete the Instagram login in the popup window', 5000);
-    } else {
-      showToast("success", t('connected'), t('igConnectedSuccess'));
-      await checkInstagramConnection(botId);
-    }
+    const messageHandler = async (event) => {
+      if(event.origin !== window.location.origin && !event.origin.includes('api.ihflow.com')){
+        return;
+      }
 
-    closeInstagramModal();
+      if(event.data.type === 'instagram_connected'){
+        showToast("success", t('connected'), t('igConnectedSuccess'));
+        closeInstagramModal();
+        await checkInstagramConnection(botId);
+        window.removeEventListener('message', messageHandler);
+        if(webhookWindow && !webhookWindow.closed){
+          webhookWindow.close();
+        }
+      } else if(event.data.type === 'instagram_error'){
+        showToast("error", t('error'), event.data.error || t('connectionFailed'));
+        closeInstagramModal();
+        window.removeEventListener('message', messageHandler);
+      }
+    };
+
+    window.addEventListener('message', messageHandler);
+
+    // Check if window was closed manually
+    const checkClosed = setInterval(() => {
+      if(webhookWindow && webhookWindow.closed){
+        clearInterval(checkClosed);
+        closeInstagramModal();
+        checkInstagramConnection(botId);
+      }
+    }, 1000);
+
+    setTimeout(() => {
+      window.removeEventListener('message', messageHandler);
+      clearInterval(checkClosed);
+    }, 120000);
 
   } catch(error) {
-    showToast("error", t('error'), error.message || 'Unknown error', 8000);
+    console.error('Error:', error);
+    showToast("error", t('error'), error.message);
     closeInstagramModal();
   }
 }
@@ -8989,19 +8739,11 @@ async function loadBots(){
 }
 
 // === Open Bot Editor ===
-window.closeEditor = async function(){
-  if(window.botEditorDirty){
-    const leave = await customConfirm('تغييرات غير محفوظة', 'لديك تغييرات غير محفوظة، هل تريد المغادرة؟');
-    if(!leave) return;
-    window.botEditorDirty = false;
-  }
+window.closeEditor = function(){
   history.back();
 }
 
-window.botEditorDirty = false;
-
 window.openBot = async function(botId){
-  window.botEditorDirty = false;
   // Hide other views
   const welcomeView = document.getElementById("welcomeView");
   if(welcomeView) welcomeView.style.display = "none";
@@ -9047,18 +8789,18 @@ window.openBot = async function(botId){
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
       <div class="editor-section">
         <label>${t('botName')}</label>
-        <input id="editName" value="${data.name || ''}" oninput="window.botEditorDirty=true">
+        <input id="editName" value="${data.name || ''}">
       </div>
       <div class="editor-section">
         <label>${t('businessName')}</label>
-        <input id="editBusinessName" value="${data.business_name || ''}" oninput="window.botEditorDirty=true">
+        <input id="editBusinessName" value="${data.business_name || ''}">
       </div>
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
       <div class="editor-section">
         <label>${t('activityType')}</label>
-        <input id="editActivityType" value="${data.activity_type || ''}" list="editActivityTypeList" oninput="window.botEditorDirty=true">
+        <input id="editActivityType" value="${data.activity_type || ''}" list="editActivityTypeList">
         <datalist id="editActivityTypeList">
     <option value="Car">
     <option value="E-commerce">
@@ -9066,18 +8808,18 @@ window.openBot = async function(botId){
       </div>
       <div class="editor-section">
         <label>${t('phoneNumber')}</label>
-        <input id="editPhone" type="tel" value="${data.phone || ''}" oninput="window.botEditorDirty=true">
+        <input id="editPhone" type="tel" value="${data.phone || ''}">
       </div>
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
       <div class="editor-section">
         <label>${t('workingHours')}</label>
-        <input id="editWorkingHours" value="${data.working_hours || ''}" oninput="window.botEditorDirty=true">
+        <input id="editWorkingHours" value="${data.working_hours || ''}">
       </div>
       <div class="editor-section">
         <label>${t('returnPolicy')}</label>
-        <select id="editReturnPolicy" onchange="window.botEditorDirty=true" style="width:100%;padding:12px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;">
+        <select id="editReturnPolicy" style="width:100%;padding:12px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;">
           <option value="yes" ${data.return_policy === 'yes' ? 'selected' : ''} data-i18n="yesReturns">${t('yesReturns')}</option>
           <option value="no" ${data.return_policy === 'no' ? 'selected' : ''} data-i18n="noReturns">${t('noReturns')}</option>
           <option value="conditional" ${data.return_policy === 'conditional' ? 'selected' : ''} data-i18n="conditionalReturns">${t('conditionalReturns')}</option>
@@ -9086,7 +8828,7 @@ window.openBot = async function(botId){
     </div>
 
     <button class="save-bot-btn" id="saveBotBtn" onclick="saveBotChanges('${botId}')">${t('saveChanges')}</button>
-    <p id="saveStatus" style="margin-top:10px;font-size:14px;font-weight:500;min-height:20px;"></p>
+    <p id="saveStatus"></p>
   </div>
   `;
 
@@ -9094,15 +8836,12 @@ window.openBot = async function(botId){
 
 // === Save Bot Changes ===
 window.saveBotChanges = async function(botId){
-  const btn = document.getElementById("saveBotBtn");
-  const statusEl = document.getElementById("saveStatus");
-  if(!btn) return;
 
-  const originalHTML = btn.innerHTML;
+  const btn = document.getElementById("saveBotBtn");
+  const originalText = btn.textContent;
   btn.disabled = true;
-  btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 0.8s linear infinite;vertical-align:middle;margin-right:6px;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>${t('saving')}`;
-  btn.style.opacity = "0.75";
-  if(statusEl) statusEl.textContent = "";
+  btn.textContent = t('saving');
+  btn.style.opacity = "0.7";
 
   try {
     const name = document.getElementById("editName").value;
@@ -9112,7 +8851,7 @@ window.saveBotChanges = async function(botId){
     const working_hours = document.getElementById("editWorkingHours").value;
     const return_policy = document.getElementById("editReturnPolicy").value;
 
-    const { error } = await supabaseClient.from("bots").update({ 
+    await supabaseClient.from("bots").update({ 
       name, 
       business_name,
       activity_type,
@@ -9121,34 +8860,17 @@ window.saveBotChanges = async function(botId){
       return_policy
     }).eq("id", botId);
 
-    if(error) throw error;
-
-    window.botEditorDirty = false;
-    if(statusEl){
-      statusEl.textContent = "✅ تم الحفظ بنجاح";
-      statusEl.style.color = "#22c55e";
-      setTimeout(() => { if(statusEl) statusEl.textContent = ""; }, 5000);
-    }
+    showToast("success", t('saved'), t('changesSavedSuccess'));
     loadBots();
   } catch(err) {
-    if(statusEl){
-      statusEl.textContent = "❌ حدث خطأ، حاول مرة أخرى";
-      statusEl.style.color = "#ef4444";
-    }
+    showToast("error", t('error'), t('failedToSaveChanges'));
+    console.error("Save error:", err);
   } finally {
     btn.disabled = false;
-    btn.innerHTML = originalHTML;
+    btn.textContent = originalText;
     btn.style.opacity = "1";
   }
 }
-
-// Warn on browser tab close/refresh if bot editor has unsaved changes
-window.addEventListener('beforeunload', function(e){
-  if(window.botEditorDirty){
-    e.preventDefault();
-    e.returnValue = '';
-  }
-});
 
 // === Update image description ===
 window.updateImageDescription = async function(imageId, desc){
@@ -9315,10 +9037,11 @@ async function submitCreateBot() {
         image: p.image_url,
         type: p.type || null,
         name: p.name,
-        sizes: p.sizes || null,
-        colors: p.colors || null,
-        qty: p.quantity ? parseInt(p.quantity) : null,
-        price: p.price || null,
+        sizes: p.sizes ? p.sizes.split(',').map(s => s.trim()) : [],
+        colors: p.colors ? p.colors.split(',').map(c => c.trim()) : [],
+        quantity: p.quantity || 0,
+        qty: p.quantity || 0,
+        price: parseFloat((p.price || '0').replace(/[^0-9.]/g, '')) || 0,
         motor_type: p.motor_type || null,
         description: p.description || null
       }));
@@ -9739,30 +9462,46 @@ async function getProductsFromInstagram(){
     const { data: { user } } = await supabaseClient.auth.getUser();
     if(!user) throw new Error('Not authenticated');
 
-    // Fetch the user's bot_id
-    const { data: botData, error: botErr } = await supabaseClient
+    // 1. Fetch all fields from instagram_connections
+    const { data: igConn, error: igErr } = await supabaseClient
+      .from('instagram_connections')
+      .select('instagram_account_id, ig_username, ig_name, page_id, page_name, page_access_token, user_access_token, connected_at')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if(igErr || !igConn){
+      showToast('warning', '⚠️', 'يجب ربط حساب Instagram أولاً');
+      return;
+    }
+
+    // 2. Fetch matching bot_id from bots table
+    const { data: botData } = await supabaseClient
       .from('bots')
       .select('id')
       .eq('user_id', user.id)
+      .eq('instagram_account_id', igConn.instagram_account_id)
       .limit(1)
       .maybeSingle();
-
-    if(botErr || !botData){
-      showToast('warning', '⚠️', 'لم يتم العثور على بوت. يرجى إنشاء بوت أولاً');
-      return;
-    }
 
     // Show loading
     btn.disabled = true;
     btnText.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Loading...';
 
+    // 3. Send POST to webhook with all fields
     const res = await fetch('https://api.ihflow.com/webhook/50226b32-81d3-4348-a064-c6be64a22ca6', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-ihflow-secret': '13df50d99bbf9b0c8508f14c9a3a454c21b7f236484e00925049fffeedfd3729'
-      },
-      body: JSON.stringify({ bot_id: botData.id })
+      headers: { 'Content-Type': 'application/json', 'x-api-key': 'ihflow-webhook-key' },
+      body: JSON.stringify({
+        bot_id:               botData?.id             || '',
+        instagram_account_id: igConn.instagram_account_id || '',
+        ig_username:          igConn.ig_username          || '',
+        ig_name:              igConn.ig_name              || '',
+        page_id:              igConn.page_id              || '',
+        page_name:            igConn.page_name            || '',
+        page_access_token:    igConn.page_access_token    || '',
+        user_access_token:    igConn.user_access_token    || '',
+        connected_at:         igConn.connected_at         || ''
+      })
     });
 
     if(!res.ok) throw new Error('Webhook returned ' + res.status);
