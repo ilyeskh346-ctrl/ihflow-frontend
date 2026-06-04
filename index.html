@@ -7576,7 +7576,7 @@ async function saveProductRow(productId){
           if(saveBtn){ saveBtn.innerHTML = originalHTML; saveBtn.style.background = "rgba(99,102,241,0.1)"; }
         }, 1500);
       }
-      showToast("success", t('success'), t('productUpdated'));
+      showToast("success", t('success'), t('productUpdated'), 2000);
     } else {
       const errMsg = `[${firstError.field}] ${firstError.code}: ${firstError.msg}${firstError.hint ? ' — ' + firstError.hint : ''}`;
       showToast("error", "خطأ في الحفظ", errMsg, 10000);
@@ -7606,7 +7606,7 @@ async function saveProductField(productId, field, value){
     if(error) throw error;
 
     // Show subtle success indicator
-    showToast("success", t('success'), t('productUpdated'));
+    showToast("success", t('success'), t('productUpdated'), 2000);
   } catch(err){
     console.error("Save product field error:", err);
     showToast("error", t('error'), t('failedToUpdateProduct'));
@@ -7630,7 +7630,7 @@ async function updateProductImage(productId, input){
     const { error } = await supabaseClient.from("products").update({ image: uploadData.path }).eq("id", productId);
     if(error) throw error;
 
-    showToast("success", t('success'), t('productUpdated'));
+    showToast("success", t('success'), t('productUpdated'), 2000);
     await loadAllProducts();
   } catch(err){
     console.error("Update product image error:", err);
@@ -7722,7 +7722,7 @@ async function saveProductFieldInBot(productId, field, value){
     const { error } = await supabaseClient.from("products").update(updates).eq("id", productId);
     if(error) throw error;
 
-    showToast("success", t('success'), t('productUpdated'));
+    showToast("success", t('success'), t('productUpdated'), 2000);
   } catch(err){
     console.error("Save product field error:", err);
     showToast("error", t('error'), t('failedToUpdateProduct'));
@@ -7746,7 +7746,7 @@ async function updateProductImageInBot(productId, botId, input){
     const { error } = await supabaseClient.from("products").update({ image: uploadData.path }).eq("id", productId);
     if(error) throw error;
 
-    showToast("success", t('success'), t('productUpdated'));
+    showToast("success", t('success'), t('productUpdated'), 2000);
     await loadBotProducts(botId);
   } catch(err){
     console.error("Update product image error:", err);
@@ -7868,7 +7868,7 @@ async function saveProductChanges(){
     const { error } = await supabaseClient.from("products").update(updates).eq("id", editingProductId);
     if(error) throw error;
 
-    showToast("success", t('success'), t('productUpdated'));
+    showToast("success", t('success'), t('productUpdated'), 2000);
     closeModal(editProductModal);
     await loadAllProducts();
   } catch(err){
@@ -8059,9 +8059,8 @@ function deleteBot(botId){
         const editorView = document.getElementById("botEditorView");
         if(editorView) editorView.innerHTML = "";
 
-        showToast("success", t('deleted'), t('botDeleted'));
-        await loadBotsListView();
-        loadBots();
+        showToast("success", t('deleted'), t('botDeleted'), 2000);
+        setTimeout(() => window.location.reload(), 1500);
 
       } catch(err){
         showToast("error", t('error'), t('failedToDelete'));
@@ -8978,7 +8977,7 @@ window.saveBotChanges = async function(botId){
     if(statusEl){
       statusEl.textContent = "✅ تم الحفظ بنجاح";
       statusEl.style.color = "#22c55e";
-      setTimeout(() => { if(statusEl) statusEl.textContent = ""; }, 3000);
+      setTimeout(() => { if(statusEl) statusEl.textContent = ""; }, 2000);
     }
     loadBots();
   } catch(err) {
