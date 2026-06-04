@@ -169,6 +169,7 @@ class SecureHandler(http.server.SimpleHTTPRequestHandler):
             "connect-src 'self' "
             "https://muhxkvtniuinrspwhzhn.supabase.co "
             "wss://muhxkvtniuinrspwhzhn.supabase.co "
+            "https://api.ihflow.com "
             "https://graph.facebook.com "
             "https://www.facebook.com; "
             "frame-src 'none'; "
