@@ -5389,30 +5389,36 @@ document.addEventListener("click", (e) => {
   // === Open Instagram Webhook Function ===
   async function openInstagramWebhook() {
     try {
-      const { data: { user }, error } = await supabaseClient.auth.getUser();
-      if (error || !user) {
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
+      if (error || !session) {
         showToast('error', t('error'), t('mustBeLoggedIn'));
         return;
       }
 
-      const { data: botData } = await supabaseClient
-        .from('bots')
-        .select('id')
-        .eq('user_id', user.id)
-        .limit(1)
-        .maybeSingle();
+      showToast('info', '🔗', 'Connecting to Instagram...', 3000);
 
-      showToast('info', '🔗', 'Opening Instagram connection...', 3000);
+      // POST to server-side proxy — secret never leaves the server
+      const res = await fetch('/api/ig-connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ access_token: session.access_token }),
+      });
 
-      // Open as window navigation — avoids CORS, allows n8n to redirect to Facebook OAuth
-      const url = new URL('https://api.ihflow.com/webhook/IG-connect');
-      url.searchParams.set('bot_id', botData?.id || '');
-      url.searchParams.set('user_id', user.id);
-      url.searchParams.set('secret', '13df50d99bbf9b0c8508f14c9a3a454c21b7f236484e00925049fffeedfd3729');
+      const result = await res.json();
 
-      const popup = window.open(url.toString(), 'ig_connect', 'width=620,height=700,top=100,left=200');
-      if (!popup) {
-        showToast('warning', '⚠️', 'Popup blocked — please allow popups for this site', 6000);
+      if (!res.ok) {
+        showToast('error', 'Connection Error', result.error || `Server error ${res.status}`, 8000);
+        return;
+      }
+
+      // If n8n returns an OAuth URL, open it in a popup
+      const oauthUrl = result.data?.url || result.data?.oauth_url || result.data?.redirect_url;
+      if (oauthUrl) {
+        const popup = window.open(oauthUrl, 'ig_oauth', 'width=620,height=700,top=100,left=200');
+        if (!popup) showToast('warning', '⚠️', 'Popup blocked — please allow popups for this site', 6000);
+        else showToast('info', '🔗', 'Complete the Instagram login in the popup window', 5000);
+      } else {
+        showToast('success', t('connected'), t('igConnectedSuccess'));
       }
 
     } catch (err) {
@@ -8824,24 +8830,37 @@ async function startInstagramConnection(){
   showInstagramLoading();
 
   try {
-    const { data: { user } } = await supabaseClient.auth.getUser();
-    if(!user){
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if(!session){
       showToast("error", t('error'), t('mustBeLoggedIn'));
       closeInstagramModal();
       return;
     }
 
-    // Open as window navigation — avoids CORS, allows n8n to redirect to Facebook OAuth
-    const url = new URL('https://api.ihflow.com/webhook/IG-connect');
-    url.searchParams.set('bot_id', botId);
-    url.searchParams.set('user_id', user.id);
-    url.searchParams.set('secret', '13df50d99bbf9b0c8508f14c9a3a454c21b7f236484e00925049fffeedfd3729');
+    // POST to server-side proxy — secret never leaves the server
+    const res = await fetch('/api/ig-connect', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ access_token: session.access_token }),
+    });
 
-    const popup = window.open(url.toString(), 'ig_connect', 'width=620,height=700,top=100,left=200');
-    if (!popup) {
-      showToast('warning', '⚠️', 'Popup blocked — please allow popups for this site', 6000);
+    const result = await res.json();
+
+    if(!res.ok){
+      showToast('error', 'Connection Error', result.error || `Server error ${res.status}`, 8000);
+      closeInstagramModal();
+      return;
+    }
+
+    // If n8n returns an OAuth URL, open it in a popup
+    const oauthUrl = result.data?.url || result.data?.oauth_url || result.data?.redirect_url;
+    if(oauthUrl){
+      const popup = window.open(oauthUrl, 'ig_oauth', 'width=620,height=700,top=100,left=200');
+      if(!popup) showToast('warning', '⚠️', 'Popup blocked — please allow popups for this site', 6000);
+      else showToast('info', '🔗', 'Complete the Instagram login in the popup window', 5000);
     } else {
-      showToast('info', '🔗', 'Complete the Instagram login in the popup window', 5000);
+      showToast("success", t('connected'), t('igConnectedSuccess'));
+      await checkInstagramConnection(botId);
     }
 
     closeInstagramModal();
@@ -9730,13 +9749,10 @@ async function getProductsFromInstagram(){
     btn.disabled = true;
     btnText.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Loading...';
 
-    // Send POST with bot_id only — backend fetches credentials from DB
-    const res = await fetch('https://api.ihflow.com/webhook/50226b32-81d3-4348-a064-c6be64a22ca6', {
+    // POST to server-side proxy — secret never leaves the server
+    const res = await fetch('/api/ig-products', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-ihflow-secret': '13df50d99bbf9b0c8508f14c9a3a454c21b7f236484e00925049fffeedfd3729'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ bot_id: botData.id })
     });
 
