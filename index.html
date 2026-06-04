@@ -7512,7 +7512,7 @@ function renderCarProducts(products, container){
       </td>
       <td style="${cellStyle}"><input type="text" data-field="name" value="${product.name || ''}" style="${inputStyle}font-weight:500;"></td>
       <td style="${cellStyle}"><input type="text" data-field="colors" value="${product.colors || ''}" style="${inputStyle}"></td>
-      <td style="${cellStyle}"><input type="number" data-field="quantity" value="${product.quantity ?? ''}" style="${inputStyle}"></td>
+      <td style="${cellStyle}"><input type="number" data-field="qty" value="${product.qty ?? ''}" style="${inputStyle}"></td>
       <td style="${cellStyle}"><input type="text" data-field="price" value="${product.price || ''}" style="${inputStyle}color:var(--primary);font-weight:600;"></td>
       <td style="${cellStyle}"><input type="text" data-field="motor_type" value="${product.motor_type || ''}" style="${inputStyle}"></td>
       <td style="${cellStyle}"><input type="text" data-field="description" value="${product.description || ''}" style="${inputStyle}"></td>
@@ -7552,13 +7552,12 @@ async function saveProductRow(productId){
       const field = inp.dataset.field;
       const val = inp.value;
       const updates = {};
-      if(field === 'qty'){
-        updates[field] = val ? parseInt(val) : null;
+      if(field === 'qty' || field === 'quantity'){
+        // Both map to the "qty" integer column
+        updates['qty'] = val ? parseInt(val) : null;
       } else if(field === 'sizes' || field === 'colors'){
-        updates[field] = val ? val.split(',').map(s => s.trim()) : [];
-      } else if(field === 'price'){
-        const num = parseFloat(val);
-        updates[field] = isNaN(num) ? null : num;
+        // TEXT columns — store as plain string, not array
+        updates[field] = val || null;
       } else {
         updates[field] = val || null;
       }
@@ -7596,13 +7595,11 @@ async function saveProductRow(productId){
 async function saveProductField(productId, field, value){
   try {
     const updates = {};
-    if(field === 'qty'){
-      updates[field] = value ? parseInt(value) : null;
-    } else if(field === 'sizes' || field === 'colors'){
-      // Convert comma-separated string to array for Supabase
-      updates[field] = value ? value.split(',').map(s => s.trim()) : [];
+    if(field === 'qty' || field === 'quantity'){
+      updates['qty'] = value ? parseInt(value) : null;
     } else {
-      updates[field] = value;
+      // sizes, colors, price, name, type etc. are all TEXT columns
+      updates[field] = value || null;
     }
 
     const { error } = await supabaseClient.from("products").update(updates).eq("id", productId);
@@ -7716,12 +7713,10 @@ async function loadBotProducts(botId){
 async function saveProductFieldInBot(productId, field, value){
   try {
     const updates = {};
-    if(field === 'qty'){
-      updates[field] = value ? parseInt(value) : null;
-    } else if(field === 'sizes' || field === 'colors'){
-      updates[field] = value ? value.split(',').map(s => s.trim()) : [];
+    if(field === 'qty' || field === 'quantity'){
+      updates['qty'] = value ? parseInt(value) : null;
     } else {
-      updates[field] = value;
+      updates[field] = value || null;
     }
 
     const { error } = await supabaseClient.from("products").update(updates).eq("id", productId);
@@ -9171,11 +9166,10 @@ async function submitCreateBot() {
         image: p.image_url,
         type: p.type || null,
         name: p.name,
-        sizes: p.sizes ? p.sizes.split(',').map(s => s.trim()) : [],
-        colors: p.colors ? p.colors.split(',').map(c => c.trim()) : [],
-        quantity: p.quantity || 0,
-        qty: p.quantity || 0,
-        price: parseFloat((p.price || '0').replace(/[^0-9.]/g, '')) || 0,
+        sizes: p.sizes || null,
+        colors: p.colors || null,
+        qty: p.quantity ? parseInt(p.quantity) : null,
+        price: p.price || null,
         motor_type: p.motor_type || null,
         description: p.description || null
       }));
