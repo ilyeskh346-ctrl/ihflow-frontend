@@ -1907,25 +1907,50 @@ table thead th{position:sticky;top:0;z-index:1;}
 /* ======= COMPREHENSIVE MOBILE DASHBOARD ======= */
 @media(max-width:768px){
 
-  /* Main content top padding — space for hamburger button */
-  .canvas{padding-top:68px !important;}
+  /* ── Canvas: main content container ── */
+  .canvas{
+    padding:68px 16px 32px !important;
+    max-width:100% !important;
+    width:100% !important;
+    box-sizing:border-box !important;
+    overflow-x:hidden !important;
+  }
 
-  /* Charts: single column */
+  /* ── Layout: no overflow at top level ── */
+  html,body{overflow-x:hidden !important;}
+  .dashboard,.dashboard-layout{overflow-x:hidden !important;max-width:100vw;}
+  /* dash-wrap: full width, NO overflow-x:hidden (lets inner scroll work) */
+  .dash-wrap{
+    margin-left:0 !important;
+    margin-right:0 !important;
+    padding:0 !important;
+    width:100% !important;
+    max-width:100vw !important;
+    box-sizing:border-box !important;
+  }
+
+  /* ── Charts: single column ── */
   .charts-grid{grid-template-columns:1fr !important;}
 
-  /* Tables: horizontal scroll */
+  /* ── Tables: each wrapper scrolls horizontally ── */
+  /* Do NOT set global table min-width — causes page-wide overflow */
   .table-wrap,
   .table-responsive,
   .orders-table-wrap,
   .products-table-wrap,
-  .faqs-table-wrap{
-    overflow-x:auto;
+  .faqs-table-wrap,
+  #igConversationsTable,
+  div[style*="overflow-x:auto"],
+  div[style*="overflow-x: auto"]{
+    overflow-x:auto !important;
     -webkit-overflow-scrolling:touch;
-    width:100%;
+    max-width:100% !important;
   }
-  table{min-width:600px;}
 
-  /* Inputs & selects: full width, min font 14px, min height 44px */
+  /* ── Instagram posts grid: 2 cols (was 3) ── */
+  #igPostsGrid{grid-template-columns:repeat(2,1fr) !important;}
+
+  /* ── Inputs & selects: full width, min 14px, min 44px tall ── */
   .canvas input,
   .canvas select,
   .canvas textarea,
@@ -1938,7 +1963,7 @@ table thead th{position:sticky;top:0;z-index:1;}
     box-sizing:border-box;
   }
 
-  /* Buttons: min 44px height, min 14px font */
+  /* ── Buttons: min 44px, min 14px font ── */
   .canvas button,
   .modal-content button,
   .btn-primary,
@@ -1952,13 +1977,13 @@ table thead th{position:sticky;top:0;z-index:1;}
     font-size:14px;
   }
 
-  /* View headers (page title + action button) */
+  /* ── Page headers: stack vertically ── */
   .view-header,
   .orders-header,
   .products-header,
   .faqs-header,
   .section-header{
-    flex-direction:column;
+    flex-direction:column !important;
     align-items:flex-start !important;
     gap:12px;
   }
@@ -1966,63 +1991,49 @@ table thead th{position:sticky;top:0;z-index:1;}
   .orders-header button,
   .products-header button,
   .faqs-header button,
-  .section-header button{
-    width:100%;
-    justify-content:center;
-  }
+  .section-header button{width:100%;justify-content:center;}
 
-  /* Bot editor: 2-col → 1-col */
-  .bot-editor-grid,
-  .editor-grid,
-  .bot-form-grid{
+  /* ── Bot editor: 2-col → 1-col ── */
+  .bot-editor-grid,.editor-grid,.bot-form-grid{
     grid-template-columns:1fr !important;
   }
 
-  /* KPI cards: reduce padding on mobile */
+  /* ── KPI cards ── */
   .kpi-card{padding:16px;}
   .kpi-value{font-size:22px;}
   .kpi-icon{width:44px;height:44px;}
   .kpi-grid{gap:12px;margin-bottom:20px;}
 
-  /* Overview charts padding */
-  .chart-card{padding:16px;}
+  /* ── Chart & stat cards ── */
+  .chart-card,.stat-card{padding:16px;}
 
-  /* Stat cards */
-  .stat-card{padding:16px;}
+  /* ── Selects: full width ── */
+  .bot-select,select[onchange]{width:100%;max-width:100%;}
 
-  /* Canvas / main content area */
-  .canvas{padding-left:16px !important;padding-right:16px !important;padding-bottom:24px !important;}
-
-  /* FAQs, orders, products: full-width select */
-  .bot-select,
-  select[onchange]{width:100%;}
-
-  /* Modal: full width on mobile */
+  /* ── Modals: nearly full screen ── */
   .modal-content{
     width:95vw !important;
     max-width:95vw !important;
     padding:20px !important;
     margin:16px auto !important;
+    box-sizing:border-box !important;
   }
 
-  /* Prevent overflow */
-  .dashboard,.dashboard-layout,.dash-wrap{max-width:100vw;overflow-x:hidden;}
-
-  /* Section labels inside canvas */
+  /* ── Typography ── */
   .canvas h2,.canvas h3{font-size:17px;}
   .canvas p,.canvas label{font-size:14px;}
 }
 
 @media(max-width:480px){
-  /* Stack any remaining 2-col grids */
-  .canvas [style*="grid-template-columns:1fr 1fr"],
-  .canvas [style*="grid-template-columns: 1fr 1fr"],
-  .canvas [style*="repeat(2"]{
-    grid-template-columns:1fr !important;
-  }
-  table{min-width:480px;}
+  /* Instagram posts: 1 col */
+  #igPostsGrid{grid-template-columns:1fr !important;}
+
+  /* KPI cards */
   .kpi-card{padding:12px;gap:10px;}
   .kpi-value{font-size:20px;}
+
+  /* Sidebar width cap */
+  .sidebar{width:85vw;max-width:280px;}
 }
 
 </style>
