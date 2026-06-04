@@ -5393,24 +5393,35 @@ document.addEventListener("click", (e) => {
 
       showToast('info', '🔗', 'Connecting to Instagram...');
 
-      const res = await fetch('https://api.ihflow.com/webhook/IG-connect', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-ihflow-secret': '13df50d99bbf9b0c8508f14c9a3a454c21b7f236484e00925049fffeedfd3729'
-        },
-        body: JSON.stringify({
-          bot_id: botData?.id || '',
-          user_id: user.id
-        })
-      });
+      let res;
+      try {
+        res = await fetch('https://api.ihflow.com/webhook/IG-connect', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-ihflow-secret': '13df50d99bbf9b0c8508f14c9a3a454c21b7f236484e00925049fffeedfd3729'
+          },
+          body: JSON.stringify({
+            bot_id: botData?.id || '',
+            user_id: user.id
+          })
+        });
+      } catch(netErr) {
+        showToast('error', 'Network Error', 'Cannot reach api.ihflow.com — ' + netErr.message, 8000);
+        return;
+      }
 
-      if (!res.ok) throw new Error('Webhook returned ' + res.status);
+      if (!res.ok) {
+        let body = '';
+        try { body = await res.text(); } catch(_){}
+        showToast('error', 'Webhook Error ' + res.status, body || 'No response body', 8000);
+        return;
+      }
 
       showToast('success', t('connected'), t('igConnectedSuccess'));
 
     } catch (err) {
-      showToast('error', t('error'), 'Failed to connect to Instagram. Please try again.');
+      showToast('error', t('error'), err.message || 'Unknown error', 8000);
     }
   }
 
@@ -8825,26 +8836,39 @@ async function startInstagramConnection(){
       return;
     }
 
-    const res = await fetch('https://api.ihflow.com/webhook/IG-connect', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-ihflow-secret': '13df50d99bbf9b0c8508f14c9a3a454c21b7f236484e00925049fffeedfd3729'
-      },
-      body: JSON.stringify({
-        bot_id: botId,
-        user_id: user.id
-      })
-    });
+    let res;
+    try {
+      res = await fetch('https://api.ihflow.com/webhook/IG-connect', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-ihflow-secret': '13df50d99bbf9b0c8508f14c9a3a454c21b7f236484e00925049fffeedfd3729'
+        },
+        body: JSON.stringify({
+          bot_id: botId,
+          user_id: user.id
+        })
+      });
+    } catch(netErr) {
+      showToast('error', 'Network Error', 'Cannot reach api.ihflow.com — ' + netErr.message, 8000);
+      closeInstagramModal();
+      return;
+    }
 
-    if(!res.ok) throw new Error('Webhook returned ' + res.status);
+    if(!res.ok) {
+      let body = '';
+      try { body = await res.text(); } catch(_){}
+      showToast('error', 'Webhook Error ' + res.status, body || 'No response body', 8000);
+      closeInstagramModal();
+      return;
+    }
 
     showToast("success", t('connected'), t('igConnectedSuccess'));
     closeInstagramModal();
     await checkInstagramConnection(botId);
 
   } catch(error) {
-    showToast("error", t('error'), error.message);
+    showToast("error", t('error'), error.message || 'Unknown error', 8000);
     closeInstagramModal();
   }
 }
