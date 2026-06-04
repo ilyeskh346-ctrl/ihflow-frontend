@@ -7334,16 +7334,21 @@ async function loadAllProducts(){
           </label>
         </div>
       </td>
-      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="type" value="${product.type || ''}" onchange="saveProductField('${product.id}', 'type', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;"></td>
-      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="name" value="${product.name || ''}" onchange="saveProductField('${product.id}', 'name', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;font-weight:500;"></td>
-      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="sizes" value="${product.sizes || ''}" onchange="saveProductField('${product.id}', 'sizes', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;text-align:center;"></td>
-      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="colors" value="${product.colors || ''}" onchange="saveProductField('${product.id}', 'colors', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;text-align:center;"></td>
-      <td style="padding:6px;border-right:1px solid var(--border);"><input type="number" data-field="qty" value="${product.qty ?? ''}" onchange="saveProductField('${product.id}', 'qty', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;"></td>
-      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="price" value="${product.price || ''}" onchange="saveProductField('${product.id}', 'price', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--primary);font-size:13px;text-align:center;font-weight:600;"></td>
+      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="type" value="${product.type || ''}" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;"></td>
+      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="name" value="${product.name || ''}" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;font-weight:500;"></td>
+      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="sizes" value="${product.sizes || ''}" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;text-align:center;"></td>
+      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="colors" value="${product.colors || ''}" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;text-align:center;"></td>
+      <td style="padding:6px;border-right:1px solid var(--border);"><input type="number" data-field="qty" value="${product.qty ?? ''}" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;"></td>
+      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="price" value="${product.price || ''}" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--primary);font-size:13px;text-align:center;font-weight:600;"></td>
       <td style="padding:8px;text-align:center;">
-        <button onclick="deleteProduct('${product.id}')" style="width:32px;height:32px;background:rgba(239,68,68,0.1);border:none;border-radius:8px;color:#ef4444;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;margin:0 auto;" title="${t('delete')}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-        </button>
+        <div style="display:flex;gap:6px;justify-content:center;align-items:center;">
+          <button onclick="saveProductRow('${product.id}')" style="width:32px;height:32px;background:rgba(99,102,241,0.1);border:none;border-radius:8px;color:var(--primary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;" title="${t('save')}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          </button>
+          <button onclick="deleteProduct('${product.id}')" style="width:32px;height:32px;background:rgba(239,68,68,0.1);border:none;border-radius:8px;color:#ef4444;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;" title="${t('delete')}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+          </button>
+        </div>
       </td>
     </tr>
   `).join('');
@@ -7516,19 +7521,72 @@ function renderCarProducts(products, container){
           </label>
         </div>
       </td>
-      <td style="${cellStyle}"><input type="text" data-field="name" value="${product.name || ''}" onchange="saveProductField('${product.id}', 'name', this.value)" style="${inputStyle}font-weight:500;"></td>
-      <td style="${cellStyle}"><input type="text" data-field="colors" value="${product.colors || ''}" onchange="saveProductField('${product.id}', 'colors', this.value)" style="${inputStyle}"></td>
-      <td style="${cellStyle}"><input type="number" data-field="quantity" value="${product.quantity ?? ''}" onchange="saveProductField('${product.id}', 'quantity', this.value)" style="${inputStyle}"></td>
-      <td style="${cellStyle}"><input type="text" data-field="price" value="${product.price || ''}" onchange="saveProductField('${product.id}', 'price', this.value)" style="${inputStyle}color:var(--primary);font-weight:600;"></td>
-      <td style="${cellStyle}"><input type="text" data-field="motor_type" value="${product.motor_type || ''}" onchange="saveProductField('${product.id}', 'motor_type', this.value)" style="${inputStyle}"></td>
-      <td style="${cellStyle}"><input type="text" data-field="description" value="${product.description || ''}" onchange="saveProductField('${product.id}', 'description', this.value)" style="${inputStyle}"></td>
+      <td style="${cellStyle}"><input type="text" data-field="name" value="${product.name || ''}" style="${inputStyle}font-weight:500;"></td>
+      <td style="${cellStyle}"><input type="text" data-field="colors" value="${product.colors || ''}" style="${inputStyle}"></td>
+      <td style="${cellStyle}"><input type="number" data-field="quantity" value="${product.quantity ?? ''}" style="${inputStyle}"></td>
+      <td style="${cellStyle}"><input type="text" data-field="price" value="${product.price || ''}" style="${inputStyle}color:var(--primary);font-weight:600;"></td>
+      <td style="${cellStyle}"><input type="text" data-field="motor_type" value="${product.motor_type || ''}" style="${inputStyle}"></td>
+      <td style="${cellStyle}"><input type="text" data-field="description" value="${product.description || ''}" style="${inputStyle}"></td>
       <td style="padding:8px;text-align:center;">
-        <button onclick="deleteProduct('${product.id}')" style="width:32px;height:32px;background:rgba(239,68,68,0.1);border:none;border-radius:8px;color:#ef4444;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;" title="${t('delete')}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-        </button>
+        <div style="display:flex;gap:6px;justify-content:center;align-items:center;">
+          <button onclick="saveProductRow('${product.id}')" style="width:32px;height:32px;background:rgba(99,102,241,0.1);border:none;border-radius:8px;color:var(--primary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;" title="${t('save')}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          </button>
+          <button onclick="deleteProduct('${product.id}')" style="width:32px;height:32px;background:rgba(239,68,68,0.1);border:none;border-radius:8px;color:#ef4444;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;" title="${t('delete')}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+          </button>
+        </div>
       </td>
     </tr>
   `).join('');
+}
+
+// === Save All Fields in a Product Row ===
+async function saveProductRow(productId){
+  const row = document.querySelector(`tr[data-id="${productId}"]`);
+  if(!row) return;
+
+  const saveBtn = row.querySelector('button[onclick^="saveProductRow"]');
+  const originalHTML = saveBtn ? saveBtn.innerHTML : '';
+  if(saveBtn){
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 0.8s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>`;
+  }
+
+  try {
+    const inputs = row.querySelectorAll('input[data-field]');
+    const updates = {};
+    inputs.forEach(inp => {
+      const field = inp.dataset.field;
+      const val = inp.value;
+      if(field === 'qty' || field === 'quantity'){
+        updates[field] = val ? parseInt(val) : null;
+      } else if(field === 'sizes' || field === 'colors'){
+        updates[field] = val ? val.split(',').map(s => s.trim()) : [];
+      } else {
+        updates[field] = val;
+      }
+    });
+
+    const { error } = await supabaseClient.from("products").update(updates).eq("id", productId);
+    if(error) throw error;
+
+    // Flash save button green briefly
+    if(saveBtn){
+      saveBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`;
+      saveBtn.style.background = "rgba(34,197,94,0.15)";
+      setTimeout(() => {
+        if(saveBtn){ saveBtn.innerHTML = originalHTML; saveBtn.style.background = "rgba(99,102,241,0.1)"; }
+      }, 1500);
+    }
+    showToast("success", t('success'), t('productUpdated'));
+  } catch(err){
+    console.error("saveProductRow error:", err);
+    showToast("error", t('error'), t('failedToUpdateProduct'));
+    if(saveBtn){ saveBtn.innerHTML = originalHTML; }
+  } finally {
+    if(saveBtn) saveBtn.disabled = false;
+  }
 }
 
 // === Save Product Field (inline) ===
