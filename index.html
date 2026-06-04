@@ -5512,19 +5512,7 @@ function saveAutoReply(){
   list.appendChild(newCard);
 
   closeAutoReplyModal();
-  showToast('Auto reply saved successfully!', 'success');
-}
-
-function showToast(message, type){
-  const toast = document.createElement('div');
-  toast.className = 'toast ' + (type || '');
-  toast.textContent = message;
-  document.body.appendChild(toast);
-  setTimeout(() => toast.classList.add('show'), 10);
-  setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => toast.remove(), 300);
-  }, 3000);
+  showToast('success', 'Success', 'Auto reply saved successfully!');
 }
 
 // === Show Stats View ===
@@ -7460,7 +7448,7 @@ async function saveFaq(){
     await filterFaqsByBot();
   }catch(e){
     console.error("saveFaq error:", e);
-    showToast(t('error') + ': ' + (e.message || e), 'error');
+    showToast('error', t('error'), e.message || String(e));
   }
 }
 
@@ -7470,11 +7458,11 @@ async function deleteFaq(id){
   try{
     const { error } = await supabaseClient.from("faqs").delete().eq("id", id);
     if(error) throw error;
-    showToast(t('faqDeleted'), 'success');
+    showToast('success', t('success'), t('faqDeleted'));
     await filterFaqsByBot();
   }catch(e){
     console.error("deleteFaq error:", e);
-    showToast(t('error'), 'error');
+    showToast('error', t('error'), e.message || String(e));
   }
 }
 
@@ -7557,37 +7545,47 @@ async function saveProductRow(productId){
     saveBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 0.8s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>`;
   }
 
+  let firstError = null;
   try {
     const inputs = row.querySelectorAll('input[data-field]');
-    const updates = {};
-    inputs.forEach(inp => {
+    for(const inp of inputs){
       const field = inp.dataset.field;
       const val = inp.value;
-      // Match exact logic of saveProductField
+      const updates = {};
       if(field === 'qty'){
         updates[field] = val ? parseInt(val) : null;
       } else if(field === 'sizes' || field === 'colors'){
         updates[field] = val ? val.split(',').map(s => s.trim()) : [];
+      } else if(field === 'price'){
+        const num = parseFloat(val);
+        updates[field] = isNaN(num) ? null : num;
       } else {
-        updates[field] = val;
+        updates[field] = val || null;
       }
-    });
-
-    const { error } = await supabaseClient.from("products").update(updates).eq("id", productId);
-    if(error) throw error;
-
-    if(saveBtn){
-      saveBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`;
-      saveBtn.style.background = "rgba(34,197,94,0.15)";
-      setTimeout(() => {
-        if(saveBtn){ saveBtn.innerHTML = originalHTML; saveBtn.style.background = "rgba(99,102,241,0.1)"; }
-      }, 1500);
+      const { error } = await supabaseClient.from("products").update(updates).eq("id", productId);
+      if(error && !firstError){
+        firstError = { field, code: error.code, msg: error.message, hint: error.hint, details: error.details };
+        console.error("saveProductRow error on field:", field, error);
+      }
     }
-    showToast("success", t('success'), t('productUpdated'));
+
+    if(!firstError){
+      if(saveBtn){
+        saveBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`;
+        saveBtn.style.background = "rgba(34,197,94,0.15)";
+        setTimeout(() => {
+          if(saveBtn){ saveBtn.innerHTML = originalHTML; saveBtn.style.background = "rgba(99,102,241,0.1)"; }
+        }, 1500);
+      }
+      showToast("success", t('success'), t('productUpdated'));
+    } else {
+      const errMsg = `[${firstError.field}] ${firstError.code}: ${firstError.msg}${firstError.hint ? ' — ' + firstError.hint : ''}`;
+      showToast("error", "خطأ في الحفظ", errMsg, 10000);
+      if(saveBtn){ saveBtn.innerHTML = originalHTML; saveBtn.style.background = "rgba(99,102,241,0.1)"; }
+    }
   } catch(err){
-    console.error("saveProductRow error:", err);
-    const msg = (err && err.message) ? err.message : t('failedToUpdateProduct');
-    showToast("error", t('error'), msg);
+    console.error("saveProductRow catch:", err);
+    showToast("error", "خطأ", String(err), 10000);
     if(saveBtn){ saveBtn.innerHTML = originalHTML; saveBtn.style.background = "rgba(99,102,241,0.1)"; }
   } finally {
     if(saveBtn) saveBtn.disabled = false;
