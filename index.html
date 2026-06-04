@@ -5234,28 +5234,39 @@ document.addEventListener("click", (e) => {
   // === Open Instagram Webhook Function ===
   async function openInstagramWebhook() {
     try {
-      const { data: { session }, error } = await supabaseClient.auth.getSession();
-
-      if (error || !session) {
-        console.error('Error getting session:', error);
-        showToast('Please login first', 'error');
+      const { data: { user }, error } = await supabaseClient.auth.getUser();
+      if (error || !user) {
+        showToast('error', t('error'), t('mustBeLoggedIn'));
         return;
       }
 
-      const token = session.access_token;
+      const { data: botData } = await supabaseClient
+        .from('bots')
+        .select('id')
+        .eq('user_id', user.id)
+        .limit(1)
+        .maybeSingle();
 
-      showToast('Connecting to Instagram...', 'info');
+      showToast('info', '🔗', 'Connecting to Instagram...');
 
-      const webhookUrl = `https://api.ihflow.com/webhook/IG-connect?token=${token}&config_id=2134696563760402`;
+      const res = await fetch('https://api.ihflow.com/webhook/IG-connect', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-ihflow-secret': '13df50d99bbf9b0c8508f14c9a3a454c21b7f236484e00925049fffeedfd3729'
+        },
+        body: JSON.stringify({
+          bot_id: botData?.id || '',
+          user_id: user.id
+        })
+      });
 
-      // تأخير صغير لضمان ظهور رسالة التوست
-      setTimeout(() => {
-        window.location.href = webhookUrl;
-      }, 500);
+      if (!res.ok) throw new Error('Webhook returned ' + res.status);
+
+      showToast('success', t('connected'), t('igConnectedSuccess'));
 
     } catch (err) {
-      console.error('Error connecting to Instagram:', err);
-      showToast('Failed to connect to Instagram. Please try again.', 'error');
+      showToast('error', t('error'), 'Failed to connect to Instagram. Please try again.');
     }
   }
 
@@ -8531,98 +8542,32 @@ async function startInstagramConnection(){
   showInstagramLoading();
 
   try {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if(!session) return;
-    const token = session.access_token;
-
     const { data: { user } } = await supabaseClient.auth.getUser();
-    if(!user) return;
-
-    const { data: profileData } = await supabaseClient
-      .from('profiles')
-      .select('*')
-      .eq('user_id', user.id)
-      .single();
-
-    if(!profileData){
+    if(!user){
       showToast("error", t('error'), t('mustBeLoggedIn'));
       closeInstagramModal();
       return;
     }
 
-    const { data: existingAccount } = await supabaseClient
-      .from('instagram_connections')
-      .select('*')
-      .eq('user_id', user.id)
-      .maybeSingle();
+    const res = await fetch('https://api.ihflow.com/webhook/IG-connect', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-ihflow-secret': '13df50d99bbf9b0c8508f14c9a3a454c21b7f236484e00925049fffeedfd3729'
+      },
+      body: JSON.stringify({
+        bot_id: botId,
+        user_id: user.id
+      })
+    });
 
-    const webhookData = {
-      token: token,
-      bot_id: botId,
-      username: profileData.username || '',
-      email: profileData.email || user.email,
-      profile_created_at: profileData.created_at || '',
-      timestamp: new Date().toISOString()
-    };
+    if(!res.ok) throw new Error('Webhook returned ' + res.status);
 
-    if(existingAccount){
-      webhookData.existing_ig_id = existingAccount.ig_id || '';
-      webhookData.existing_ig_username = existingAccount.ig_username || '';
-      webhookData.existing_ig_business_id = existingAccount.ig_business_id || '';
-      webhookData.existing_page_id = existingAccount.page_id || '';
-      webhookData.has_existing_account = 'true';
-    }
-
-    webhookData.config_id = '2134696563760402';
-    const params = new URLSearchParams(webhookData);
-    const webhookUrl = `https://api.ihflow.com/webhook/IG-connect?${params.toString()}`;
-
-    const webhookWindow = window.open(webhookUrl, 'InstagramWebhook', 'width=600,height=700,left=100,top=100');
-
-    if(!webhookWindow){
-      showToast("error", "Blocked", "Popup was blocked. Please allow popups for this site.");
-      closeInstagramModal();
-      return;
-    }
-
-    const messageHandler = async (event) => {
-      if(event.origin !== window.location.origin && !event.origin.includes('api.ihflow.com')){
-        return;
-      }
-
-      if(event.data.type === 'instagram_connected'){
-        showToast("success", t('connected'), t('igConnectedSuccess'));
-        closeInstagramModal();
-        await checkInstagramConnection(botId);
-        window.removeEventListener('message', messageHandler);
-        if(webhookWindow && !webhookWindow.closed){
-          webhookWindow.close();
-        }
-      } else if(event.data.type === 'instagram_error'){
-        showToast("error", t('error'), event.data.error || t('connectionFailed'));
-        closeInstagramModal();
-        window.removeEventListener('message', messageHandler);
-      }
-    };
-
-    window.addEventListener('message', messageHandler);
-
-    // Check if window was closed manually
-    const checkClosed = setInterval(() => {
-      if(webhookWindow && webhookWindow.closed){
-        clearInterval(checkClosed);
-        closeInstagramModal();
-        checkInstagramConnection(botId);
-      }
-    }, 1000);
-
-    setTimeout(() => {
-      window.removeEventListener('message', messageHandler);
-      clearInterval(checkClosed);
-    }, 120000);
+    showToast("success", t('connected'), t('igConnectedSuccess'));
+    closeInstagramModal();
+    await checkInstagramConnection(botId);
 
   } catch(error) {
-    console.error('Error:', error);
     showToast("error", t('error'), error.message);
     closeInstagramModal();
   }
