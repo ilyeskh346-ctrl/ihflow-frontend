@@ -7855,20 +7855,66 @@ async function loadBotsListView(){
     لديك بوت بالفعل. يمكنك امتلاك بوت واحد فقط.
   </div>`;
 
-  container.innerHTML = limitNotice + bots.map(bot => `
+  container.innerHTML = limitNotice + bots.map(bot => {
+    const isActive = bot.is_active === true;
+    const toggleStyle = isActive
+      ? "background:#22c55e;border-color:#22c55e;"
+      : "background:#4b5563;border-color:#4b5563;";
+    const knobPos = isActive ? "translateX(20px)" : "translateX(2px)";
+    const statusText = isActive ? t('active') : t('inactive');
+    const statusColor = isActive ? "#22c55e" : "var(--muted)";
+    return `
     <div class="bot-item">
       <div class="bot-item-info">
         <div class="bot-item-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
         </div>
-        <span class="bot-item-name">${bot.name || 'Unnamed Bot'}</span>
+        <div style="display:flex;flex-direction:column;gap:2px;">
+          <span class="bot-item-name">${bot.name || 'Unnamed Bot'}</span>
+          <span id="bot-status-text-${bot.id}" style="font-size:11px;color:${statusColor};font-weight:600;">${statusText}</span>
+        </div>
       </div>
-      <div class="bot-item-actions">
+      <div class="bot-item-actions" style="display:flex;align-items:center;gap:10px;">
+        <button id="bot-toggle-${bot.id}" onclick="toggleBotActive('${bot.id}', ${isActive})"
+          style="position:relative;width:44px;height:24px;border-radius:12px;border:2px solid;cursor:pointer;transition:all 0.25s ease;padding:0;outline:none;flex-shrink:0;${toggleStyle}">
+          <span style="position:absolute;top:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform 0.25s ease;display:block;transform:${knobPos};"></span>
+        </button>
         <button class="bot-action-btn open" onclick="openBotEditor('${bot.id}')">${t('open')}</button>
         <button class="bot-action-btn delete" onclick="deleteBot('${bot.id}')">${t('delete')}</button>
       </div>
     </div>
-  `).join('');
+  `}).join('');
+}
+
+async function toggleBotActive(botId, currentlyActive){
+  const newActive = !currentlyActive;
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if(!user) return;
+
+  const { error } = await supabaseClient
+    .from('bots')
+    .update({ is_active: newActive })
+    .eq('id', botId)
+    .eq('user_id', user.id);
+
+  if(error){
+    showToast('error', t('error'), t('failedToSave'));
+    return;
+  }
+
+  // Update UI without full reload
+  const btn = document.getElementById('bot-toggle-' + botId);
+  const statusEl = document.getElementById('bot-status-text-' + botId);
+  if(btn){
+    btn.style.background = newActive ? '#22c55e' : '#4b5563';
+    btn.style.borderColor = newActive ? '#22c55e' : '#4b5563';
+    btn.querySelector('span').style.transform = newActive ? 'translateX(20px)' : 'translateX(2px)';
+    btn.setAttribute('onclick', `toggleBotActive('${botId}', ${newActive})`);
+  }
+  if(statusEl){
+    statusEl.textContent = newActive ? t('active') : t('inactive');
+    statusEl.style.color = newActive ? '#22c55e' : 'var(--muted)';
+  }
 }
 
 // === Confirm Modal System ===
