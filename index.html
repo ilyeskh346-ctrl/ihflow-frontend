@@ -9462,46 +9462,31 @@ async function getProductsFromInstagram(){
     const { data: { user } } = await supabaseClient.auth.getUser();
     if(!user) throw new Error('Not authenticated');
 
-    // 1. Fetch all fields from instagram_connections
-    const { data: igConn, error: igErr } = await supabaseClient
-      .from('instagram_connections')
-      .select('instagram_account_id, ig_username, ig_name, page_id, page_name, page_access_token, user_access_token, connected_at')
-      .eq('user_id', user.id)
-      .maybeSingle();
-
-    if(igErr || !igConn){
-      showToast('warning', '⚠️', 'يجب ربط حساب Instagram أولاً');
-      return;
-    }
-
-    // 2. Fetch matching bot_id from bots table
-    const { data: botData } = await supabaseClient
+    // Fetch the user's bot_id
+    const { data: botData, error: botErr } = await supabaseClient
       .from('bots')
       .select('id')
       .eq('user_id', user.id)
-      .eq('instagram_account_id', igConn.instagram_account_id)
       .limit(1)
       .maybeSingle();
+
+    if(botErr || !botData){
+      showToast('warning', '⚠️', 'لم يتم العثور على بوت. يرجى إنشاء بوت أولاً');
+      return;
+    }
 
     // Show loading
     btn.disabled = true;
     btnText.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Loading...';
 
-    // 3. Send POST to webhook with all fields
+    // Send POST with bot_id only — backend fetches credentials from DB
     const res = await fetch('https://api.ihflow.com/webhook/50226b32-81d3-4348-a064-c6be64a22ca6', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': 'ihflow-webhook-key' },
-      body: JSON.stringify({
-        bot_id:               botData?.id             || '',
-        instagram_account_id: igConn.instagram_account_id || '',
-        ig_username:          igConn.ig_username          || '',
-        ig_name:              igConn.ig_name              || '',
-        page_id:              igConn.page_id              || '',
-        page_name:            igConn.page_name            || '',
-        page_access_token:    igConn.page_access_token    || '',
-        user_access_token:    igConn.user_access_token    || '',
-        connected_at:         igConn.connected_at         || ''
-      })
+      headers: {
+        'Content-Type': 'application/json',
+        'x-ihflow-secret': '13df50d99bbf9b0c8508f14c9a3a454c21b7f236484e00925049fffeedfd3729'
+      },
+      body: JSON.stringify({ bot_id: botData.id })
     });
 
     if(!res.ok) throw new Error('Webhook returned ' + res.status);
