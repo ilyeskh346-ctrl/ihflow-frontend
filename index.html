@@ -2142,6 +2142,10 @@ table thead th{position:sticky;top:0;z-index:1;}
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
 <span id="igScrapeBtnText">Get Products from Instagram</span>
 </button>
+<button id="saveProductsViewBtn" onclick="saveAllProductsView()" style="padding:10px 16px;background:var(--gradient);border:none;border-radius:8px;color:#fff;font-size:14px;cursor:pointer;display:none;align-items:center;gap:8px;font-weight:600;">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+<span>Save</span>
+</button>
 </div>
 </div>
 
@@ -5287,6 +5291,7 @@ async function logout(){
   if(addProductBtn){
     addProductBtn.style.display = "none";
   const _igBtnH=document.getElementById("igScrapeBtn");if(_igBtnH)_igBtnH.style.display="none";
+  const _svBtnH=document.getElementById("saveProductsViewBtn");if(_svBtnH)_svBtnH.style.display="none";
   }
 
   // Reset Bots view state
@@ -7234,6 +7239,7 @@ async function loadAllProducts(){
   if(filterValue === "all"){
     if(addBtn) addBtn.style.display = "none";
     const _igs = document.getElementById("igScrapeBtn"); if(_igs) _igs.style.display = "none";
+    const _svBtn = document.getElementById("saveProductsViewBtn"); if(_svBtn) _svBtn.style.display = "none";
     resetProductsTableHead();
     container.innerHTML = `<tr>
       <td colspan="8" style="padding:40px;text-align:center;color:var(--muted);">
@@ -7248,6 +7254,8 @@ async function loadAllProducts(){
   if(addBtn) addBtn.style.display = "flex";
   const igScrapeBtn = document.getElementById("igScrapeBtn");
   if(igScrapeBtn) igScrapeBtn.style.display = "flex";
+  const saveProductsViewBtn = document.getElementById("saveProductsViewBtn");
+  if(saveProductsViewBtn) saveProductsViewBtn.style.display = "flex";
 
   container.innerHTML = `<tr><td colspan="8" style="padding:40px;text-align:center;color:var(--muted);"><p>${t('loadingProducts')}</p></td></tr>`;
 
@@ -7423,16 +7431,21 @@ async function saveFaq(){
 }
 
 async function deleteFaq(id){
-  if(!confirm(t('confirmDeleteFaq'))) return;
-  try{
-    const { error } = await supabaseClient.from("faqs").delete().eq("id", id);
-    if(error) throw error;
-    showToast(t('faqDeleted'), 'success');
-    await filterFaqsByBot();
-  }catch(e){
-    console.error("deleteFaq error:", e);
-    showToast(t('error'), 'error');
-  }
+  showConfirmModal(
+    "حذف السؤال؟",
+    "سيتم حذف هذا السؤال والجواب نهائياً ولا يمكن التراجع عن هذا الإجراء.",
+    async () => {
+      try{
+        const { error } = await supabaseClient.from("faqs").delete().eq("id", id);
+        if(error) throw error;
+        showToast(t('faqDeleted'), 'success');
+        await filterFaqsByBot();
+      }catch(e){
+        console.error("deleteFaq error:", e);
+        showToast(t('error'), 'error');
+      }
+    }
+  );
 }
 
 // === Car Products Table Helpers ===
@@ -7518,6 +7531,23 @@ async function saveProductField(productId, field, value){
   }
 }
 
+// === Save All Products (Save button) ===
+async function saveAllProductsView(){
+  const btn = document.getElementById("saveProductsViewBtn");
+  const inputs = document.querySelectorAll("#allProductsContainer input[onchange]");
+  if(!inputs.length){
+    showToast("success", t('success'), "لا توجد تغييرات للحفظ.");
+    return;
+  }
+  if(btn){ btn.disabled = true; btn.querySelector('span').textContent = "Saving..."; }
+  // Dispatch change event on every input to trigger inline auto-save handlers
+  inputs.forEach(input => input.dispatchEvent(new Event('change')));
+  // Wait briefly for all async saves to settle
+  await new Promise(r => setTimeout(r, 800));
+  if(btn){ btn.disabled = false; btn.querySelector('span').textContent = "Save"; }
+  showToast("success", "تم الحفظ", "تم حفظ جميع التغييرات بنجاح.");
+}
+
 // === Update Product Image ===
 async function updateProductImage(productId, input){
   if(!input.files || !input.files[0]) return;
@@ -7545,24 +7575,25 @@ async function updateProductImage(productId, input){
 
 // === Delete Product ===
 async function deleteProduct(productId, botId = null){
-  if(!confirm(t('confirmDeleteProduct'))) return;
-
-  try {
-    const { error } = await supabaseClient.from("products").delete().eq("id", productId);
-    if(error) throw error;
-
-    showToast("success", t('success'), t('productDeleted'));
-
-    // Reload appropriate view
-    if(botId){
-      await loadBotProducts(botId);
-    } else {
-      await loadAllProducts();
+  showConfirmModal(
+    "حذف المنتج؟",
+    "سيتم حذف هذا المنتج نهائياً ولا يمكن التراجع عن هذا الإجراء.",
+    async () => {
+      try {
+        const { error } = await supabaseClient.from("products").delete().eq("id", productId);
+        if(error) throw error;
+        showToast("success", t('success'), t('productDeleted'));
+        if(botId){
+          await loadBotProducts(botId);
+        } else {
+          await loadAllProducts();
+        }
+      } catch(err){
+        console.error("Delete product error:", err);
+        showToast("error", t('error'), t('failedToDeleteProduct'));
+      }
     }
-  } catch(err){
-    console.error("Delete product error:", err);
-    showToast("error", t('error'), t('failedToDeleteProduct'));
-  }
+  );
 }
 
 // === Load Bot Products (for bot editor) ===
@@ -8062,6 +8093,7 @@ async function showDashboard(){
   if(addProductBtn){
     addProductBtn.style.display = "none";
   const _igBtnH=document.getElementById("igScrapeBtn");if(_igBtnH)_igBtnH.style.display="none";
+  const _svBtnH=document.getElementById("saveProductsViewBtn");if(_svBtnH)_svBtnH.style.display="none";
   }
 
   await loadUserProfile();
