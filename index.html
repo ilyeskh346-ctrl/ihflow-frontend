@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
@@ -1902,6 +1902,127 @@ table thead th{position:sticky;top:0;z-index:1;}
 [dir="rtl"] .canvas input,[dir="rtl"] .canvas textarea,[dir="rtl"] .canvas select{text-align:right;direction:rtl;}
 @media(max-width:768px){
   [dir="rtl"] .dash-wrap{margin-right:0 !important;margin-left:0 !important;}
+}
+
+/* ======= COMPREHENSIVE MOBILE DASHBOARD ======= */
+@media(max-width:768px){
+
+  /* Main content top padding — space for hamburger button */
+  .canvas{padding-top:68px !important;}
+
+  /* Charts: single column */
+  .charts-grid{grid-template-columns:1fr !important;}
+
+  /* Tables: horizontal scroll */
+  .table-wrap,
+  .table-responsive,
+  .orders-table-wrap,
+  .products-table-wrap,
+  .faqs-table-wrap{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    width:100%;
+  }
+  table{min-width:600px;}
+
+  /* Inputs & selects: full width, min font 14px, min height 44px */
+  .canvas input,
+  .canvas select,
+  .canvas textarea,
+  .modal-content input,
+  .modal-content select,
+  .modal-content textarea{
+    width:100% !important;
+    min-height:44px;
+    font-size:14px !important;
+    box-sizing:border-box;
+  }
+
+  /* Buttons: min 44px height, min 14px font */
+  .canvas button,
+  .modal-content button,
+  .btn-primary,
+  .btn-secondary,
+  .btn-outline,
+  .icon-btn,
+  .filter-btn,
+  .bot-action-btn,
+  .sidebar-item{
+    min-height:44px;
+    font-size:14px;
+  }
+
+  /* View headers (page title + action button) */
+  .view-header,
+  .orders-header,
+  .products-header,
+  .faqs-header,
+  .section-header{
+    flex-direction:column;
+    align-items:flex-start !important;
+    gap:12px;
+  }
+  .view-header button,
+  .orders-header button,
+  .products-header button,
+  .faqs-header button,
+  .section-header button{
+    width:100%;
+    justify-content:center;
+  }
+
+  /* Bot editor: 2-col → 1-col */
+  .bot-editor-grid,
+  .editor-grid,
+  .bot-form-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  /* KPI cards: reduce padding on mobile */
+  .kpi-card{padding:16px;}
+  .kpi-value{font-size:22px;}
+  .kpi-icon{width:44px;height:44px;}
+  .kpi-grid{gap:12px;margin-bottom:20px;}
+
+  /* Overview charts padding */
+  .chart-card{padding:16px;}
+
+  /* Stat cards */
+  .stat-card{padding:16px;}
+
+  /* Canvas / main content area */
+  .canvas{padding-left:16px !important;padding-right:16px !important;padding-bottom:24px !important;}
+
+  /* FAQs, orders, products: full-width select */
+  .bot-select,
+  select[onchange]{width:100%;}
+
+  /* Modal: full width on mobile */
+  .modal-content{
+    width:95vw !important;
+    max-width:95vw !important;
+    padding:20px !important;
+    margin:16px auto !important;
+  }
+
+  /* Prevent overflow */
+  .dashboard,.dashboard-layout,.dash-wrap{max-width:100vw;overflow-x:hidden;}
+
+  /* Section labels inside canvas */
+  .canvas h2,.canvas h3{font-size:17px;}
+  .canvas p,.canvas label{font-size:14px;}
+}
+
+@media(max-width:480px){
+  /* Stack any remaining 2-col grids */
+  .canvas [style*="grid-template-columns:1fr 1fr"],
+  .canvas [style*="grid-template-columns: 1fr 1fr"],
+  .canvas [style*="repeat(2"]{
+    grid-template-columns:1fr !important;
+  }
+  table{min-width:480px;}
+  .kpi-card{padding:12px;gap:10px;}
+  .kpi-value{font-size:20px;}
 }
 
 </style>
@@ -7576,7 +7697,7 @@ async function saveProductRow(productId){
           if(saveBtn){ saveBtn.innerHTML = originalHTML; saveBtn.style.background = "rgba(99,102,241,0.1)"; }
         }, 1500);
       }
-      showToast("success", t('success'), t('productUpdated'), 2000);
+      showToast("success", t('success'), t('productUpdated'), 5000);
     } else {
       const errMsg = `[${firstError.field}] ${firstError.code}: ${firstError.msg}${firstError.hint ? ' — ' + firstError.hint : ''}`;
       showToast("error", "خطأ في الحفظ", errMsg, 10000);
@@ -7606,7 +7727,7 @@ async function saveProductField(productId, field, value){
     if(error) throw error;
 
     // Show subtle success indicator
-    showToast("success", t('success'), t('productUpdated'), 2000);
+    showToast("success", t('success'), t('productUpdated'), 5000);
   } catch(err){
     console.error("Save product field error:", err);
     showToast("error", t('error'), t('failedToUpdateProduct'));
@@ -7630,7 +7751,7 @@ async function updateProductImage(productId, input){
     const { error } = await supabaseClient.from("products").update({ image: uploadData.path }).eq("id", productId);
     if(error) throw error;
 
-    showToast("success", t('success'), t('productUpdated'), 2000);
+    showToast("success", t('success'), t('productUpdated'), 5000);
     await loadAllProducts();
   } catch(err){
     console.error("Update product image error:", err);
@@ -7722,7 +7843,7 @@ async function saveProductFieldInBot(productId, field, value){
     const { error } = await supabaseClient.from("products").update(updates).eq("id", productId);
     if(error) throw error;
 
-    showToast("success", t('success'), t('productUpdated'), 2000);
+    showToast("success", t('success'), t('productUpdated'), 5000);
   } catch(err){
     console.error("Save product field error:", err);
     showToast("error", t('error'), t('failedToUpdateProduct'));
@@ -7746,7 +7867,7 @@ async function updateProductImageInBot(productId, botId, input){
     const { error } = await supabaseClient.from("products").update({ image: uploadData.path }).eq("id", productId);
     if(error) throw error;
 
-    showToast("success", t('success'), t('productUpdated'), 2000);
+    showToast("success", t('success'), t('productUpdated'), 5000);
     await loadBotProducts(botId);
   } catch(err){
     console.error("Update product image error:", err);
@@ -7868,7 +7989,7 @@ async function saveProductChanges(){
     const { error } = await supabaseClient.from("products").update(updates).eq("id", editingProductId);
     if(error) throw error;
 
-    showToast("success", t('success'), t('productUpdated'), 2000);
+    showToast("success", t('success'), t('productUpdated'), 5000);
     closeModal(editProductModal);
     await loadAllProducts();
   } catch(err){
@@ -8977,7 +9098,7 @@ window.saveBotChanges = async function(botId){
     if(statusEl){
       statusEl.textContent = "✅ تم الحفظ بنجاح";
       statusEl.style.color = "#22c55e";
-      setTimeout(() => { if(statusEl) statusEl.textContent = ""; }, 2000);
+      setTimeout(() => { if(statusEl) statusEl.textContent = ""; }, 5000);
     }
     loadBots();
   } catch(err) {
