@@ -5395,12 +5395,18 @@ document.addEventListener("click", (e) => {
         return;
       }
 
+      const { data: botData } = await supabaseClient
+        .from('bots').select('id').eq('user_id', user.id).limit(1).maybeSingle();
+
       showToast('info', '🔗', 'Connecting to Instagram...', 3000);
 
       const res = await fetch('https://api.ihflow.com/webhook/IG-connect', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: user.id }),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-ihflow-secret': '13df50d99bbf9b0c8508f14c9a3a454c21b7f236484e00925049fffeedfd3729'
+        },
+        body: JSON.stringify({ bot_id: botData?.id ?? null, user_id: user.id }),
       });
 
       const result = await res.json().catch(() => ({}));
@@ -8838,8 +8844,11 @@ async function startInstagramConnection(){
 
     const res = await fetch('https://api.ihflow.com/webhook/IG-connect', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user_id: user.id }),
+      headers: {
+        'Content-Type': 'application/json',
+        'x-ihflow-secret': '13df50d99bbf9b0c8508f14c9a3a454c21b7f236484e00925049fffeedfd3729'
+      },
+      body: JSON.stringify({ bot_id: botId, user_id: user.id }),
     });
 
     const result = await res.json().catch(() => ({}));
@@ -9747,10 +9756,12 @@ async function getProductsFromInstagram(){
     btn.disabled = true;
     btnText.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Loading...';
 
-    // POST to server-side proxy — secret never leaves the server
-    const res = await fetch('/api/ig-products', {
+    const res = await fetch('https://api.ihflow.com/webhook/50226b32-81d3-4348-a064-c6be64a22ca6', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-ihflow-secret': '13df50d99bbf9b0c8508f14c9a3a454c21b7f236484e00925049fffeedfd3729'
+      },
       body: JSON.stringify({ bot_id: botData.id })
     });
 
