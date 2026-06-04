@@ -597,6 +597,13 @@ table thead th{position:sticky;top:0;z-index:1;}
 .bot-action-btn.open:hover{opacity:0.9;}
 .bot-action-btn.delete{background:transparent;border:1px solid #ef4444;color:#ef4444;}
 .bot-action-btn.delete:hover{background:#ef4444;color:#fff;}
+.bot-toggle{position:relative;display:inline-flex;align-items:center;cursor:pointer;gap:8px;user-select:none;}
+.bot-toggle input{opacity:0;width:0;height:0;position:absolute;}
+.bot-toggle-track{width:44px;height:24px;background:#3f3f46;border-radius:12px;transition:background .25s;flex-shrink:0;position:relative;}
+.bot-toggle input:checked + .bot-toggle-track{background:#22c55e;}
+.bot-toggle-thumb{position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform .25s;box-shadow:0 1px 3px rgba(0,0,0,.3);}
+.bot-toggle input:checked ~ .bot-toggle-thumb,.bot-toggle input:checked + .bot-toggle-track + .bot-toggle-thumb{transform:translateX(20px);}
+.bot-toggle-label{font-size:13px;font-weight:600;min-width:28px;}
 .no-bots-msg{color:var(--muted);text-align:center;padding:40px;}
 .templates-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:20px;}
 .template-card{
@@ -7825,12 +7832,48 @@ async function loadBotsListView(){
         </div>
         <span class="bot-item-name">${bot.name || 'Unnamed Bot'}</span>
       </div>
-      <div class="bot-item-actions">
+      <div class="bot-item-actions" style="align-items:center;">
+        <label class="bot-toggle" title="${bot.is_active ? 'ON' : 'OFF'}" onclick="event.stopPropagation()">
+          <input type="checkbox" ${bot.is_active ? 'checked' : ''} onchange="toggleBotActive('${bot.id}', this)">
+          <div class="bot-toggle-track"></div>
+          <div class="bot-toggle-thumb"></div>
+          <span class="bot-toggle-label" style="color:${bot.is_active ? '#22c55e' : 'var(--muted)'}">${bot.is_active ? 'ON' : 'OFF'}</span>
+        </label>
         <button class="bot-action-btn open" onclick="openBotEditor('${bot.id}')">${t('open')}</button>
         <button class="bot-action-btn delete" onclick="deleteBot('${bot.id}')">${t('delete')}</button>
       </div>
     </div>
   `).join('');
+}
+
+async function toggleBotActive(botId, checkbox){
+  const isActive = checkbox.checked;
+  const label = checkbox.closest('.bot-toggle').querySelector('.bot-toggle-label');
+
+  // Optimistic UI update
+  if(label){
+    label.textContent = isActive ? 'ON' : 'OFF';
+    label.style.color = isActive ? '#22c55e' : 'var(--muted)';
+  }
+
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if(!user){ checkbox.checked = !isActive; return; }
+
+  const { error } = await supabaseClient
+    .from('bots')
+    .update({ is_active: isActive })
+    .eq('id', botId)
+    .eq('user_id', user.id);
+
+  if(error){
+    // Revert on failure
+    checkbox.checked = !isActive;
+    if(label){
+      label.textContent = !isActive ? 'ON' : 'OFF';
+      label.style.color = !isActive ? '#22c55e' : 'var(--muted)';
+    }
+    console.error('Failed to update bot status:', error.message);
+  }
 }
 
 // === Confirm Modal System ===
