@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0" />
 <title>IH Flow — Instagram DM Automation Platform</title>
 <meta name="description" content="Turn Instagram conversations into instant replies, automated links, and captured emails. Built for creators and brands.">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg: #0a1628;
@@ -3555,7 +3555,13 @@ const translations = {
     motorType: "Motor Type",
     carName: "Car Name",
     description: "Description",
-    motorTypeOrder: "Motor Type"
+    motorTypeOrder: "Motor Type",
+    products: "Products",
+    orders: "Orders",
+    statusPending: "Pending",
+    statusConfirmed: "Confirmed",
+    statusDelivered: "Delivered",
+    statusCancelled: "Cancelled"
   },
   ar: {
     code: "AR",
@@ -3959,7 +3965,13 @@ const translations = {
     motorType: "نوع المحرك",
     carName: "اسم السيارة",
     description: "الوصف",
-    motorTypeOrder: "نوع المحرك"
+    motorTypeOrder: "نوع المحرك",
+    products: "المنتجات",
+    orders: "الطلبيات",
+    statusPending: "قيد الانتظار",
+    statusConfirmed: "مؤكد",
+    statusDelivered: "تم التوصيل",
+    statusCancelled: "ملغي"
   },
   fr: {
     code: "FR",
@@ -4359,7 +4371,13 @@ const translations = {
     motorType: "Type de Moteur",
     carName: "Nom de la Voiture",
     description: "Description",
-    motorTypeOrder: "Type de Moteur"
+    motorTypeOrder: "Type de Moteur",
+    products: "Produits",
+    orders: "Commandes",
+    statusPending: "En attente",
+    statusConfirmed: "Confirmé",
+    statusDelivered: "Livré",
+    statusCancelled: "Annulé"
   }
 };
 
@@ -4401,6 +4419,11 @@ function applyTranslations(){
 
   // Apply direction
   document.documentElement.dir = lang.dir;
+
+  // Switch font family for Arabic
+  document.documentElement.style.fontFamily = (currentLanguage === 'ar')
+    ? "'Cairo', 'Noto Sans Arabic', sans-serif"
+    : "'Inter', system-ui, -apple-system, sans-serif";
 
   // Update elements with data-i18n attribute
   document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -7139,11 +7162,15 @@ function renderOrders(orders, activeColumns){
   const td = "padding:12px;text-align:center;font-size:13px;border:1px solid var(--border);";
   container.innerHTML = orders.map(order => {
     const status = order.status || "pending";
-    const isConfirmed = (status === "confirmed");
-    const statusLabel = isConfirmed ? "مؤكد" : "غير مؤكد";
-    const statusStyle = isConfirmed
-      ? "background:rgba(34,197,94,0.15);color:#22c55e;border:1px solid rgba(34,197,94,0.4)"
-      : "background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.4)";
+    const statusMap = {
+      confirmed: { label: t('statusConfirmed'), style: "background:rgba(34,197,94,0.15);color:#22c55e;border:1px solid rgba(34,197,94,0.4)" },
+      delivered: { label: t('statusDelivered'), style: "background:rgba(99,102,241,0.15);color:#818cf8;border:1px solid rgba(99,102,241,0.4)" },
+      cancelled: { label: t('statusCancelled'), style: "background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.4)" },
+      pending:   { label: t('statusPending'),   style: "background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.4)" }
+    };
+    const statusInfo = statusMap[status] || statusMap.pending;
+    const statusLabel = statusInfo.label;
+    const statusStyle = statusInfo.style;
     const cells = cols.map(col => {
       if(col.key === 'status'){
         return `<td style="padding:12px;text-align:center;border:1px solid var(--border);">
