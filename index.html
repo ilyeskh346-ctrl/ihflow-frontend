@@ -7494,7 +7494,7 @@ function renderCarProducts(products, container){
       </td>
       <td style="${cellStyle}"><input type="text" data-field="name" value="${product.name || ''}" onchange="saveProductField('${product.id}', 'name', this.value)" style="${inputStyle}font-weight:500;"></td>
       <td style="${cellStyle}"><input type="text" data-field="colors" value="${product.colors || ''}" onchange="saveProductField('${product.id}', 'colors', this.value)" style="${inputStyle}"></td>
-      <td style="${cellStyle}"><input type="number" data-field="quantity" value="${product.quantity ?? ''}" onchange="saveProductField('${product.id}', 'quantity', this.value)" style="${inputStyle}"></td>
+      <td style="${cellStyle}"><input type="number" data-field="qty" value="${product.qty ?? ''}" onchange="saveProductField('${product.id}', 'qty', this.value)" style="${inputStyle}"></td>
       <td style="${cellStyle}"><input type="text" data-field="price" value="${product.price || ''}" onchange="saveProductField('${product.id}', 'price', this.value)" style="${inputStyle}color:var(--primary);font-weight:600;"></td>
       <td style="${cellStyle}"><input type="text" data-field="motor_type" value="${product.motor_type || ''}" onchange="saveProductField('${product.id}', 'motor_type', this.value)" style="${inputStyle}"></td>
       <td style="${cellStyle}"><input type="text" data-field="description" value="${product.description || ''}" onchange="saveProductField('${product.id}', 'description', this.value)" style="${inputStyle}"></td>
@@ -7511,19 +7511,17 @@ function renderCarProducts(products, container){
 async function saveProductField(productId, field, value){
   try {
     const updates = {};
-    if(field === 'qty'){
-      updates[field] = value ? parseInt(value) : null;
-    } else if(field === 'sizes' || field === 'colors'){
-      // Convert comma-separated string to array for Supabase
-      updates[field] = value ? value.split(',').map(s => s.trim()) : [];
+    if(field === 'qty' || field === 'quantity'){
+      // Always write to the correct column name 'qty'
+      updates['qty'] = value !== '' && value !== null ? parseInt(value) : null;
     } else {
+      // colors, sizes, and all other fields are stored as plain text
       updates[field] = value;
     }
 
     const { error } = await supabaseClient.from("products").update(updates).eq("id", productId);
     if(error) throw error;
 
-    // Show subtle success indicator
     showToast("success", t('success'), t('productUpdated'));
   } catch(err){
     console.error("Save product field error:", err);
