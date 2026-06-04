@@ -5637,6 +5637,12 @@ window.addEventListener('popstate', function(event){
 });
 
 function navigateToView(viewName, botId = null, addToHistory = true){
+  // Guard: warn if leaving bot editor with unsaved changes
+  if(currentView === 'botEditor' && window.botEditorDirty){
+    const leave = confirm('لديك تغييرات غير محفوظة، هل تريد المغادرة؟');
+    if(!leave) return;
+    window.botEditorDirty = false;
+  }
   closeMobileSidebar();
   switch(viewName){
     case 'account':
@@ -8758,10 +8764,18 @@ async function loadBots(){
 
 // === Open Bot Editor ===
 window.closeEditor = function(){
+  if(window.botEditorDirty){
+    const leave = confirm('لديك تغييرات غير محفوظة، هل تريد المغادرة؟');
+    if(!leave) return;
+    window.botEditorDirty = false;
+  }
   history.back();
 }
 
+window.botEditorDirty = false;
+
 window.openBot = async function(botId){
+  window.botEditorDirty = false;
   // Hide other views
   const welcomeView = document.getElementById("welcomeView");
   if(welcomeView) welcomeView.style.display = "none";
@@ -8807,18 +8821,18 @@ window.openBot = async function(botId){
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
       <div class="editor-section">
         <label>${t('botName')}</label>
-        <input id="editName" value="${data.name || ''}">
+        <input id="editName" value="${data.name || ''}" oninput="window.botEditorDirty=true">
       </div>
       <div class="editor-section">
         <label>${t('businessName')}</label>
-        <input id="editBusinessName" value="${data.business_name || ''}">
+        <input id="editBusinessName" value="${data.business_name || ''}" oninput="window.botEditorDirty=true">
       </div>
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
       <div class="editor-section">
         <label>${t('activityType')}</label>
-        <input id="editActivityType" value="${data.activity_type || ''}" list="editActivityTypeList">
+        <input id="editActivityType" value="${data.activity_type || ''}" list="editActivityTypeList" oninput="window.botEditorDirty=true">
         <datalist id="editActivityTypeList">
     <option value="Car">
     <option value="E-commerce">
@@ -8826,18 +8840,18 @@ window.openBot = async function(botId){
       </div>
       <div class="editor-section">
         <label>${t('phoneNumber')}</label>
-        <input id="editPhone" type="tel" value="${data.phone || ''}">
+        <input id="editPhone" type="tel" value="${data.phone || ''}" oninput="window.botEditorDirty=true">
       </div>
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
       <div class="editor-section">
         <label>${t('workingHours')}</label>
-        <input id="editWorkingHours" value="${data.working_hours || ''}">
+        <input id="editWorkingHours" value="${data.working_hours || ''}" oninput="window.botEditorDirty=true">
       </div>
       <div class="editor-section">
         <label>${t('returnPolicy')}</label>
-        <select id="editReturnPolicy" style="width:100%;padding:12px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;">
+        <select id="editReturnPolicy" onchange="window.botEditorDirty=true" style="width:100%;padding:12px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;">
           <option value="yes" ${data.return_policy === 'yes' ? 'selected' : ''} data-i18n="yesReturns">${t('yesReturns')}</option>
           <option value="no" ${data.return_policy === 'no' ? 'selected' : ''} data-i18n="noReturns">${t('noReturns')}</option>
           <option value="conditional" ${data.return_policy === 'conditional' ? 'selected' : ''} data-i18n="conditionalReturns">${t('conditionalReturns')}</option>
@@ -8846,7 +8860,7 @@ window.openBot = async function(botId){
     </div>
 
     <button class="save-bot-btn" id="saveBotBtn" onclick="saveBotChanges('${botId}')">${t('saveChanges')}</button>
-    <p id="saveStatus"></p>
+    <p id="saveStatus" style="margin-top:10px;font-size:14px;font-weight:500;min-height:20px;"></p>
   </div>
   `;
 
@@ -8854,12 +8868,15 @@ window.openBot = async function(botId){
 
 // === Save Bot Changes ===
 window.saveBotChanges = async function(botId){
-
   const btn = document.getElementById("saveBotBtn");
-  const originalText = btn.textContent;
+  const statusEl = document.getElementById("saveStatus");
+  if(!btn) return;
+
+  const originalHTML = btn.innerHTML;
   btn.disabled = true;
-  btn.textContent = t('saving');
-  btn.style.opacity = "0.7";
+  btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 0.8s linear infinite;vertical-align:middle;margin-right:6px;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>${t('saving')}`;
+  btn.style.opacity = "0.75";
+  if(statusEl) statusEl.textContent = "";
 
   try {
     const name = document.getElementById("editName").value;
@@ -8869,7 +8886,7 @@ window.saveBotChanges = async function(botId){
     const working_hours = document.getElementById("editWorkingHours").value;
     const return_policy = document.getElementById("editReturnPolicy").value;
 
-    await supabaseClient.from("bots").update({ 
+    const { error } = await supabaseClient.from("bots").update({ 
       name, 
       business_name,
       activity_type,
@@ -8878,17 +8895,34 @@ window.saveBotChanges = async function(botId){
       return_policy
     }).eq("id", botId);
 
-    showToast("success", t('saved'), t('changesSavedSuccess'));
+    if(error) throw error;
+
+    window.botEditorDirty = false;
+    if(statusEl){
+      statusEl.textContent = "✅ تم الحفظ بنجاح";
+      statusEl.style.color = "#22c55e";
+      setTimeout(() => { if(statusEl) statusEl.textContent = ""; }, 3000);
+    }
     loadBots();
   } catch(err) {
-    showToast("error", t('error'), t('failedToSaveChanges'));
-    console.error("Save error:", err);
+    if(statusEl){
+      statusEl.textContent = "❌ حدث خطأ، حاول مرة أخرى";
+      statusEl.style.color = "#ef4444";
+    }
   } finally {
     btn.disabled = false;
-    btn.textContent = originalText;
+    btn.innerHTML = originalHTML;
     btn.style.opacity = "1";
   }
 }
+
+// Warn on browser tab close/refresh if bot editor has unsaved changes
+window.addEventListener('beforeunload', function(e){
+  if(window.botEditorDirty){
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
 
 // === Update image description ===
 window.updateImageDescription = async function(imageId, desc){
