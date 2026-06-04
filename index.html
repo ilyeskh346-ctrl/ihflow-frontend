@@ -5636,10 +5636,10 @@ window.addEventListener('popstate', function(event){
   }
 });
 
-function navigateToView(viewName, botId = null, addToHistory = true){
+async function navigateToView(viewName, botId = null, addToHistory = true){
   // Guard: warn if leaving bot editor with unsaved changes
   if(currentView === 'botEditor' && window.botEditorDirty){
-    const leave = confirm('لديك تغييرات غير محفوظة، هل تريد المغادرة؟');
+    const leave = await customConfirm('تغييرات غير محفوظة', 'لديك تغييرات غير محفوظة، هل تريد المغادرة؟');
     if(!leave) return;
     window.botEditorDirty = false;
   }
@@ -7465,7 +7465,8 @@ async function saveFaq(){
 }
 
 async function deleteFaq(id){
-  if(!confirm(t('confirmDeleteFaq'))) return;
+  const ok = await customConfirm(t('delete'), t('confirmDeleteFaq'));
+  if(!ok) return;
   try{
     const { error } = await supabaseClient.from("faqs").delete().eq("id", id);
     if(error) throw error;
@@ -7546,7 +7547,10 @@ async function saveProductRow(productId){
   const row = document.querySelector(`tr[data-id="${productId}"]`);
   if(!row) return;
 
-  const saveBtn = row.querySelector('button[onclick^="saveProductRow"]');
+  const allBtns = row.querySelectorAll('button');
+  let saveBtn = null;
+  allBtns.forEach(b => { if((b.getAttribute('onclick')||'').startsWith('saveProductRow')) saveBtn = b; });
+
   const originalHTML = saveBtn ? saveBtn.innerHTML : '';
   if(saveBtn){
     saveBtn.disabled = true;
@@ -7559,7 +7563,8 @@ async function saveProductRow(productId){
     inputs.forEach(inp => {
       const field = inp.dataset.field;
       const val = inp.value;
-      if(field === 'qty' || field === 'quantity'){
+      // Match exact logic of saveProductField
+      if(field === 'qty'){
         updates[field] = val ? parseInt(val) : null;
       } else if(field === 'sizes' || field === 'colors'){
         updates[field] = val ? val.split(',').map(s => s.trim()) : [];
@@ -7571,7 +7576,6 @@ async function saveProductRow(productId){
     const { error } = await supabaseClient.from("products").update(updates).eq("id", productId);
     if(error) throw error;
 
-    // Flash save button green briefly
     if(saveBtn){
       saveBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`;
       saveBtn.style.background = "rgba(34,197,94,0.15)";
@@ -7582,8 +7586,9 @@ async function saveProductRow(productId){
     showToast("success", t('success'), t('productUpdated'));
   } catch(err){
     console.error("saveProductRow error:", err);
-    showToast("error", t('error'), t('failedToUpdateProduct'));
-    if(saveBtn){ saveBtn.innerHTML = originalHTML; }
+    const msg = (err && err.message) ? err.message : t('failedToUpdateProduct');
+    showToast("error", t('error'), msg);
+    if(saveBtn){ saveBtn.innerHTML = originalHTML; saveBtn.style.background = "rgba(99,102,241,0.1)"; }
   } finally {
     if(saveBtn) saveBtn.disabled = false;
   }
@@ -7640,7 +7645,8 @@ async function updateProductImage(productId, input){
 
 // === Delete Product ===
 async function deleteProduct(productId, botId = null){
-  if(!confirm(t('confirmDeleteProduct'))) return;
+  const ok = await customConfirm(t('delete'), t('confirmDeleteProduct'));
+  if(!ok) return;
 
   try {
     const { error } = await supabaseClient.from("products").delete().eq("id", productId);
@@ -7983,21 +7989,41 @@ async function toggleBotActive(botId, currentlyActive){
 
 // === Confirm Modal System ===
 let pendingConfirmAction = null;
+let confirmResolve = null;
 const confirmModal = document.getElementById("confirmModal");
 
 function showConfirmModal(title, message, action){
   document.getElementById("confirmTitle").textContent = title;
   document.getElementById("confirmMessage").textContent = message;
   pendingConfirmAction = action;
+  confirmResolve = null;
   confirmModal.style.display = "flex";
+}
+
+// Promise-based confirm — replaces native confirm() with SaaS modal
+function customConfirm(title, message){
+  document.getElementById("confirmTitle").textContent = title;
+  document.getElementById("confirmMessage").textContent = message;
+  pendingConfirmAction = null;
+  confirmModal.style.display = "flex";
+  return new Promise(resolve => { confirmResolve = resolve; });
 }
 
 function closeConfirmModal(){
   confirmModal.style.display = "none";
   pendingConfirmAction = null;
+  if(confirmResolve){ confirmResolve(false); confirmResolve = null; }
 }
 
 async function executeConfirmAction(){
+  if(confirmResolve){
+    // Promise mode
+    const res = confirmResolve;
+    confirmResolve = null;
+    confirmModal.style.display = "none";
+    res(true);
+    return;
+  }
   if(pendingConfirmAction){
     const btn = document.getElementById("confirmDeleteBtn");
     btn.textContent = "Deleting...";
@@ -8821,9 +8847,9 @@ async function loadBots(){
 }
 
 // === Open Bot Editor ===
-window.closeEditor = function(){
+window.closeEditor = async function(){
   if(window.botEditorDirty){
-    const leave = confirm('لديك تغييرات غير محفوظة، هل تريد المغادرة؟');
+    const leave = await customConfirm('تغييرات غير محفوظة', 'لديك تغييرات غير محفوظة، هل تريد المغادرة؟');
     if(!leave) return;
     window.botEditorDirty = false;
   }
