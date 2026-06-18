@@ -1943,6 +1943,18 @@ table thead th{position:sticky;top:0;z-index:1;}
 .ob-handle{font-size:14px;color:rgba(255,255,255,.65);margin:0 0 18px;direction:ltr;}
 .ob-success-msg{font-size:14px;color:rgba(255,255,255,.6);margin:0 0 18px;direction:rtl;}
 @media(max-width:480px){.ob-modal{padding:28px 20px 24px;margin:12px;}}
+/* === Onboarding Persistent Top Bar === */
+#obTopBar{position:fixed;top:0;left:0;width:100%;z-index:9990;background:#18181b;border-bottom:1px solid rgba(255,255,255,.1);flex-direction:column;box-shadow:0 2px 12px rgba(0,0,0,.4);}
+.ob-topbar-inner{display:flex;align-items:center;justify-content:space-between;height:46px;padding:0 20px;gap:16px;}
+.ob-topbar-text{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:600;color:rgba(255,255,255,.85);direction:rtl;}
+.ob-topbar-icon{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ob-topbar-skip{background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-size:16px;padding:6px;line-height:1;transition:color .2s;flex-shrink:0;}
+.ob-topbar-skip:hover{color:rgba(255,255,255,.65);}
+.ob-topbar-track{height:3px;width:100%;background:rgba(255,255,255,.08);}
+.ob-topbar-fill{height:100%;background:linear-gradient(90deg,#f58529,#dd2a7b,#8134af);transition:width .55s cubic-bezier(.4,0,.2,1);border-radius:0 2px 2px 0;}
+/* === Onboarding Page Banners === */
+.ob-banner{display:none;align-items:flex-start;gap:12px;padding:13px 16px;background:rgba(225,48,108,.08);border:1px solid rgba(225,48,108,.25);border-radius:12px;margin-bottom:20px;font-size:14px;color:rgba(255,255,255,.8);line-height:1.5;direction:rtl;}
+.ob-banner svg{flex-shrink:0;margin-top:1px;}
 
 </style>
 <style>.footer-link{color:var(--text);font-size:14px;font-weight:500;text-decoration:none;opacity:0.8;transition:opacity 0.2s,color 0.2s;padding:4px 0;}.footer-link:hover{opacity:1;color:var(--primary);}.footer-sep{color:var(--border);font-size:16px;margin:0 6px;user-select:none;}</style>
@@ -2158,6 +2170,10 @@ table thead th{position:sticky;top:0;z-index:1;}
 
 <!-- Products View -->
 <div id="productsView" class="stats-view" style="display:none;">
+<div id="obProductsBanner" class="ob-banner">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e1306c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+  أضف منتجاً واحداً على الأقل حتى يتمكن البوت من الإجابة على أسئلة العملاء وإرسال الروابط تلقائياً
+</div>
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
 <div>
 <h2 style="margin-bottom:8px;" data-i18n="products">Products</h2>
@@ -2813,6 +2829,10 @@ Log Out
 <div class="modal" id="createBotModal">
 <div class="modal-content" style="width:95vw;max-width:1200px;max-height:95vh;overflow-y:auto;padding:60px;">
 <span class="close" onclick="closeModal(createBotModal); resetBotFormStep();">×</span>
+<div id="obBotModalBanner" class="ob-banner" style="margin-bottom:24px;">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e1306c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+  أنت في مرحلة الإعداد — أدخل تفاصيل البوت أدناه واضغط "إنشاء" للمتابعة
+</div>
 
 <!-- Step Indicator -->
 <div style="display:flex;justify-content:center;gap:8px;margin-bottom:20px;">
@@ -7759,6 +7779,8 @@ async function addProductFromProductsView(){
     if(error) throw error;
 
     showToast("success", t('success'), t('productAdded'));
+    // Onboarding: complete when first product is added
+    if(_obCurrentStep === 3) obCompleteOnboarding();
     await loadAllProducts();
   } catch(err){
     console.error("Add product error:", err);
@@ -9167,6 +9189,8 @@ async function submitCreateBot() {
       closeModal(createBotModal);
       resetBotFormStep();
       loadBots();
+      // Onboarding: advance to step 3 after bot creation
+      if(_obCurrentStep === 2) obGoToStep(3);
     }, 2000);
 
   } catch(err) {
@@ -9594,25 +9618,76 @@ async function getProductsFromInstagram(){
 
 
 // ============================================================
-// === ONBOARDING OVERLAY ===
+// === ONBOARDING FLOW ===
 // ============================================================
+
+let _obUserId = null;
+let _obCurrentStep = 0;
 
 function checkOnboarding(user){
   if(!user) return;
-  const key = 'ob_done_' + user.id;
-  if(localStorage.getItem(key)) return;
-  // Only show for new users (created within last 10 minutes)
+  _obUserId = user.id;
+  const doneKey = 'ob_done_' + user.id;
+  const stepKey = 'ob_step_' + user.id;
+
+  if(localStorage.getItem(doneKey)){
+    const bar = document.getElementById('obTopBar');
+    if(bar) bar.style.display = 'none';
+    return;
+  }
+
+  const savedStep = parseInt(localStorage.getItem(stepKey) || '0');
+
+  if(savedStep === 2){
+    _obCurrentStep = 2;
+    obUpdateTopBar(2);
+    setTimeout(() => {
+      navigateToView('bots');
+      setTimeout(() => {
+        const modal = document.getElementById('createBotModal');
+        if(modal) modal.style.display = 'flex';
+        const banner = document.getElementById('obBotModalBanner');
+        if(banner) banner.style.display = 'flex';
+      }, 350);
+    }, 120);
+    return;
+  }
+
+  if(savedStep === 3){
+    _obCurrentStep = 3;
+    obUpdateTopBar(3);
+    setTimeout(() => navigateToView('products'), 120);
+    return;
+  }
+
+  // New user check (within 10 min)
   const createdAt = new Date(user.created_at || 0);
   const ageMs = Date.now() - createdAt.getTime();
-  if(ageMs > 10 * 60 * 1000) { localStorage.setItem(key, '1'); return; }
+  if(ageMs > 10 * 60 * 1000){ localStorage.setItem(doneKey, '1'); return; }
+
+  _obCurrentStep = 1;
+  if(_obUserId) localStorage.setItem(stepKey, '1');
   showOnboarding();
 }
 
 function showOnboarding(){
   const el = document.getElementById('onboardingOverlay');
   if(!el) return;
+  el.style.animation = '';
   el.style.display = 'flex';
-  obGoToStep(1);
+  // Show step 1 only in overlay
+  const s1 = document.getElementById('obStep1');
+  const s2 = document.getElementById('obStep2');
+  const s3 = document.getElementById('obStep3');
+  if(s1) s1.classList.add('ob-visible');
+  if(s2) s2.classList.remove('ob-visible');
+  if(s3) s3.classList.remove('ob-visible');
+  const d1 = document.getElementById('obDot1');
+  const d2 = document.getElementById('obDot2');
+  const d3 = document.getElementById('obDot3');
+  if(d1) d1.className = 'ob-dot ob-active';
+  if(d2) d2.className = 'ob-dot';
+  if(d3) d3.className = 'ob-dot';
 }
 
 function hideOnboarding(){
@@ -9620,26 +9695,98 @@ function hideOnboarding(){
   if(!el) return;
   el.style.animation = 'obFadeOut .25s ease forwards';
   setTimeout(() => { el.style.display = 'none'; el.style.animation = ''; }, 260);
-  supabaseClient.auth.getUser().then(({ data: { user } }) => {
-    if(user) localStorage.setItem('ob_done_' + user.id, '1');
-  });
 }
 
 function obGoToStep(n){
-  [1,2,3].forEach(i => {
-    const step = document.getElementById('obStep' + i);
-    const dot  = document.getElementById('obDot'  + i);
-    if(!step || !dot) return;
-    step.classList.toggle('ob-visible', i === n);
-    dot.className = 'ob-dot ' + (i === n ? 'ob-active' : i < n ? 'ob-done' : '');
-  });
-  // Reset success states when re-entering a step
-  ['ob1Initial','ob1Success','ob2Initial','ob2Success'].forEach(id => {
-    const el = document.getElementById(id);
-    if(!el) return;
-    if(id.endsWith('Initial')) el.style.display = 'block';
-    if(id.endsWith('Success')){ el.classList.remove('ob-visible'); el.style.display = ''; }
-  });
+  if(n === 2){
+    hideOnboarding();
+    _obCurrentStep = 2;
+    if(_obUserId) localStorage.setItem('ob_step_' + _obUserId, '2');
+    obUpdateTopBar(2);
+    setTimeout(() => {
+      navigateToView('bots');
+      setTimeout(() => {
+        const modal = document.getElementById('createBotModal');
+        if(modal && _obCurrentStep === 2) modal.style.display = 'flex';
+        const banner = document.getElementById('obBotModalBanner');
+        if(banner && _obCurrentStep === 2) banner.style.display = 'flex';
+      }, 320);
+    }, 290);
+    return;
+  }
+  if(n === 3){
+    _obCurrentStep = 3;
+    if(_obUserId) localStorage.setItem('ob_step_' + _obUserId, '3');
+    obUpdateTopBar(3);
+    const botBanner = document.getElementById('obBotModalBanner');
+    if(botBanner) botBanner.style.display = 'none';
+    setTimeout(() => navigateToView('products'), 100);
+    return;
+  }
+}
+
+function obUpdateTopBar(step){
+  const bar   = document.getElementById('obTopBar');
+  const label = document.getElementById('obTopBarLabel');
+  const fill  = document.getElementById('obTopBarFill');
+  if(!bar) return;
+  bar.style.display = 'flex';
+
+  const labels = {
+    2: 'الخطوة 2 من 3 — أنشئ البوت الخاص بك',
+    3: 'الخطوة 3 من 3 — أضف منتجاتك',
+  };
+  const widths = { 2: '50%', 3: '83%' };
+  if(label) label.textContent = labels[step] || '';
+  if(fill)  fill.style.width  = widths[step] || '33%';
+
+  const prodBanner = document.getElementById('obProductsBanner');
+  if(prodBanner) prodBanner.style.display = step === 3 ? 'flex' : 'none';
+  // Add top padding to dashboard so bar doesn't overlap content
+  const dash = document.getElementById('dashboard');
+  if(dash) dash.style.paddingTop = '49px';
+}
+
+function obCompleteOnboarding(){
+  const bar   = document.getElementById('obTopBar');
+  const label = document.getElementById('obTopBarLabel');
+  const fill  = document.getElementById('obTopBarFill');
+  const skip  = document.getElementById('obTopBarSkip');
+  if(label) label.textContent = '✓ تم! البوت الخاص بك يعمل الآن';
+  if(fill){ fill.style.width = '100%'; fill.style.background = '#22c55e'; }
+  if(skip) skip.style.display = 'none';
+  const prodBanner = document.getElementById('obProductsBanner');
+  if(prodBanner) prodBanner.style.display = 'none';
+  _obCurrentStep = 0;
+  if(_obUserId){
+    localStorage.setItem('ob_done_' + _obUserId, '1');
+    localStorage.removeItem('ob_step_' + _obUserId);
+  }
+  setTimeout(() => {
+    if(bar){ bar.style.transition = 'opacity .6s'; bar.style.opacity = '0'; }
+    setTimeout(() => {
+      if(bar){ bar.style.display = 'none'; bar.style.opacity = ''; bar.style.transition = ''; }
+      const dash = document.getElementById('dashboard');
+      if(dash) dash.style.paddingTop = '';
+    }, 620);
+  }, 3000);
+}
+
+function obSkip(){
+  const bar = document.getElementById('obTopBar');
+  if(bar){ bar.style.display = 'none'; }
+  hideOnboarding();
+  const botBanner  = document.getElementById('obBotModalBanner');
+  const prodBanner = document.getElementById('obProductsBanner');
+  if(botBanner)  botBanner.style.display  = 'none';
+  if(prodBanner) prodBanner.style.display = 'none';
+  const dash = document.getElementById('dashboard');
+  if(dash) dash.style.paddingTop = '';
+  _obCurrentStep = 0;
+  if(_obUserId){
+    localStorage.setItem('ob_done_' + _obUserId, '1');
+    localStorage.removeItem('ob_step_' + _obUserId);
+  }
 }
 
 function onboardingConnectIG(){
@@ -9681,6 +9828,22 @@ function togglePass(fieldId){
   btn.style.color = isHidden ? 'var(--text)' : 'var(--muted)';
 }
 </script>
+
+<!-- ===== ONBOARDING PERSISTENT TOP BAR ===== -->
+<div id="obTopBar" style="display:none;">
+  <div class="ob-topbar-inner">
+    <div class="ob-topbar-text">
+      <div class="ob-topbar-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <span id="obTopBarLabel">الخطوة 2 من 3 — أنشئ البوت الخاص بك</span>
+    </div>
+    <button id="obTopBarSkip" class="ob-topbar-skip" onclick="obSkip()" title="تخطي الإعداد">✕</button>
+  </div>
+  <div class="ob-topbar-track">
+    <div id="obTopBarFill" class="ob-topbar-fill" style="width:50%;"></div>
+  </div>
+</div>
 
 <!-- ===== ONBOARDING OVERLAY ===== -->
 <div id="onboardingOverlay" style="display:none;">
