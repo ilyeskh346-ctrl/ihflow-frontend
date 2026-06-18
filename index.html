@@ -1911,6 +1911,39 @@ table thead th{position:sticky;top:0;z-index:1;}
   [dir="rtl"] .dash-wrap{margin-right:0 !important;margin-left:0 !important;}
 }
 
+/* === Onboarding Overlay === */
+#onboardingOverlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.72);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);animation:obFadeIn .3s ease;}
+@keyframes obFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes obFadeOut{from{opacity:1}to{opacity:0}}
+.ob-modal{background:#18181b;border-radius:22px;width:100%;max-width:420px;padding:36px 32px 30px;position:relative;box-shadow:0 32px 80px rgba(0,0,0,.7);animation:obSlideUp .38s cubic-bezier(.22,1,.36,1);border:1px solid rgba(255,255,255,.08);}
+@keyframes obSlideUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.ob-dots{display:flex;gap:8px;justify-content:center;margin-bottom:30px;}
+.ob-dot{height:6px;border-radius:3px;background:rgba(255,255,255,.18);transition:all .35s ease;width:6px;}
+.ob-dot.ob-active{width:28px;background:#e1306c;}
+.ob-dot.ob-done{width:6px;background:rgba(255,255,255,.5);}
+.ob-step{display:none;flex-direction:column;align-items:center;text-align:center;width:100%;}
+.ob-step.ob-visible{display:flex;}
+.ob-icon-ring{width:76px;height:76px;border-radius:50%;padding:3px;margin-bottom:22px;flex-shrink:0;}
+.ob-icon-inner{width:100%;height:100%;background:#18181b;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.ob-title{font-size:21px;font-weight:700;color:#fff;margin:0 0 10px;line-height:1.3;direction:rtl;}
+.ob-subtitle{font-size:14px;color:rgba(255,255,255,.5);margin:0 0 26px;line-height:1.65;max-width:310px;direction:rtl;}
+.ob-btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s,transform .1s;display:flex;align-items:center;justify-content:center;gap:9px;}
+.ob-btn:hover{opacity:.87;transform:translateY(-1px);}
+.ob-btn:active{transform:translateY(0);}
+.ob-btn-ig{background:linear-gradient(135deg,#f58529 0%,#dd2a7b 40%,#8134af 70%,#515bd4 100%);color:#fff;}
+.ob-btn-bot{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;}
+.ob-btn-products{background:linear-gradient(135deg,#f97316,#fb923c);color:#fff;}
+.ob-btn-next{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;}
+.ob-skip{margin-top:14px;font-size:13px;color:rgba(255,255,255,.28);cursor:pointer;background:none;border:none;text-decoration:underline;text-underline-offset:3px;padding:4px 8px;transition:color .2s;}
+.ob-skip:hover{color:rgba(255,255,255,.5);}
+.ob-success-wrap{display:none;flex-direction:column;align-items:center;width:100%;}
+.ob-success-wrap.ob-visible{display:flex;}
+.ob-avatar-ig{width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:8px;color:#fff;font-weight:700;}
+.ob-check-circle{width:58px;height:58px;border-radius:50%;background:rgba(34,197,94,.14);border:2px solid #22c55e;display:flex;align-items:center;justify-content:center;margin-bottom:10px;}
+.ob-handle{font-size:14px;color:rgba(255,255,255,.65);margin:0 0 18px;direction:ltr;}
+.ob-success-msg{font-size:14px;color:rgba(255,255,255,.6);margin:0 0 18px;direction:rtl;}
+@media(max-width:480px){.ob-modal{padding:28px 20px 24px;margin:12px;}}
+
 </style>
 <style>.footer-link{color:var(--text);font-size:14px;font-weight:500;text-decoration:none;opacity:0.8;transition:opacity 0.2s,color 0.2s;padding:4px 0;}.footer-link:hover{opacity:1;color:var(--primary);}.footer-sep{color:var(--border);font-size:16px;margin:0 6px;user-select:none;}</style>
 </head>
@@ -8032,6 +8065,7 @@ async function showDashboard(){
 
   document.getElementById("dashboard").style.display = "block";
   console.log("Showing dashboard for:", user.email);
+  checkOnboarding(user);
 
   try {
     const { data: igAccount, error: igError } = await supabaseClient
@@ -9559,6 +9593,82 @@ async function getProductsFromInstagram(){
 }
 
 
+// ============================================================
+// === ONBOARDING OVERLAY ===
+// ============================================================
+
+function checkOnboarding(user){
+  if(!user) return;
+  const key = 'ob_done_' + user.id;
+  if(localStorage.getItem(key)) return;
+  // Only show for new users (created within last 10 minutes)
+  const createdAt = new Date(user.created_at || 0);
+  const ageMs = Date.now() - createdAt.getTime();
+  if(ageMs > 10 * 60 * 1000) { localStorage.setItem(key, '1'); return; }
+  showOnboarding();
+}
+
+function showOnboarding(){
+  const el = document.getElementById('onboardingOverlay');
+  if(!el) return;
+  el.style.display = 'flex';
+  obGoToStep(1);
+}
+
+function hideOnboarding(){
+  const el = document.getElementById('onboardingOverlay');
+  if(!el) return;
+  el.style.animation = 'obFadeOut .25s ease forwards';
+  setTimeout(() => { el.style.display = 'none'; el.style.animation = ''; }, 260);
+  supabaseClient.auth.getUser().then(({ data: { user } }) => {
+    if(user) localStorage.setItem('ob_done_' + user.id, '1');
+  });
+}
+
+function obGoToStep(n){
+  [1,2,3].forEach(i => {
+    const step = document.getElementById('obStep' + i);
+    const dot  = document.getElementById('obDot'  + i);
+    if(!step || !dot) return;
+    step.classList.toggle('ob-visible', i === n);
+    dot.className = 'ob-dot ' + (i === n ? 'ob-active' : i < n ? 'ob-done' : '');
+  });
+  // Reset success states when re-entering a step
+  ['ob1Initial','ob1Success','ob2Initial','ob2Success'].forEach(id => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    if(id.endsWith('Initial')) el.style.display = 'block';
+    if(id.endsWith('Success')){ el.classList.remove('ob-visible'); el.style.display = ''; }
+  });
+}
+
+function onboardingConnectIG(){
+  const username = (window.prompt('أدخل اسم مستخدم Instagram الخاص بك:', '') || '').trim().replace(/^@/, '');
+  if(!username) return;
+  document.getElementById('ob1Initial').style.display = 'none';
+  const suc = document.getElementById('ob1Success');
+  const avatarEl = document.getElementById('ob1AvatarLetter');
+  const handleEl = document.getElementById('ob1Handle');
+  if(avatarEl) avatarEl.textContent = username.charAt(0).toUpperCase();
+  if(handleEl) handleEl.textContent = '@' + username;
+  suc.style.display = 'flex';
+  suc.classList.add('ob-visible');
+}
+
+function onboardingCreateBot(){
+  document.getElementById('ob2Initial').style.display = 'none';
+  const suc = document.getElementById('ob2Success');
+  suc.style.display = 'flex';
+  suc.classList.add('ob-visible');
+}
+
+function onboardingFinish(){
+  hideOnboarding();
+  navigateToView('products');
+}
+
+// ============================================================
+
 function togglePass(fieldId){
   const inp = document.getElementById(fieldId);
   const btn = document.getElementById('eye_' + fieldId);
@@ -9571,5 +9681,107 @@ function togglePass(fieldId){
   btn.style.color = isHidden ? 'var(--text)' : 'var(--muted)';
 }
 </script>
+
+<!-- ===== ONBOARDING OVERLAY ===== -->
+<div id="onboardingOverlay" style="display:none;">
+  <div class="ob-modal">
+
+    <!-- Step dots -->
+    <div class="ob-dots">
+      <div class="ob-dot ob-active" id="obDot1"></div>
+      <div class="ob-dot" id="obDot2"></div>
+      <div class="ob-dot" id="obDot3"></div>
+    </div>
+
+    <!-- ── Step 1 : Connect Instagram ── -->
+    <div class="ob-step ob-visible" id="obStep1">
+      <div class="ob-icon-ring" style="background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);">
+        <div class="ob-icon-inner">
+          <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="url(#igGrad1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <defs><linearGradient id="igGrad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f58529"/><stop offset="50%" stop-color="#dd2a7b"/><stop offset="100%" stop-color="#515bd4"/></linearGradient></defs>
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+          </svg>
+        </div>
+      </div>
+      <p class="ob-title">ربط حساب Instagram</p>
+      <p class="ob-subtitle">اربط حسابك التجاري على Instagram حتى يتمكن البوت من الرد التلقائي على رسائل عملائك</p>
+
+      <!-- Initial state -->
+      <div id="ob1Initial" style="width:100%;">
+        <button class="ob-btn ob-btn-ig" onclick="onboardingConnectIG()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          ربط مع Instagram
+        </button>
+        <button class="ob-skip" onclick="obGoToStep(2)">تخطي</button>
+      </div>
+
+      <!-- Success state -->
+      <div id="ob1Success" class="ob-success-wrap">
+        <div class="ob-avatar-ig" id="ob1AvatarLetter">I</div>
+        <p class="ob-handle" id="ob1Handle">@username</p>
+        <button class="ob-btn ob-btn-next" onclick="obGoToStep(2)">
+          التالي
+          <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Step 2 : Create Bot ── -->
+    <div class="ob-step" id="obStep2">
+      <div class="ob-icon-ring" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);">
+        <div class="ob-icon-inner">
+          <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+        </div>
+      </div>
+      <p class="ob-title">إنشاء البوت</p>
+      <p class="ob-subtitle">سيرد البوت تلقائياً على رسائل Instagram الواردة على مدار الساعة ويوجّه العملاء إلى منتجاتك</p>
+
+      <!-- Initial state -->
+      <div id="ob2Initial" style="width:100%;">
+        <button class="ob-btn ob-btn-bot" onclick="onboardingCreateBot()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+          إنشاء البوت
+        </button>
+        <button class="ob-skip" onclick="obGoToStep(3)">تخطي</button>
+      </div>
+
+      <!-- Success state -->
+      <div id="ob2Success" class="ob-success-wrap">
+        <div class="ob-check-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <p class="ob-success-msg">تم إنشاء البوت بنجاح ✅</p>
+        <button class="ob-btn ob-btn-next" onclick="obGoToStep(3)">
+          التالي
+          <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Step 3 : Add Products ── -->
+    <div class="ob-step" id="obStep3">
+      <div class="ob-icon-ring" style="background:linear-gradient(135deg,#f97316,#fb923c);">
+        <div class="ob-icon-inner">
+          <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        </div>
+      </div>
+      <p class="ob-title">أضف منتجاتك</p>
+      <p class="ob-subtitle">أضف منتجاتك حتى يتمكن البوت من الإجابة على أسئلة العملاء وإرسال الروابط تلقائياً</p>
+
+      <div style="width:100%;">
+        <button class="ob-btn ob-btn-products" onclick="onboardingFinish()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          إضافة المنتجات
+        </button>
+        <button class="ob-skip" onclick="hideOnboarding()">تخطي وإغلاق</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- ===== END ONBOARDING OVERLAY ===== -->
+
 </body>
 </html>
