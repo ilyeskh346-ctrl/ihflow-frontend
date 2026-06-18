@@ -1,0 +1,40 @@
+The onboarding guidance banners must be visually prominent and impossible to miss. Here is exactly how they should look and behave:
+Guidance banner design:
+
+Large full-width banner pinned just below the top navbar, position: sticky; top: 56px; z-index: 999
+Dark gradient background: linear-gradient(135deg, #1a0a2e, #2d0a1f) with a glowing left border border-left: 3px solid #dd2a7b and a soft pink/purple glow box-shadow: 0 0 24px rgba(221,42,123,0.25)
+Inside the banner: a large bold title (e.g. "🤖 إنشاء البوت"), a clear description paragraph, and one or more glowing action buttons
+A close ✕ button in the top-right corner of the banner — clicking it collapses and removes the banner with a smooth slide-up animation, and saves dismissed: true in localStorage so it never reappears for that step
+The banner has a subtle animated gradient shimmer on the border to draw attention
+
+Glowing buttons inside banners:
+
+Background: Instagram gradient linear-gradient(135deg, #f58529, #dd2a7b, #8134af)
+Glow effect: box-shadow: 0 0 16px rgba(221,42,123,0.6), 0 0 32px rgba(129,52,175,0.4)
+On hover: glow intensifies and button scales up slightly transform: scale(1.03)
+When the button is the current required action (e.g. "Create Bot"), add a slow pulse animation @keyframes pulse-glow that makes the glow breathe in and out every 2 seconds
+Any other interactive element the user should click during onboarding (input fields, save buttons, submit buttons) gets a glowing ring box-shadow: 0 0 0 2px #dd2a7b, 0 0 12px rgba(221,42,123,0.5) to highlight it
+
+Onboarding flow with sequential feature explanations:
+After the user finishes creating the bot and adding products (Steps 2 and 3), continue the onboarding and automatically guide them through the remaining features one by one using the same banner system:
+Step 4 — FAQs:
+
+Banner appears on the FAQs page with title "❓ الأسئلة الشائعة — FAQs"
+Explanation: "أضف الأسئلة التي يكثر طرحها من عملائك مع إجاباتها. سيستخدمها البوت للرد تلقائياً بدقة عالية."
+Glowing button: "إضافة سؤال الآن"
+The FAQ input fields are highlighted with a glowing ring when the banner is active
+After the user adds at least one FAQ, show a success mini-toast "✓ تم — ننتقل للخطوة التالية" and advance automatically
+
+Step 5 — Orders:
+
+Banner appears on the Orders page with title "📦 إدارة الطلبات — Orders"
+Explanation: "من هنا تتابع جميع الطلبات التي يستقبلها البوت من عملائك عبر Instagram. يمكنك تغيير حالة الطلب، عرض التفاصيل، والتواصل مع العميل."
+Glowing button: "استعرض الطلبات"
+Highlight the orders table and status filter buttons with the glowing ring
+After the user clicks into any order or interacts with the table, mark this step complete
+
+After all steps complete:
+
+Show a full-width celebration banner: dark background, large text "🎉 بوتك جاهز وشغّال!", subtitle "لقد أكملت الإعداد — بوتك الآن يرد على عملائك تلقائياً عبر Instagram", and a final glowing button "اذهب إلى لوحة التحكم"
+Banner fades out after 5 seconds or when the user clicks the button
+Set onboarding_complete: true in localStorage

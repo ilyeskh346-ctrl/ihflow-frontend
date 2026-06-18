@@ -1952,9 +1952,28 @@ table thead th{position:sticky;top:0;z-index:1;}
 .ob-topbar-skip:hover{color:rgba(255,255,255,.65);}
 .ob-topbar-track{height:3px;width:100%;background:rgba(255,255,255,.08);}
 .ob-topbar-fill{height:100%;background:linear-gradient(90deg,#f58529,#dd2a7b,#8134af);transition:width .55s cubic-bezier(.4,0,.2,1);border-radius:0 2px 2px 0;}
-/* === Onboarding Page Banners === */
-.ob-banner{display:none;align-items:flex-start;gap:12px;padding:13px 16px;background:rgba(225,48,108,.08);border:1px solid rgba(225,48,108,.25);border-radius:12px;margin-bottom:20px;font-size:14px;color:rgba(255,255,255,.8);line-height:1.5;direction:rtl;}
-.ob-banner svg{flex-shrink:0;margin-top:1px;}
+/* === Onboarding Page Banners (prominent design) === */
+.ob-banner{display:none;flex-direction:column;position:sticky;top:49px;z-index:999;margin-bottom:24px;background:linear-gradient(135deg,#1a0a2e,#2d0a1f);border-radius:14px;border-left:4px solid #dd2a7b;box-shadow:0 0 24px rgba(221,42,123,.25),0 4px 20px rgba(0,0,0,.4);padding:20px 24px;overflow:hidden;animation:obBannerIn .4s cubic-bezier(.22,1,.36,1);}
+.ob-banner.ob-banner-visible,.ob-banner[style*="flex"]{display:flex;}
+.ob-banner::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg,#f58529,#dd2a7b,#8134af,#f58529);background-size:200% 200%;animation:obShimmer 3s ease infinite;}
+@keyframes obShimmer{0%{background-position:0% 0%}50%{background-position:0% 100%}100%{background-position:0% 0%}}
+@keyframes obBannerIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes obBannerOut{from{opacity:1;max-height:300px;margin-bottom:24px;padding-top:20px;padding-bottom:20px}to{opacity:0;max-height:0;margin-bottom:0;padding-top:0;padding-bottom:0;}}
+.ob-banner-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;direction:rtl;width:100%;}
+.ob-banner-body{flex:1;}
+.ob-banner-title{font-size:18px;font-weight:800;color:#fff;margin:0 0 8px;line-height:1.3;direction:rtl;}
+.ob-banner-desc{font-size:14px;color:rgba(255,255,255,.65);margin:0 0 18px;line-height:1.7;direction:rtl;}
+.ob-banner-close{background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-size:22px;padding:0 4px;line-height:1;transition:color .2s;flex-shrink:0;margin-top:-2px;}
+.ob-banner-close:hover{color:rgba(255,255,255,.7);}
+.ob-banner-actions{display:flex;gap:12px;direction:rtl;flex-wrap:wrap;}
+/* Glowing CTA button inside banners */
+.ob-glow-btn{padding:12px 24px;background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 0 16px rgba(221,42,123,.6),0 0 32px rgba(129,52,175,.4);transition:transform .2s,box-shadow .2s;animation:obPulseGlow 2s ease-in-out infinite;}
+.ob-glow-btn:hover{transform:scale(1.04);box-shadow:0 0 28px rgba(221,42,123,.9),0 0 52px rgba(129,52,175,.7);}
+@keyframes obPulseGlow{0%,100%{box-shadow:0 0 16px rgba(221,42,123,.6),0 0 32px rgba(129,52,175,.4);}50%{box-shadow:0 0 28px rgba(221,42,123,.9),0 0 56px rgba(129,52,175,.7);}}
+/* Glowing ring for key interactive elements during onboarding */
+.ob-glow-ring{box-shadow:0 0 0 2px #dd2a7b,0 0 12px rgba(221,42,123,.5)!important;transition:box-shadow .3s!important;}
+/* Celebration banner */
+#obCelebrationBanner{display:none;position:fixed;top:0;left:0;width:100%;z-index:10001;background:linear-gradient(135deg,#0a0a1a 0%,#1a0a2e 50%,#2d0a1f 100%);border-bottom:3px solid #dd2a7b;box-shadow:0 0 40px rgba(221,42,123,.5);padding:36px 40px;text-align:center;direction:rtl;animation:obFadeIn .4s ease;}
 
 </style>
 <style>.footer-link{color:var(--text);font-size:14px;font-weight:500;text-decoration:none;opacity:0.8;transition:opacity 0.2s,color 0.2s;padding:4px 0;}.footer-link:hover{opacity:1;color:var(--primary);}.footer-sep{color:var(--border);font-size:16px;margin:0 6px;user-select:none;}</style>
@@ -2171,8 +2190,16 @@ table thead th{position:sticky;top:0;z-index:1;}
 <!-- Products View -->
 <div id="productsView" class="stats-view" style="display:none;">
 <div id="obProductsBanner" class="ob-banner">
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e1306c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-  أضف منتجاً واحداً على الأقل حتى يتمكن البوت من الإجابة على أسئلة العملاء وإرسال الروابط تلقائياً
+  <div class="ob-banner-header">
+    <div class="ob-banner-body">
+      <div class="ob-banner-title">🛍️ إضافة المنتجات</div>
+      <div class="ob-banner-desc">أضف منتجاً واحداً على الأقل حتى يتمكن البوت من الإجابة على أسئلة العملاء وإرسال الروابط تلقائياً — اختر البوت من القائمة أعلاه ثم اضغط الزر.</div>
+    </div>
+    <button class="ob-banner-close" onclick="obDismissBannerUI('obProductsBanner')">✕</button>
+  </div>
+  <div class="ob-banner-actions">
+    <button class="ob-glow-btn" onclick="document.getElementById('addProductBtn').click()">➕ إضافة منتج الآن</button>
+  </div>
 </div>
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
 <div>
@@ -2228,6 +2255,18 @@ table thead th{position:sticky;top:0;z-index:1;}
 
 <!-- Orders View -->
 <div id="ordersView" class="stats-view" style="display:none;">
+<div id="obOrdersBanner" class="ob-banner">
+  <div class="ob-banner-header">
+    <div class="ob-banner-body">
+      <div class="ob-banner-title">📦 إدارة الطلبات — Orders</div>
+      <div class="ob-banner-desc">من هنا تتابع جميع الطلبات التي يستقبلها البوت من عملائك عبر Instagram. يمكنك تغيير حالة الطلب، عرض التفاصيل، والتواصل مع العميل.</div>
+    </div>
+    <button class="ob-banner-close" onclick="obDismissBannerUI('obOrdersBanner')">✕</button>
+  </div>
+  <div class="ob-banner-actions">
+    <button class="ob-glow-btn" onclick="obGoToStep(6)">✓ استعرضت الطلبات — إنهاء الإعداد</button>
+  </div>
+</div>
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
 <div>
 <h2 style="margin-bottom:8px;" data-i18n="orders">Orders</h2>
@@ -2270,6 +2309,18 @@ table thead th{position:sticky;top:0;z-index:1;}
 
 <!-- FAQs View -->
 <div id="faqsView" class="stats-view" style="display:none;">
+<div id="obFaqsBanner" class="ob-banner">
+  <div class="ob-banner-header">
+    <div class="ob-banner-body">
+      <div class="ob-banner-title">❓ الأسئلة الشائعة — FAQs</div>
+      <div class="ob-banner-desc">أضف الأسئلة التي يكثر طرحها من عملائك مع إجاباتها. سيستخدمها البوت للرد تلقائياً بدقة عالية — اختر البوت من القائمة أولاً.</div>
+    </div>
+    <button class="ob-banner-close" onclick="obDismissBannerUI('obFaqsBanner')">✕</button>
+  </div>
+  <div class="ob-banner-actions">
+    <button class="ob-glow-btn" onclick="openFaqModal()">➕ إضافة سؤال الآن</button>
+  </div>
+</div>
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
 <div>
 <h2 style="margin-bottom:8px;" data-i18n="faqs">FAQs</h2>
@@ -2830,8 +2881,13 @@ Log Out
 <div class="modal-content" style="width:95vw;max-width:1200px;max-height:95vh;overflow-y:auto;padding:60px;">
 <span class="close" onclick="closeModal(createBotModal); resetBotFormStep();">×</span>
 <div id="obBotModalBanner" class="ob-banner" style="margin-bottom:24px;">
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e1306c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
-  أنت في مرحلة الإعداد — أدخل تفاصيل البوت أدناه واضغط "إنشاء" للمتابعة
+  <div class="ob-banner-header">
+    <div class="ob-banner-body">
+      <div class="ob-banner-title">🤖 إنشاء البوت</div>
+      <div class="ob-banner-desc">أدخل تفاصيل البوت أدناه — اسم البوت، نوع النشاط التجاري، ساعات العمل وسياسة الإرجاع. اضغط <strong style="color:#fff;">"Create Bot"</strong> عند الانتهاء للمتابعة تلقائياً للخطوة التالية.</div>
+    </div>
+    <button class="ob-banner-close" onclick="obDismissBannerUI('obBotModalBanner')">✕</button>
+  </div>
 </div>
 
 <!-- Step Indicator -->
@@ -7475,6 +7531,10 @@ async function saveFaq(){
       if(error) throw error;
     }
     showToast(t('faqSaved'), 'success');
+    // Onboarding: advance to Orders step after first FAQ saved
+    if(!editId && _obCurrentStep === 4){
+      setTimeout(() => obGoToStep(5), 1200);
+    }
     closeFaqModal();
     await filterFaqsByBot();
   }catch(e){
@@ -7779,8 +7839,8 @@ async function addProductFromProductsView(){
     if(error) throw error;
 
     showToast("success", t('success'), t('productAdded'));
-    // Onboarding: complete when first product is added
-    if(_obCurrentStep === 3) obCompleteOnboarding();
+    // Onboarding: advance to FAQs step after first product added
+    if(_obCurrentStep === 3) setTimeout(() => obGoToStep(4), 800);
     await loadAllProducts();
   } catch(err){
     console.error("Add product error:", err);
@@ -9618,11 +9678,15 @@ async function getProductsFromInstagram(){
 
 
 // ============================================================
-// === ONBOARDING FLOW ===
+// === ONBOARDING FLOW (5 steps) ===
 // ============================================================
 
 let _obUserId = null;
 let _obCurrentStep = 0;
+
+const _OB_BANNERS = ['obBotModalBanner','obProductsBanner','obFaqsBanner','obOrdersBanner'];
+
+function _obDismissKey(step){ return 'ob_bd_' + step + '_' + (_obUserId || ''); }
 
 function checkOnboarding(user){
   if(!user) return;
@@ -9646,17 +9710,30 @@ function checkOnboarding(user){
       setTimeout(() => {
         const modal = document.getElementById('createBotModal');
         if(modal) modal.style.display = 'flex';
-        const banner = document.getElementById('obBotModalBanner');
-        if(banner) banner.style.display = 'flex';
+        if(!localStorage.getItem(_obDismissKey(2))){
+          const b = document.getElementById('obBotModalBanner');
+          if(b) b.style.display = 'flex';
+        }
       }, 350);
     }, 120);
     return;
   }
-
   if(savedStep === 3){
     _obCurrentStep = 3;
     obUpdateTopBar(3);
     setTimeout(() => navigateToView('products'), 120);
+    return;
+  }
+  if(savedStep === 4){
+    _obCurrentStep = 4;
+    obUpdateTopBar(4);
+    setTimeout(() => navigateToView('faqs'), 120);
+    return;
+  }
+  if(savedStep === 5){
+    _obCurrentStep = 5;
+    obUpdateTopBar(5);
+    setTimeout(() => navigateToView('orders'), 120);
     return;
   }
 
@@ -9666,7 +9743,7 @@ function checkOnboarding(user){
   if(ageMs > 10 * 60 * 1000){ localStorage.setItem(doneKey, '1'); return; }
 
   _obCurrentStep = 1;
-  if(_obUserId) localStorage.setItem(stepKey, '1');
+  localStorage.setItem(stepKey, '1');
   showOnboarding();
 }
 
@@ -9675,19 +9752,14 @@ function showOnboarding(){
   if(!el) return;
   el.style.animation = '';
   el.style.display = 'flex';
-  // Show step 1 only in overlay
-  const s1 = document.getElementById('obStep1');
-  const s2 = document.getElementById('obStep2');
-  const s3 = document.getElementById('obStep3');
-  if(s1) s1.classList.add('ob-visible');
-  if(s2) s2.classList.remove('ob-visible');
-  if(s3) s3.classList.remove('ob-visible');
-  const d1 = document.getElementById('obDot1');
-  const d2 = document.getElementById('obDot2');
-  const d3 = document.getElementById('obDot3');
-  if(d1) d1.className = 'ob-dot ob-active';
-  if(d2) d2.className = 'ob-dot';
-  if(d3) d3.className = 'ob-dot';
+  ['obStep1','obStep2','obStep3'].forEach((id,i) => {
+    const s = document.getElementById(id);
+    if(s) s.classList.toggle('ob-visible', i === 0);
+  });
+  ['obDot1','obDot2','obDot3'].forEach((id,i) => {
+    const d = document.getElementById(id);
+    if(d) d.className = 'ob-dot' + (i === 0 ? ' ob-active' : '');
+  });
 }
 
 function hideOnboarding(){
@@ -9708,8 +9780,10 @@ function obGoToStep(n){
       setTimeout(() => {
         const modal = document.getElementById('createBotModal');
         if(modal && _obCurrentStep === 2) modal.style.display = 'flex';
-        const banner = document.getElementById('obBotModalBanner');
-        if(banner && _obCurrentStep === 2) banner.style.display = 'flex';
+        if(!localStorage.getItem(_obDismissKey(2))){
+          const b = document.getElementById('obBotModalBanner');
+          if(b && _obCurrentStep === 2) b.style.display = 'flex';
+        }
       }, 320);
     }, 290);
     return;
@@ -9717,12 +9791,38 @@ function obGoToStep(n){
   if(n === 3){
     _obCurrentStep = 3;
     if(_obUserId) localStorage.setItem('ob_step_' + _obUserId, '3');
+    _obHideAllBanners();
     obUpdateTopBar(3);
-    const botBanner = document.getElementById('obBotModalBanner');
-    if(botBanner) botBanner.style.display = 'none';
     setTimeout(() => navigateToView('products'), 100);
     return;
   }
+  if(n === 4){
+    _obCurrentStep = 4;
+    if(_obUserId) localStorage.setItem('ob_step_' + _obUserId, '4');
+    _obHideAllBanners();
+    obUpdateTopBar(4);
+    setTimeout(() => navigateToView('faqs'), 100);
+    return;
+  }
+  if(n === 5){
+    _obCurrentStep = 5;
+    if(_obUserId) localStorage.setItem('ob_step_' + _obUserId, '5');
+    _obHideAllBanners();
+    obUpdateTopBar(5);
+    setTimeout(() => navigateToView('orders'), 100);
+    return;
+  }
+  if(n === 6){
+    obCompleteOnboarding();
+    return;
+  }
+}
+
+function _obHideAllBanners(){
+  _OB_BANNERS.forEach(id => {
+    const b = document.getElementById(id);
+    if(b) b.style.display = 'none';
+  });
 }
 
 function obUpdateTopBar(step){
@@ -9733,53 +9833,96 @@ function obUpdateTopBar(step){
   bar.style.display = 'flex';
 
   const labels = {
-    2: 'الخطوة 2 من 3 — أنشئ البوت الخاص بك',
-    3: 'الخطوة 3 من 3 — أضف منتجاتك',
+    2: 'الخطوة 2 من 5 — أنشئ البوت الخاص بك',
+    3: 'الخطوة 3 من 5 — أضف منتجاتك',
+    4: 'الخطوة 4 من 5 — الأسئلة الشائعة',
+    5: 'الخطوة 5 من 5 — إدارة الطلبات',
   };
-  const widths = { 2: '50%', 3: '83%' };
+  const widths = { 2: '33%', 3: '50%', 4: '67%', 5: '83%' };
   if(label) label.textContent = labels[step] || '';
   if(fill)  fill.style.width  = widths[step] || '33%';
 
-  const prodBanner = document.getElementById('obProductsBanner');
-  if(prodBanner) prodBanner.style.display = step === 3 ? 'flex' : 'none';
+  // Show correct banner for current step (if not dismissed)
+  const bannerMap = { 3: 'obProductsBanner', 4: 'obFaqsBanner', 5: 'obOrdersBanner' };
+  _OB_BANNERS.forEach(id => {
+    const b = document.getElementById(id);
+    if(!b) return;
+    const isMine = bannerMap[step] === id;
+    if(isMine && !localStorage.getItem(_obDismissKey(step))){
+      b.style.display = 'flex';
+    } else {
+      b.style.display = 'none';
+    }
+  });
   // Add top padding to dashboard so bar doesn't overlap content
   const dash = document.getElementById('dashboard');
   if(dash) dash.style.paddingTop = '49px';
+  // Add glow rings to key action buttons
+  _obRefreshGlowRings(step);
+}
+
+function _obRefreshGlowRings(step){
+  const targets = ['submitCreateBotBtn','addProductBtn','addFaqBtn'];
+  targets.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.classList.remove('ob-glow-ring');
+  });
+  const ringMap = { 2: 'submitCreateBotBtn', 3: 'addProductBtn', 4: 'addFaqBtn' };
+  if(ringMap[step]){
+    const el = document.getElementById(ringMap[step]);
+    if(el) el.classList.add('ob-glow-ring');
+  }
+}
+
+function obDismissBannerUI(bannerId){
+  const b = document.getElementById(bannerId);
+  if(!b) return;
+  b.style.animation = 'obBannerOut .35s ease forwards';
+  setTimeout(() => { b.style.display = 'none'; b.style.animation = ''; }, 370);
+  const stepForBanner = { obBotModalBanner:2, obProductsBanner:3, obFaqsBanner:4, obOrdersBanner:5 };
+  const s = stepForBanner[bannerId];
+  if(s && _obUserId) localStorage.setItem(_obDismissKey(s), '1');
 }
 
 function obCompleteOnboarding(){
-  const bar   = document.getElementById('obTopBar');
-  const label = document.getElementById('obTopBarLabel');
-  const fill  = document.getElementById('obTopBarFill');
-  const skip  = document.getElementById('obTopBarSkip');
-  if(label) label.textContent = '✓ تم! البوت الخاص بك يعمل الآن';
-  if(fill){ fill.style.width = '100%'; fill.style.background = '#22c55e'; }
-  if(skip) skip.style.display = 'none';
-  const prodBanner = document.getElementById('obProductsBanner');
-  if(prodBanner) prodBanner.style.display = 'none';
+  _obHideAllBanners();
   _obCurrentStep = 0;
   if(_obUserId){
     localStorage.setItem('ob_done_' + _obUserId, '1');
     localStorage.removeItem('ob_step_' + _obUserId);
   }
+  // Hide top bar
+  const bar = document.getElementById('obTopBar');
+  if(bar){ bar.style.transition = 'opacity .4s'; bar.style.opacity = '0'; }
   setTimeout(() => {
-    if(bar){ bar.style.transition = 'opacity .6s'; bar.style.opacity = '0'; }
-    setTimeout(() => {
-      if(bar){ bar.style.display = 'none'; bar.style.opacity = ''; bar.style.transition = ''; }
-      const dash = document.getElementById('dashboard');
-      if(dash) dash.style.paddingTop = '';
-    }, 620);
-  }, 3000);
+    if(bar){ bar.style.display = 'none'; bar.style.opacity = ''; bar.style.transition = ''; }
+    const dash = document.getElementById('dashboard');
+    if(dash) dash.style.paddingTop = '';
+  }, 420);
+  // Show celebration banner
+  const cel = document.getElementById('obCelebrationBanner');
+  if(cel) cel.style.display = 'block';
+  setTimeout(() => obCloseCelebration(), 5000);
+}
+
+function obCloseCelebration(){
+  const cel = document.getElementById('obCelebrationBanner');
+  if(cel){ cel.style.transition = 'opacity .5s'; cel.style.opacity = '0'; }
+  setTimeout(() => {
+    if(cel){ cel.style.display = 'none'; cel.style.opacity = ''; cel.style.transition = ''; }
+    navigateToView('dashboard');
+  }, 520);
 }
 
 function obSkip(){
   const bar = document.getElementById('obTopBar');
   if(bar){ bar.style.display = 'none'; }
   hideOnboarding();
-  const botBanner  = document.getElementById('obBotModalBanner');
-  const prodBanner = document.getElementById('obProductsBanner');
-  if(botBanner)  botBanner.style.display  = 'none';
-  if(prodBanner) prodBanner.style.display = 'none';
+  _obHideAllBanners();
+  ['submitCreateBotBtn','addProductBtn','addFaqBtn'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.classList.remove('ob-glow-ring');
+  });
   const dash = document.getElementById('dashboard');
   if(dash) dash.style.paddingTop = '';
   _obCurrentStep = 0;
@@ -9945,6 +10088,14 @@ function togglePass(fieldId){
   </div>
 </div>
 <!-- ===== END ONBOARDING OVERLAY ===== -->
+
+<!-- ===== ONBOARDING CELEBRATION BANNER ===== -->
+<div id="obCelebrationBanner" style="display:none;">
+  <div style="font-size:48px;margin-bottom:12px;line-height:1;">🎉</div>
+  <div style="font-size:24px;font-weight:900;color:#fff;margin-bottom:10px;direction:rtl;">بوتك جاهز وشغّال!</div>
+  <div style="font-size:15px;color:rgba(255,255,255,.6);margin-bottom:28px;direction:rtl;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.7;">لقد أكملت الإعداد — بوتك الآن يرد على عملائك تلقائياً عبر Instagram</div>
+  <button class="ob-glow-btn" style="margin:0 auto;padding:14px 36px;font-size:16px;" onclick="obCloseCelebration()">اذهب إلى لوحة التحكم ←</button>
+</div>
 
 </body>
 </html>
