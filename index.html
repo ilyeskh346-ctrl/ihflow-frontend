@@ -497,6 +497,14 @@ table thead th{position:sticky;top:0;z-index:1;}
 .cta-section p{color:var(--muted);font-size:18px;margin-bottom:32px;}
 
 .dashboard{padding:100px 0 40px;display:none;}
+#dashboard[style*="display:none"],
+#dashboard[style*="display: none"]{
+  display:none !important;
+  height:0 !important;
+  overflow:hidden !important;
+  position:absolute !important;
+  visibility:hidden !important;
+}
 .workspace-btn{
   display:inline-flex;
   align-items:center;
