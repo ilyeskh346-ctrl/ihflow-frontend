@@ -2877,6 +2877,18 @@ Log Out
 </div>
 
 <!-- Create Bot Modal -->
+<div class="modal" id="deleteOrderModal" style="z-index:10100;">
+<div class="modal-content" style="max-width:420px;padding:36px 32px;text-align:center;">
+  <div style="font-size:36px;margin-bottom:16px;">⚠️</div>
+  <div style="font-size:18px;font-weight:700;margin-bottom:10px;color:var(--text);">هل تريد تأكيد وحذف هذه الطلبية؟</div>
+  <div style="font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.7;">سيتم حذفها نهائياً من القائمة وقاعدة البيانات.</div>
+  <div style="display:flex;gap:12px;justify-content:center;">
+    <button onclick="confirmAndDeleteOrder()" style="padding:10px 28px;border-radius:10px;background:#22c55e;color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;">✅ تأكيد وحذف</button>
+    <button onclick="cancelDeleteOrderModal()" style="padding:10px 28px;border-radius:10px;background:var(--bg-secondary);color:var(--muted);font-size:14px;font-weight:600;border:1px solid var(--border);cursor:pointer;">إلغاء</button>
+  </div>
+</div>
+</div>
+
 <div class="modal" id="createBotModal">
 <div class="modal-content" style="width:95vw;max-width:1200px;max-height:95vh;overflow-y:auto;padding:60px;">
 <span class="close" onclick="closeModal(createBotModal); resetBotFormStep();">×</span>
@@ -7297,24 +7309,65 @@ async function updateOrderStatus(orderId, newStatus){
   }
 }
 
-async function toggleOrderConfirmation(orderId){
+let _pendingDeleteOrderId = null;
+
+function toggleOrderConfirmation(orderId){
   const order = allOrdersData.find(o => o.id === orderId);
   if(!order) return;
-  const newStatus = (order.status === "confirmed") ? "pending" : "confirmed";
+  if(order.status !== "confirmed"){
+    _pendingDeleteOrderId = orderId;
+    document.getElementById("deleteOrderModal").style.display = "flex";
+  } else {
+    _doToggleOrderToPending(orderId);
+  }
+}
+
+async function _doToggleOrderToPending(orderId){
+  const order = allOrdersData.find(o => o.id === orderId);
+  if(!order) return;
   try {
     const { error } = await supabaseClient
       .from("orders")
-      .update({ status: newStatus })
+      .update({ status: "pending" })
       .eq("id", orderId);
-    if(error){
-      console.error("Error toggling order status:", error);
-      return;
-    }
-    order.status = newStatus;
+    if(error){ console.error("Error toggling order status:", error); return; }
+    order.status = "pending";
     filterOrdersByBot();
   } catch(e){
     console.error("Error toggling order status:", e);
   }
+}
+
+async function confirmAndDeleteOrder(){
+  const orderId = _pendingDeleteOrderId;
+  if(!orderId) return;
+  document.getElementById("deleteOrderModal").style.display = "none";
+  try {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if(!user) return;
+    const { error } = await supabaseClient
+      .from("orders")
+      .delete()
+      .eq("id", orderId)
+      .eq("user_id", user.id);
+    if(error){ console.error("Error deleting order:", error); alert("فشل حذف الطلبية"); return; }
+    allOrdersData = allOrdersData.filter(o => o.id !== orderId);
+    filterOrdersByBot();
+    const toast = document.createElement("div");
+    toast.textContent = "✅ تم تأكيد وحذف الطلبية";
+    toast.style.cssText = "position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:#22c55e;color:#fff;padding:12px 28px;border-radius:12px;font-size:14px;font-weight:700;z-index:99999;box-shadow:0 4px 20px rgba(34,197,94,0.4);";
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  } catch(e){
+    console.error("Error deleting order:", e);
+    alert("فشل حذف الطلبية");
+  }
+  _pendingDeleteOrderId = null;
+}
+
+function cancelDeleteOrderModal(){
+  document.getElementById("deleteOrderModal").style.display = "none";
+  _pendingDeleteOrderId = null;
 }
 
 async function populateProductBotFilter(){
