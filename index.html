@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
@@ -1487,7 +1487,7 @@ table thead th{position:sticky;top:0;z-index:1;}
   .kpi-icon{width:44px;height:44px;}
   .kpi-value{font-size:22px;}
 
-  .canvas{padding:16px !important;}
+  .canvas{padding:72px 12px 16px !important;}
   .editor-shell{padding:16px;}
   .editor-header{flex-direction:column;gap:12px;align-items:flex-start;}
 
@@ -1522,6 +1522,67 @@ table thead th{position:sticky;top:0;z-index:1;}
     bottom:0 !important;
     max-height:70vh !important;
   }
+
+  /* ── Dashboard stats grid → 1 column ── */
+  .stats-grid{grid-template-columns:1fr !important;}
+
+  /* ── IG posts grid → 2 columns ── */
+  #igPostsGrid{grid-template-columns:repeat(2,1fr) !important;gap:10px !important;}
+
+  /* ── View header selects full width ── */
+  #dashBotFilter,#orderBotFilter,#productBotFilter,#faqBotFilter{
+    width:100%;
+    box-sizing:border-box;
+    min-height:44px;
+    font-size:14px;
+  }
+
+  /* ── View action buttons full width + min touch target ── */
+  #addProductBtn,#igScrapeBtn,#saveProductsViewBtn,#addFaqBtn{
+    width:100%;
+    justify-content:center;
+    min-height:44px;
+    box-sizing:border-box;
+  }
+
+  /* ── Account view form inputs ── */
+  #accountView input,#accountView select,#accountView textarea{
+    width:100% !important;
+    box-sizing:border-box;
+    font-size:14px;
+    min-height:44px;
+  }
+
+  /* ── Modal inputs min touch target ── */
+  .modal-content input,
+  .modal-content select,
+  .modal-content textarea{
+    width:100%;
+    box-sizing:border-box;
+    font-size:14px;
+    min-height:44px;
+  }
+  .modal-content button{min-height:44px;}
+
+  /* ── View header: stack on mobile ── */
+  #productsView > div:first-of-type,
+  #ordersView > div:not(.ob-banner):first-of-type,
+  #faqsView > div:not(.ob-banner):first-of-type{
+    flex-direction:column !important;
+    align-items:flex-start !important;
+  }
+  #productsView > div > div:last-child,
+  #ordersView > div > div:last-child,
+  #faqsView > div > div:last-child{
+    width:100%;
+    flex-direction:column;
+    gap:8px;
+  }
+
+  /* ── Landing page font & layout ── */
+  body{font-size:14px;}
+  h1{font-size:1.5rem;}
+  h2{font-size:1.2rem;}
 }
 
 /* Toast Notification Styles */
@@ -1869,6 +1930,7 @@ table thead th{position:sticky;top:0;z-index:1;}
   .ig-modal h3{font-size:20px;}
   .sidebar{width:85vw;max-width:280px;}
   .stat-card .stat-value{font-size:32px;}
+  #igPostsGrid{grid-template-columns:1fr !important;}
   .auto-reply-card{padding:12px 14px;}
   .editor-images{grid-template-columns:repeat(auto-fill,minmax(80px,1fr));}
 }
