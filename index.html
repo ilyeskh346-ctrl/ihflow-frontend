@@ -3328,6 +3328,7 @@ function showNextMessage() {
 // Chat animation will start after translations are loaded
 let chatAnimationStarted = false;
 function startChatAnimation() {
+  if(window.innerWidth <= 768) return;
   if(!chatAnimationStarted) {
     chatAnimationStarted = true;
     setTimeout(showNextMessage, 800);
