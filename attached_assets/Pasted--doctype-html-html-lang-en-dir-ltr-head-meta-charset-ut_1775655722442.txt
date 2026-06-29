@@ -1995,7 +1995,7 @@ table thead th{position:sticky;top:0;z-index:1;}
 
 
 <section id="dashboard" class="dashboard" style="display:none">
-<div class="dashboard-layout">
+<div class="dashboard-layout" style="display:none;height:0;overflow:hidden;position:absolute;">
 <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileSidebar()">
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
 </button>
