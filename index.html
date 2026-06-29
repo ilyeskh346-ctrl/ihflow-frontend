@@ -3321,7 +3321,7 @@ function showNextMessage() {
   }
 
   chatContainer.appendChild(div);
-  chatContainer.scrollTop = chatContainer.scrollHeight;
+  
   chatIndex++;
   setTimeout(showNextMessage, msg.from === 'bot' ? 1400 : 1000);
 }
