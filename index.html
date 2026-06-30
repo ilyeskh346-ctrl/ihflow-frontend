@@ -8218,8 +8218,7 @@ function deleteBot(botId){
         if(editorView) editorView.innerHTML = "";
 
         showToast("success", t('deleted'), t('botDeleted'));
-        await loadBotsListView();
-        loadBots();
+        window.location.reload();
 
       } catch(err){
         showToast("error", t('error'), t('failedToDelete'));
