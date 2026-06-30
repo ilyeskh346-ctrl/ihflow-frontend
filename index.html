@@ -5105,6 +5105,15 @@ function goToStep1() {
 }
 
 let originalStep3HTML = null;
+(function captureOriginalStep3HTML(){
+  const _step3Init = document.getElementById('step3');
+  if(_step3Init){
+    originalStep3HTML = _step3Init.innerHTML;
+    console.log('[CreateBot] originalStep3HTML captured at load, length:', originalStep3HTML.length);
+  } else {
+    console.warn('[CreateBot] step3 element not found at script init — originalStep3HTML NOT captured');
+  }
+})();
 
 function resetBotFormStep() {
   const step1 = document.getElementById('step1');
@@ -9260,8 +9269,10 @@ if(createBotBtnEl) createBotBtnEl.addEventListener("click", async () => {
 
 // Create Bot Form Submit
 async function submitCreateBot() {
+  console.log('[CreateBot] submitCreateBot() called — Save button clicked');
   const { data:{ user } } = await supabaseClient.auth.getUser();
   if(!user){
+    console.warn('[CreateBot] No authenticated user — aborting');
     showToast("error", t('error'), t('mustBeLoggedIn'));
     return;
   }
@@ -9332,6 +9343,15 @@ async function submitCreateBot() {
 
   try {
     // 1. Insert bot into bots table
+    console.log('[CreateBot] Sending INSERT to Supabase "bots" table with payload:', {
+      user_id: user.id,
+      name: botName,
+      business_name: businessName,
+      activity_type: activityType,
+      phone_number: phone,
+      working_hours: workingHours,
+      return_policy: returnPolicy
+    });
     const { data:newBot, error } = await supabaseClient.from("bots").insert([{ 
       user_id: user.id, 
       name: botName,
@@ -9342,11 +9362,15 @@ async function submitCreateBot() {
       return_policy: returnPolicy
     }]).select().single();
 
+    console.log('[CreateBot] Supabase response received — data:', newBot, 'error:', error);
+
     if(error){
-      console.error("Supabase error:", error);
+      console.error("[CreateBot] Supabase error:", error);
       showToast("error", t('error'), error.message || t('failedToCreateBot'));
       return;
     }
+
+    console.log('[CreateBot] Bot created successfully with new id:', newBot && newBot.id);
 
     // 2. Insert products into products table
     if(products.length > 0) {
