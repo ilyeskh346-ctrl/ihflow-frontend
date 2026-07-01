@@ -2967,6 +2967,15 @@ Log Out
 <div class="modal" id="createBotModal">
 <div class="modal-content" style="width:95vw;max-width:1200px;max-height:95vh;overflow-y:auto;padding:60px;">
 <span class="close" onclick="closeModal(createBotModal); resetBotFormStep();">×</span>
+<div id="obBotModalBanner" class="ob-banner" style="margin-bottom:24px;">
+  <div class="ob-banner-header">
+    <div class="ob-banner-body">
+      <div class="ob-banner-title">🤖 إنشاء البوت</div>
+      <div class="ob-banner-desc">أدخل تفاصيل البوت أدناه — اسم البوت، نوع النشاط التجاري، ساعات العمل وسياسة الإرجاع. اضغط <strong style="color:#fff;">"Create Bot"</strong> عند الانتهاء للمتابعة تلقائياً للخطوة التالية.</div>
+    </div>
+    <button class="ob-banner-close" onclick="obDismissBannerUI('obBotModalBanner')">✕</button>
+  </div>
+</div>
 
 <!-- Step Indicator -->
 <div style="display:flex;justify-content:center;gap:8px;margin-bottom:20px;">
