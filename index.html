@@ -3021,6 +3021,16 @@ Log Out
 <input type="tel" id="newBotPhone" style="width:100%;padding:12px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;" data-i18n-placeholder="phonePlaceholder" placeholder="+1234567890">
 </div>
 </div>
+<div style="display:grid;grid-template-columns:1fr;gap:16px;">
+<div>
+<label style="display:block;font-size:13px;color:var(--muted);margin-bottom:6px;" data-i18n="businessType">Business Type</label>
+<select name="business_type" id="businessType" required style="width:100%;padding:12px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;">
+<option value="" data-i18n="selectActivityType">اختر نوع النشاط</option>
+<option value="product_sales" data-i18n="productSales">بيع منتج</option>
+<option value="service_provider" data-i18n="serviceProvider">تقديم خدمة</option>
+</select>
+</div>
+</div>
 <button type="button" onclick="goToStep2()" style="width:100%;padding:14px;background:var(--gradient);color:#fff;border:none;border-radius:10px;font-weight:600;font-size:15px;cursor:pointer;margin-top:8px;" data-i18n="next">Next</button>
 </div>
 </div>
@@ -5146,6 +5156,7 @@ function resetBotFormStep() {
   document.getElementById('newBotBusinessName').value = '';
   document.getElementById('newBotActivityType').value = '';
   document.getElementById('newBotPhone').value = '';
+  document.getElementById('businessType').value = '';
   document.getElementById('newBotWorkingHours').value = '';
   document.getElementById('newBotReturnPolicy').value = 'flexible';
 }
@@ -9281,6 +9292,7 @@ async function submitCreateBot() {
   const businessName = document.getElementById("newBotBusinessName").value.trim();
   const activityType = document.getElementById("newBotActivityType").value.trim();
   const phone = document.getElementById("newBotPhone").value.trim();
+  const businessType = document.getElementById("businessType").value.trim();
 
   // Step 2 Data
   const workingHours = document.getElementById("newBotWorkingHours").value.trim();
@@ -9348,6 +9360,7 @@ async function submitCreateBot() {
       business_name: businessName,
       activity_type: activityType,
       phone_number: phone,
+      business_type: businessType,
       working_hours: workingHours,
       return_policy: returnPolicy
     });
@@ -9357,6 +9370,7 @@ async function submitCreateBot() {
       business_name: businessName,
       activity_type: activityType,
       phone_number: phone,
+      business_type: businessType,
       working_hours: workingHours,
       return_policy: returnPolicy
     }]).select().single();
