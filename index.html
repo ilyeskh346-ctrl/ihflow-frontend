@@ -9869,19 +9869,11 @@ function checkOnboarding(user){
   const savedStep = parseInt(localStorage.getItem(stepKey) || '0');
 
   if(savedStep === 2){
-    _obCurrentStep = 2;
-    obUpdateTopBar(2);
-    setTimeout(() => {
-      navigateToView('bots');
-      setTimeout(() => {
-        const modal = document.getElementById('createBotModal');
-        if(modal) modal.style.display = 'flex';
-        if(!localStorage.getItem(_obDismissKey(2))){
-          const b = document.getElementById('obBotModalBanner');
-          if(b) b.style.display = 'flex';
-        }
-      }, 350);
-    }, 120);
+    // Create Bot onboarding step removed — resume straight at Add Products step
+    _obCurrentStep = 3;
+    if(_obUserId) localStorage.setItem('ob_step_' + _obUserId, '3');
+    obUpdateTopBar(3);
+    setTimeout(() => navigateToView('products'), 120);
     return;
   }
   if(savedStep === 3){
@@ -9937,21 +9929,8 @@ function hideOnboarding(){
 
 function obGoToStep(n){
   if(n === 2){
-    hideOnboarding();
-    _obCurrentStep = 2;
-    if(_obUserId) localStorage.setItem('ob_step_' + _obUserId, '2');
-    obUpdateTopBar(2);
-    setTimeout(() => {
-      navigateToView('bots');
-      setTimeout(() => {
-        const modal = document.getElementById('createBotModal');
-        if(modal && _obCurrentStep === 2) modal.style.display = 'flex';
-        if(!localStorage.getItem(_obDismissKey(2))){
-          const b = document.getElementById('obBotModalBanner');
-          if(b && _obCurrentStep === 2) b.style.display = 'flex';
-        }
-      }, 320);
-    }, 290);
+    // Create Bot onboarding step removed — skip straight to Add Products step
+    obGoToStep(3);
     return;
   }
   if(n === 3){
