@@ -12,3 +12,9 @@ id = "-VXUy2xVVmozM7VybKbe0"
 uri = "file://index.html.txt"
 type = "text"
 title = "index.html"
+
+[[outputs]]
+id = "GhgkIydgXyr84gUjvO1lO"
+uri = "file://index_latest.html.txt"
+type = "text"
+title = "index.html — آخر نسخة"
