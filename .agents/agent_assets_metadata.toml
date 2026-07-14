@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "MKgx4EG1dklyz5LfJri5L"
+uri = "file://ihflow-frontend.zip"
+type = "unspecified"
+title = "ihflow-frontend.zip — كل ملفات المشروع"
