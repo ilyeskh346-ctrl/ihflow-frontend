@@ -2054,6 +2054,10 @@ table thead th{position:sticky;top:0;z-index:1;}
 <style>.footer-link{color:var(--text);font-size:14px;font-weight:500;text-decoration:none;opacity:0.8;transition:opacity 0.2s,color 0.2s;padding:4px 0;}.footer-link:hover{opacity:1;color:var(--primary);}.footer-sep{color:var(--border);font-size:16px;margin:0 6px;user-select:none;}@media(max-width:768px){body,html{overflow-x:hidden!important;height:auto!important;}.dashboard-layout{display:none!important;height:0!important;overflow:hidden!important;position:absolute!important;top:-9999px!important;}.phone-mockup{display:none!important;height:0!important;overflow:hidden!important;position:absolute!important;top:-9999px!important;}#chatMessages{display:none!important;height:0!important;}}</style>
 </head>
 <body>
+<script>
+function openModal(modal){ if(modal) modal.style.display = "flex"; }
+function closeModal(modal){ if(modal) modal.style.display = "none"; }
+</script>
 <div class="toast-container" id="toastContainer"></div>
 <header class="site-header" id="topNav">
 <div class="container">
@@ -7431,35 +7435,23 @@ async function confirmAndDeleteOrder(){
   document.getElementById("deleteOrderModal").style.display = "none";
   try {
     const { data: { user } } = await supabaseClient.auth.getUser();
-    if(!user){ console.warn('[DeleteOrder] No authenticated user'); return; }
-    console.log('[DeleteOrder] Attempting delete for order id:', orderId);
-    // Delete by id only — RLS handles authorization on the server side
-    let { error } = await supabaseClient
+    if(!user) return;
+    const { error } = await supabaseClient
       .from("orders")
       .delete()
-      .eq("id", orderId);
-    // orders table uses business_id (not user_id) — retry with business_id if first attempt blocked
-    if(error){
-      console.warn('[DeleteOrder] Retrying with business_id filter. Error was:', error.message);
-      const retry = await supabaseClient
-        .from("orders")
-        .delete()
-        .eq("id", orderId)
-        .eq("business_id", user.id);
-      error = retry.error;
-    }
-    if(error){
-      console.error('[DeleteOrder] Delete failed:', error.message, error);
-      showToast("error", "خطأ", "فشل حذف الطلبية: " + error.message);
-      return;
-    }
-    console.log('[DeleteOrder] Delete successful:', orderId);
+      .eq("id", orderId)
+      .eq("user_id", user.id);
+    if(error){ console.error("Error deleting order:", error); alert("فشل حذف الطلبية"); return; }
     allOrdersData = allOrdersData.filter(o => o.id !== orderId);
     filterOrdersByBot();
-    showToast("success", "تم", "✅ تم تأكيد وحذف الطلبية");
+    const toast = document.createElement("div");
+    toast.textContent = "✅ تم تأكيد وحذف الطلبية";
+    toast.style.cssText = "position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:#22c55e;color:#fff;padding:12px 28px;border-radius:12px;font-size:14px;font-weight:700;z-index:99999;box-shadow:0 4px 20px rgba(34,197,94,0.4);";
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
   } catch(e){
-    console.error('[DeleteOrder] Exception:', e);
-    showToast("error", "خطأ", "فشل حذف الطلبية");
+    console.error("Error deleting order:", e);
+    alert("فشل حذف الطلبية");
   }
   _pendingDeleteOrderId = null;
 }
