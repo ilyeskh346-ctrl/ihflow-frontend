@@ -1486,8 +1486,8 @@ table thead th{position:sticky;top:0;z-index:1;}
   .hero-cta{flex-direction:column;gap:12px;}
   .hero-cta .btn-primary,
   .hero-cta .btn-outline{width:100%;text-align:center;font-size:16px !important;padding:16px 24px !important;}
-  .hero-grid{gap:40px;}
-  .phone-mockup{max-width:280px;}
+  .hero-grid{gap:0 !important;}
+  .hero-grid .phone-mockup{display:none !important;visibility:hidden !important;height:0 !important;width:0 !important;overflow:hidden !important;position:absolute !important;pointer-events:none !important;}
 
   .section-title{font-size:28px;}
   .section-subtitle{font-size:14px;}
@@ -2057,6 +2057,18 @@ table thead th{position:sticky;top:0;z-index:1;}
 <script>
 function openModal(modal){ if(modal) modal.style.display = "flex"; }
 function closeModal(modal){ if(modal) modal.style.display = "none"; }
+// Hide phone mockup on mobile immediately and on resize
+function _hideMobilePhone(){
+  if(window.innerWidth <= 768){
+    var el = document.querySelector('.phone-mockup');
+    if(el){ el.style.cssText = 'display:none!important;visibility:hidden!important;height:0!important;width:0!important;overflow:hidden!important;position:absolute!important;'; }
+  } else {
+    var el = document.querySelector('.phone-mockup');
+    if(el && el.style.display === 'none'){ el.style.cssText = ''; }
+  }
+}
+window.addEventListener('DOMContentLoaded', _hideMobilePhone);
+window.addEventListener('resize', _hideMobilePhone);
 </script>
 <div class="toast-container" id="toastContainer"></div>
 <header class="site-header" id="topNav">
