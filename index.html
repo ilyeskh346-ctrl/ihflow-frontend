@@ -7435,13 +7435,20 @@ async function confirmAndDeleteOrder(){
   document.getElementById("deleteOrderModal").style.display = "none";
   try {
     const { data: { user } } = await supabaseClient.auth.getUser();
-    if(!user) return;
+    if(!user){ console.warn('[DeleteOrder] no user'); return; }
+    console.log('[DeleteOrder] deleting order id:', orderId);
+    // orders table uses business_id (not user_id) for ownership
     const { error } = await supabaseClient
       .from("orders")
       .delete()
       .eq("id", orderId)
-      .eq("user_id", user.id);
-    if(error){ console.error("Error deleting order:", error); alert("فشل حذف الطلبية"); return; }
+      .eq("business_id", user.id);
+    if(error){
+      console.error('[DeleteOrder] failed:', error.message, error);
+      alert("فشل حذف الطلبية: " + error.message);
+      return;
+    }
+    console.log('[DeleteOrder] success');
     allOrdersData = allOrdersData.filter(o => o.id !== orderId);
     filterOrdersByBot();
     const toast = document.createElement("div");
@@ -7450,7 +7457,7 @@ async function confirmAndDeleteOrder(){
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
   } catch(e){
-    console.error("Error deleting order:", e);
+    console.error('[DeleteOrder] exception:', e);
     alert("فشل حذف الطلبية");
   }
   _pendingDeleteOrderId = null;
