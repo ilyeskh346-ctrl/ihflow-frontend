@@ -2049,7 +2049,18 @@ table thead th{position:sticky;top:0;z-index:1;}
 .ob-glow-ring{box-shadow:0 0 0 2px #dd2a7b,0 0 12px rgba(221,42,123,.5)!important;transition:box-shadow .3s!important;}
 /* Celebration banner */
 #obCelebrationBanner{display:none;position:fixed;top:0;left:0;width:100%;z-index:10001;background:linear-gradient(135deg,#0a0a1a 0%,#1a0a2e 50%,#2d0a1f 100%);border-bottom:3px solid #dd2a7b;box-shadow:0 0 40px rgba(221,42,123,.5);padding:36px 40px;text-align:center;direction:rtl;animation:obFadeIn .4s ease;}
-
+/* ===== Mobile Table Spacing ===== */
+@media(max-width:768px){
+  .dash-wrap{margin-left:0!important;margin-right:0!important;}
+  .canvas{padding-left:8px!important;padding-right:8px!important;}
+}
+/* Bulk select checkboxes */
+input[type="checkbox"].bulk-cb{appearance:none;-webkit-appearance:none;width:20px;height:20px;border:2px solid var(--border);border-radius:5px;cursor:pointer;position:relative;transition:all 0.2s;background:var(--bg-secondary);flex-shrink:0;vertical-align:middle;}
+input[type="checkbox"].bulk-cb:hover{border-color:var(--primary);}
+input[type="checkbox"].bulk-cb:checked{background:var(--primary);border-color:var(--primary);}
+input[type="checkbox"].bulk-cb:checked::after{content:'';position:absolute;left:5px;top:2px;width:7px;height:11px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg);}
+input[type="checkbox"].bulk-cb:indeterminate{background:var(--primary);border-color:var(--primary);}
+input[type="checkbox"].bulk-cb:indeterminate::after{content:'';position:absolute;left:4px;top:7px;width:10px;height:2px;background:#fff;}
 @media(max-width:768px){body,html{overflow-x:hidden!important;height:auto!important;}}</style>
 <style>.footer-link{color:var(--text);font-size:14px;font-weight:500;text-decoration:none;opacity:0.8;transition:opacity 0.2s,color 0.2s;padding:4px 0;}.footer-link:hover{opacity:1;color:var(--primary);}.footer-sep{color:var(--border);font-size:16px;margin:0 6px;user-select:none;}@media(max-width:768px){body,html{overflow-x:hidden!important;height:auto!important;}}</style>
 </head>
@@ -2298,7 +2309,7 @@ window.addEventListener('resize', _hideMobilePhone);
 <p style="color:var(--muted);font-size:14px;" data-i18n="manageProducts">Manage your products</p>
 </div>
 <div style="display:flex;gap:12px;align-items:center;">
-<select id="productBotFilter" onchange="loadAllProducts()" style="padding:10px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;">
+<select id="productBotFilter" onchange="loadAllProducts()" style="display:none;">
 <option value="all" data-i18n="chooseBot">Choose Bot</option>
 </select>
 <button id="addProductBtn" onclick="addProductFromProductsView()" style="padding:10px 16px;background:var(--primary);border:none;border-radius:8px;color:#fff;font-size:14px;cursor:pointer;display:none;align-items:center;gap:8px;font-weight:500;">
@@ -2313,10 +2324,15 @@ window.addEventListener('resize', _hideMobilePhone);
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
 <span>Save</span>
 </button>
+<span id="productSelectionCount" style="display:none;padding:10px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-weight:600;"></span>
+<button id="bulkDeleteProductsBtn" onclick="bulkDeleteProducts()" style="display:none;padding:10px 16px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:8px;color:#ef4444;font-size:14px;cursor:pointer;font-weight:600;align-items:center;gap:8px;">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+<span>حذف المحدد</span>
+</button>
 </div>
 </div>
 
-<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+<div id="productsTableWrap" style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
 <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
 <table style="width:100%;border-collapse:collapse;min-width:800px;">
 <thead>
@@ -2364,13 +2380,18 @@ window.addEventListener('resize', _hideMobilePhone);
 <p style="color:var(--muted);font-size:14px;" id="ordersCount">Loading orders...</p>
 </div>
 <div style="display:flex;gap:12px;align-items:center;">
-<select id="orderBotFilter" onchange="filterOrdersByBot()" style="padding:10px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;">
+<select id="orderBotFilter" onchange="filterOrdersByBot()" style="display:none;">
 <option value="all">All Bots</option>
 </select>
+<span id="orderSelectionCount" style="display:none;padding:10px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-weight:600;"></span>
+<button id="bulkConfirmOrdersBtn" onclick="bulkConfirmOrders()" style="display:none;padding:10px 16px;background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.4);border-radius:8px;color:#22c55e;font-size:14px;cursor:pointer;font-weight:600;align-items:center;gap:8px;">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+<span>تأكيد المحدد</span>
+</button>
 </div>
 </div>
 
-<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+<div id="ordersTableWrap" style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
 <div style="overflow-x:auto;">
 <table style="width:100%;border-collapse:collapse;min-width:900px;table-layout:fixed;">
 <thead>
@@ -2418,17 +2439,23 @@ window.addEventListener('resize', _hideMobilePhone);
 <p style="color:var(--muted);font-size:14px;" id="faqsCount" data-i18n="manageFaqs">Manage your FAQs</p>
 </div>
 <div style="display:flex;gap:12px;align-items:center;">
-<select id="faqBotFilter" onchange="filterFaqsByBot()" style="padding:10px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;">
+<select id="faqBotFilter" onchange="filterFaqsByBot()" style="display:none;">
 <option value="" data-i18n="chooseBot">Choose Bot</option>
 </select>
 <button id="addFaqBtn" onclick="openFaqModal()" style="display:none;padding:10px 20px;background:var(--gradient);color:#fff;border:none;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;gap:8px;" data-i18n="addFaq">Add FAQ</button>
+<span id="faqSelectionCount" style="display:none;padding:10px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-weight:600;"></span>
+<button id="bulkDeleteFaqsBtn" onclick="bulkDeleteFaqs()" style="display:none;padding:10px 16px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:8px;color:#ef4444;font-size:14px;cursor:pointer;font-weight:600;align-items:center;gap:8px;">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+<span>حذف المحدد</span>
+</button>
 </div>
 </div>
 <div id="faqsTableWrap" style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
 <div style="overflow-x:auto;">
 <table style="width:100%;border-collapse:collapse;">
 <thead>
-<tr style="background:var(--bg-secondary);border-bottom:2px solid var(--primary);">
+<tr id="faqsTableHead" style="background:var(--bg-secondary);border-bottom:2px solid var(--primary);">
+<th style="padding:14px 12px;width:44px;text-align:center;border:1px solid var(--border);"><input type="checkbox" id="selectAllFaqs" onchange="toggleAllFaqCheckboxes(this)" class="bulk-cb"></th>
 <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--primary);text-align:center;border:1px solid var(--border);width:5%;text-transform:uppercase;letter-spacing:0.5px;">#</th>
 <th data-i18n="faqQuestion" style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--primary);text-align:center;border:1px solid var(--border);width:38%;text-transform:uppercase;letter-spacing:0.5px;">Question</th>
 <th data-i18n="faqAnswer" style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--primary);text-align:center;border:1px solid var(--border);width:42%;text-transform:uppercase;letter-spacing:0.5px;">Answer</th>
@@ -2436,7 +2463,7 @@ window.addEventListener('resize', _hideMobilePhone);
 </tr>
 </thead>
 <tbody id="faqsContainer">
-<tr><td colspan="4" style="padding:40px;text-align:center;color:var(--muted);"><p data-i18n="selectBotFaqs">Select a bot to view FAQs</p></td></tr>
+<tr><td colspan="5" style="padding:40px;text-align:center;color:var(--muted);"><p data-i18n="selectBotFaqs">Select a bot to view FAQs</p></td></tr>
 </tbody>
 </table>
 </div>
@@ -2976,6 +3003,51 @@ Log Out
   <div style="display:flex;gap:12px;justify-content:center;">
     <button onclick="confirmAndDeleteOrder()" style="padding:10px 28px;border-radius:10px;background:#22c55e;color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;">✅ تأكيد وحذف</button>
     <button onclick="cancelDeleteOrderModal()" style="padding:10px 28px;border-radius:10px;background:var(--bg-secondary);color:var(--muted);font-size:14px;font-weight:600;border:1px solid var(--border);cursor:pointer;">إلغاء</button>
+  </div>
+</div>
+</div>
+
+<!-- Bulk Delete Products Modal -->
+<div class="modal" id="bulkDeleteProductsModal" style="z-index:10100;">
+<div class="modal-content" style="max-width:420px;padding:36px 32px;text-align:center;">
+  <div style="width:60px;height:60px;background:rgba(239,68,68,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+  </div>
+  <div id="bulkDeleteProductsTitle" style="font-size:18px;font-weight:700;margin-bottom:10px;color:var(--text);"></div>
+  <div style="font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.7;">لا يمكن التراجع عن هذا الإجراء.</div>
+  <div style="display:flex;gap:12px;justify-content:center;">
+    <button onclick="confirmBulkDeleteProducts()" style="padding:10px 28px;border-radius:10px;background:#ef4444;color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;">تأكيد الحذف</button>
+    <button onclick="document.getElementById('bulkDeleteProductsModal').style.display='none'" style="padding:10px 28px;border-radius:10px;background:var(--bg-secondary);color:var(--muted);font-size:14px;font-weight:600;border:1px solid var(--border);cursor:pointer;">إلغاء</button>
+  </div>
+</div>
+</div>
+
+<!-- Bulk Delete FAQs Modal -->
+<div class="modal" id="bulkDeleteFaqsModal" style="z-index:10100;">
+<div class="modal-content" style="max-width:420px;padding:36px 32px;text-align:center;">
+  <div style="width:60px;height:60px;background:rgba(239,68,68,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+  </div>
+  <div id="bulkDeleteFaqsTitle" style="font-size:18px;font-weight:700;margin-bottom:10px;color:var(--text);"></div>
+  <div style="font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.7;">لا يمكن التراجع عن هذا الإجراء.</div>
+  <div style="display:flex;gap:12px;justify-content:center;">
+    <button onclick="confirmBulkDeleteFaqs()" style="padding:10px 28px;border-radius:10px;background:#ef4444;color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;">تأكيد الحذف</button>
+    <button onclick="document.getElementById('bulkDeleteFaqsModal').style.display='none'" style="padding:10px 28px;border-radius:10px;background:var(--bg-secondary);color:var(--muted);font-size:14px;font-weight:600;border:1px solid var(--border);cursor:pointer;">إلغاء</button>
+  </div>
+</div>
+</div>
+
+<!-- Bulk Confirm Orders Modal -->
+<div class="modal" id="bulkConfirmOrdersModal" style="z-index:10100;">
+<div class="modal-content" style="max-width:420px;padding:36px 32px;text-align:center;">
+  <div style="width:60px;height:60px;background:rgba(34,197,94,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+  <div id="bulkConfirmOrdersTitle" style="font-size:18px;font-weight:700;margin-bottom:10px;color:var(--text);"></div>
+  <div style="font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.7;">سيتم حذفها نهائياً من القائمة وقاعدة البيانات.</div>
+  <div style="display:flex;gap:12px;justify-content:center;">
+    <button onclick="confirmBulkOrders()" style="padding:10px 28px;border-radius:10px;background:#22c55e;color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;">تأكيد وحذف</button>
+    <button onclick="document.getElementById('bulkConfirmOrdersModal').style.display='none'" style="padding:10px 28px;border-radius:10px;background:var(--bg-secondary);color:var(--muted);font-size:14px;font-weight:600;border:1px solid var(--border);cursor:pointer;">إلغاء</button>
   </div>
 </div>
 </div>
@@ -7241,6 +7313,7 @@ let currentIsCarMode = false;
 let currentActiveColumns = [];
 let orderBotsList = [];
 let ordersRealtimeChannel = null;
+const _deletedOrderIds = new Set();
 
 async function setupOrdersRealtime(){
   if(ordersRealtimeChannel){
@@ -7261,23 +7334,26 @@ async function loadOrders(){
     if(!user) return;
 
     const { data: bots } = await supabaseClient.from("bots").select("id, name, activity_type").eq("user_id", user.id);
+    const _noBotHtmlOrders = `<tr><td colspan="8" style="padding:60px;text-align:center;color:var(--muted);"><div style="font-size:64px;margin-bottom:16px;">🤖</div><p style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px;">ليس لديك بوت بعد</p><p style="font-size:14px;margin-bottom:24px;">أنشئ بوتك الأول للبدء</p><button onclick="navigateToView('bots')" style="padding:12px 24px;background:var(--gradient);color:#fff;border:none;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;">إنشاء بوت</button></td></tr>`;
     if(!bots || bots.length === 0){
       orderBotsList = [];
       allOrdersData = [];
-      renderOrders([]);
+      const _oc = document.getElementById("ordersContainer"); if(_oc) _oc.innerHTML = _noBotHtmlOrders;
+      const _cnt = document.getElementById("ordersCount"); if(_cnt) _cnt.textContent = '';
       return;
     }
     orderBotsList = bots;
     const botIds = bots.map(b => b.id);
-
+    // auto-select first (and only) bot — dropdown is hidden
     const select = document.getElementById("orderBotFilter");
-    select.innerHTML = '<option value="all">All Bots</option>';
+    select.innerHTML = '';
     bots.forEach(bot => {
       const opt = document.createElement('option');
       opt.value = bot.id;
       opt.textContent = bot.name;
       select.appendChild(opt);
     });
+    select.value = bots[0].id;
 
     const { data: orders, error } = await supabaseClient
       .from("orders")
@@ -7291,7 +7367,7 @@ async function loadOrders(){
       renderOrders([]);
       return;
     }
-    allOrdersData = orders || [];
+    allOrdersData = (orders || []).filter(o => !_deletedOrderIds.has(o.id));
     filterOrdersByBot();
   } catch(e){
     console.error("Error loading orders:", e);
@@ -7302,17 +7378,17 @@ async function loadOrders(){
 
 // Smart column definitions for orders table
 const ORDER_COLUMNS = [
-  { key: 'customer_name', label: () => t('customerName'), always: true },
-  { key: 'phone_number',  label: () => t('phoneCol'),    always: true },
-  { key: 'state',         label: () => t('stateCol'),    always: false },
-  { key: 'address',       label: () => t('addressCol'),  always: false },
-  { key: 'product_name',  label: () => t('productCol'),  always: false },
-  { key: 'quantity',      label: () => t('quantity'),    always: false },
-  { key: 'size',          label: () => t('sizeCol'),     always: false },
-  { key: 'color',         label: () => t('colors'),      always: false },
-  { key: 'motor_type',    label: () => t('motorType'),   always: false },
-  { key: 'details',       label: () => t('detailsCol'),  always: false },
-  { key: 'status',        label: () => t('statusCol'),   always: true },
+  { key: 'customer_name', label: () => t('customerName'), mobileLabel: 'الاسم',      always: true },
+  { key: 'phone_number',  label: () => t('phoneCol'),    mobileLabel: 'الهاتف',     always: true },
+  { key: 'state',         label: () => t('stateCol'),    mobileLabel: 'الولاية',    always: false },
+  { key: 'address',       label: () => t('addressCol'),  mobileLabel: 'العنوان',    always: false },
+  { key: 'product_name',  label: () => t('productCol'),  mobileLabel: 'المنتج',     always: false },
+  { key: 'quantity',      label: () => t('quantity'),    mobileLabel: 'الكمية',     always: false },
+  { key: 'size',          label: () => t('sizeCol'),     mobileLabel: 'المقاس',     always: false },
+  { key: 'color',         label: () => t('colors'),      mobileLabel: 'اللون',      always: false },
+  { key: 'motor_type',    label: () => t('motorType'),   mobileLabel: 'المحرك',     always: false },
+  { key: 'details',       label: () => t('detailsCol'),  mobileLabel: 'التفاصيل',   always: false },
+  { key: 'status',        label: () => t('statusCol'),   mobileLabel: 'الحالة',     always: true },
 ];
 
 function computeActiveColumns(orders){
@@ -7344,7 +7420,8 @@ function updateOrdersTableHead(activeColumns){
   if(!head) return;
   const thStyle = 'padding:14px 12px;font-size:13px;font-weight:700;color:var(--primary);text-align:center;border:1px solid var(--border);text-transform:uppercase;letter-spacing:0.5px;';
   if(!activeColumns || !activeColumns.length) return;
-  head.innerHTML = activeColumns.map(col => `<th style="${thStyle}">${col.label()}</th>`).join('');
+  const checkboxTh = `<th style="padding:14px 12px;width:44px;text-align:center;border:1px solid var(--border);"><input type="checkbox" id="selectAllOrders" onchange="toggleAllOrderCheckboxes(this)" class="bulk-cb"></th>`;
+  head.innerHTML = checkboxTh + activeColumns.map(col => `<th style="${thStyle}">${col.label()}</th>`).join('');
 }
 
 function renderOrders(orders, activeColumns){
@@ -7355,7 +7432,7 @@ function renderOrders(orders, activeColumns){
   const colCount = cols.length;
 
   if(!orders || orders.length === 0){
-    container.innerHTML = `<tr><td colspan="${colCount}" style="padding:40px;text-align:center;color:var(--muted);">
+    container.innerHTML = `<tr><td colspan="${colCount + 1}" style="padding:40px;text-align:center;color:var(--muted);">
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:16px;opacity:0.5;"><path d="M16 16h6"/><path d="M19 13v6"/><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/><path d="m7.5 4.27 9 5.15"/><path d="M3.29 7 12 12l8.71-5"/><path d="M12 22V12"/></svg>
       <p>${t('noOrdersFound')}</p></td></tr>`;
     return;
@@ -7370,22 +7447,24 @@ function renderOrders(orders, activeColumns){
       ? "background:rgba(34,197,94,0.15);color:#22c55e;border:1px solid rgba(34,197,94,0.4)"
       : "background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.4)";
     const cells = cols.map(col => {
+      const ml = col.mobileLabel || '';
       if(col.key === 'status'){
-        return `<td style="padding:12px;text-align:center;border:1px solid var(--border);">
+        return `<td data-label="${ml}" style="padding:12px;text-align:center;border:1px solid var(--border);">
           <button onclick="toggleOrderConfirmation('${order.id}')" style="padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;${statusStyle};outline:none;border:none;transition:all 0.2s ease;min-width:90px;">${statusLabel}</button>
         </td>`;
       }
       if(col.key === 'details'){
         const d = order.details;
-        if(!d || (typeof d === 'object' && Object.keys(d).length === 0)) return `<td style="${td}">—</td>`;
+        if(!d || (typeof d === 'object' && Object.keys(d).length === 0)) return `<td data-label="${ml}" style="${td}">—</td>`;
         const txt = typeof d === 'object' ? Object.entries(d).map(([k,v])=>`${k}: ${v}`).join(', ') : String(d);
-        return `<td style="${td}overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px;" title="${txt}">${txt}</td>`;
+        return `<td data-label="${ml}" style="${td}overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px;" title="${txt}">${txt}</td>`;
       }
       const val = order[col.key];
       const display = (val !== null && val !== undefined && val !== '') ? val : '—';
-      return `<td style="${td}overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${display}</td>`;
+      return `<td data-label="${ml}" style="${td}overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${display}</td>`;
     });
-    return `<tr>${cells.join('')}</tr>`;
+    const checkboxTd = `<td data-label="" style="padding:8px;text-align:center;border:1px solid var(--border);width:44px;"><input type="checkbox" class="order-checkbox bulk-cb" value="${order.id}" onchange="updateOrderSelection()"></td>`;
+    return `<tr>${checkboxTd}${cells.join('')}</tr>`;
   }).join("");
 }
 
@@ -7461,6 +7540,7 @@ async function confirmAndDeleteOrder(){
       return;
     }
     console.log('[DeleteOrder] success');
+    _deletedOrderIds.add(orderId);
     allOrdersData = allOrdersData.filter(o => o.id !== orderId);
     filterOrdersByBot();
     const toast = document.createElement("div");
@@ -7487,15 +7567,22 @@ async function populateProductBotFilter(){
   const { data: bots } = await supabaseClient.from("bots").select("id, name").eq("user_id", user.id);
   const select = document.getElementById("productBotFilter");
 
-  select.innerHTML = `<option value="all">${t('chooseBot')}</option>`;
-  if(bots && bots.length > 0){
-    bots.forEach(bot => {
-      const opt = document.createElement('option');
-      opt.value = bot.id;
-      opt.textContent = bot.name;
-      select.appendChild(opt);
-    });
+  if(!bots || bots.length === 0){
+    select.innerHTML = `<option value="all">${t('chooseBot')}</option>`;
+    const _pc = document.getElementById("allProductsContainer");
+    if(_pc) _pc.innerHTML = `<tr><td colspan="8" style="padding:60px;text-align:center;color:var(--muted);"><div style="font-size:64px;margin-bottom:16px;">🤖</div><p style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px;">ليس لديك بوت بعد</p><p style="font-size:14px;margin-bottom:24px;">أنشئ بوتك الأول للبدء</p><button onclick="navigateToView('bots')" style="padding:12px 24px;background:var(--gradient);color:#fff;border:none;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;">إنشاء بوت</button></td></tr>`;
+    return;
   }
+  // auto-select first (and only) bot — dropdown is hidden
+  select.innerHTML = '';
+  bots.forEach(bot => {
+    const opt = document.createElement('option');
+    opt.value = bot.id;
+    opt.textContent = bot.name;
+    select.appendChild(opt);
+  });
+  select.value = bots[0].id;
+  loadAllProducts();
 }
 
 // === Load All Products ===
@@ -7569,7 +7656,10 @@ async function loadAllProducts(){
 
   container.innerHTML = products.map(product => `
     <tr data-id="${product.id}" style="border-bottom:1px solid var(--border);">
-      <td style="padding:8px;text-align:center;border-right:1px solid var(--border);">
+      <td data-label="" style="padding:8px;text-align:center;border-right:1px solid var(--border);">
+        <input type="checkbox" class="product-checkbox bulk-cb" value="${product.id}" onchange="updateProductSelection()">
+      </td>
+      <td data-label="الصورة" style="padding:8px;text-align:center;border-right:1px solid var(--border);">
         <div style="position:relative;width:55px;height:55px;margin:0 auto;">
           <label style="width:55px;height:55px;background:var(--bg-secondary);border:2px dashed var(--border);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden;">
             <input type="file" accept="image/*" style="display:none;" onchange="updateProductImage('${product.id}', this)">
@@ -7577,13 +7667,13 @@ async function loadAllProducts(){
           </label>
         </div>
       </td>
-      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="type" value="${product.type || ''}" onchange="saveProductField('${product.id}', 'type', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;"></td>
-      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="name" value="${product.name || ''}" onchange="saveProductField('${product.id}', 'name', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;font-weight:500;"></td>
-      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="sizes" value="${product.sizes || ''}" onchange="saveProductField('${product.id}', 'sizes', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;text-align:center;"></td>
-      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="colors" value="${product.colors || ''}" onchange="saveProductField('${product.id}', 'colors', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;text-align:center;"></td>
-      <td style="padding:6px;border-right:1px solid var(--border);"><input type="number" data-field="qty" value="${product.qty ?? ''}" onchange="saveProductField('${product.id}', 'qty', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;"></td>
-      <td style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="price" value="${product.price || ''}" onchange="saveProductField('${product.id}', 'price', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--primary);font-size:13px;text-align:center;font-weight:600;"></td>
-      <td style="padding:8px;text-align:center;">
+      <td data-label="النوع" style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="type" value="${product.type || ''}" onchange="saveProductField('${product.id}', 'type', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;"></td>
+      <td data-label="المنتج" style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="name" value="${product.name || ''}" onchange="saveProductField('${product.id}', 'name', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;font-weight:500;"></td>
+      <td data-label="المقاس" style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="sizes" value="${product.sizes || ''}" onchange="saveProductField('${product.id}', 'sizes', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;text-align:center;"></td>
+      <td data-label="اللون" style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="colors" value="${product.colors || ''}" onchange="saveProductField('${product.id}', 'colors', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;text-align:center;"></td>
+      <td data-label="الكمية" style="padding:6px;border-right:1px solid var(--border);"><input type="number" data-field="qty" value="${product.qty ?? ''}" onchange="saveProductField('${product.id}', 'qty', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;"></td>
+      <td data-label="السعر" style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="price" value="${product.price || ''}" onchange="saveProductField('${product.id}', 'price', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--primary);font-size:13px;text-align:center;font-weight:600;"></td>
+      <td data-label="إجراءات" style="padding:8px;text-align:center;">
         <button onclick="deleteProduct('${product.id}')" style="width:32px;height:32px;background:rgba(239,68,68,0.1);border:none;border-radius:8px;color:#ef4444;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;margin:0 auto;" title="${t('delete')}">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
         </button>
@@ -7603,15 +7693,24 @@ async function loadFaqs(){
     const { data: bots } = await supabaseClient.from("bots").select("id, name").eq("user_id", user.id);
     faqBotsList = bots || [];
     const sel = document.getElementById("faqBotFilter");
-    sel.innerHTML = `<option value="" data-i18n="chooseBot">${t('chooseBot')}</option>`;
+    if(faqBotsList.length === 0){
+      sel.innerHTML = `<option value="">${t('chooseBot')}</option>`;
+      document.getElementById("addFaqBtn").style.display = "none";
+      const _fc = document.getElementById("faqsContainer");
+      if(_fc) _fc.innerHTML = `<tr><td colspan="4" style="padding:60px;text-align:center;color:var(--muted);"><div style="font-size:64px;margin-bottom:16px;">🤖</div><p style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px;">ليس لديك بوت بعد</p><p style="font-size:14px;margin-bottom:24px;">أنشئ بوتك الأول للبدء</p><button onclick="navigateToView('bots')" style="padding:12px 24px;background:var(--gradient);color:#fff;border:none;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;">إنشاء بوت</button></td></tr>`;
+      return;
+    }
+    // auto-select first (and only) bot — dropdown is hidden
+    sel.innerHTML = '';
     faqBotsList.forEach(b => {
       const opt = document.createElement('option');
       opt.value = b.id;
       opt.textContent = b.name;
       sel.appendChild(opt);
     });
-    document.getElementById("addFaqBtn").style.display = "none";
-    renderFaqs([]);
+    sel.value = faqBotsList[0].id;
+    document.getElementById("addFaqBtn").style.display = "flex";
+    filterFaqsByBot();
   }catch(e){ console.error("loadFaqs error:", e); }
 }
 
@@ -7633,18 +7732,20 @@ function renderFaqs(faqs){
   if(!faqs || faqs.length === 0){
     const botId = document.getElementById("faqBotFilter").value;
     const msg = botId ? t('noFaqsYet') : t('selectBotFaqs');
-    container.innerHTML = `<tr><td colspan="4" style="padding:40px;text-align:center;color:var(--muted);">${msg}</td></tr>`;
+    container.innerHTML = `<tr><td colspan="5" style="padding:40px;text-align:center;color:var(--muted);">${msg}</td></tr>`;
     countEl.textContent = t('manageFaqs');
+    _resetFaqSelection();
     return;
   }
   countEl.textContent = faqs.length + ' FAQs';
   const tdStyle = "padding:12px 14px;font-size:14px;border:1px solid var(--border);vertical-align:top;";
   container.innerHTML = faqs.map((faq, i) => `
     <tr style="transition:background 0.15s;" onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background=''">
-      <td style="${tdStyle}text-align:center;color:var(--muted);width:5%;">${i + 1}</td>
-      <td style="${tdStyle}width:38%;font-weight:500;line-height:1.6;">${escHtml(faq.question)}</td>
-      <td style="${tdStyle}width:42%;color:var(--muted);line-height:1.6;">${escHtml(faq.answer)}</td>
-      <td style="${tdStyle}text-align:center;width:15%;">
+      <td data-label="" style="${tdStyle}text-align:center;width:44px;"><input type="checkbox" class="faq-checkbox bulk-cb" value="${faq.id}" onchange="updateFaqSelection()"></td>
+      <td data-label="#" style="${tdStyle}text-align:center;color:var(--muted);width:5%;">${i + 1}</td>
+      <td data-label="السؤال" style="${tdStyle}width:38%;font-weight:500;line-height:1.6;">${escHtml(faq.question)}</td>
+      <td data-label="الجواب" style="${tdStyle}width:42%;color:var(--muted);line-height:1.6;">${escHtml(faq.answer)}</td>
+      <td data-label="إجراءات" style="${tdStyle}text-align:center;width:15%;">
         <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">
           <button onclick="openFaqModal(allFaqsData[${i}])" style="padding:6px 12px;background:rgba(99,102,241,0.15);color:#818cf8;border:1px solid rgba(99,102,241,0.3);border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">${t('editBot')}</button>
           <button onclick="deleteFaq('${faq.id}')" style="padding:6px 12px;background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.3);border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">${t('delete')}</button>
@@ -7652,6 +7753,7 @@ function renderFaqs(faqs){
       </td>
     </tr>`
   ).join("");
+  _resetFaqSelection();
 }
 
 function escHtml(str){
@@ -7729,6 +7831,7 @@ function setCarProductsTableHead(){
   const head = document.getElementById("productsTableHead");
   if(!head) return;
   head.innerHTML = `
+    <th style="padding:14px 12px;width:44px;text-align:center;border-right:1px solid var(--border);"><input type="checkbox" id="selectAllProducts" onchange="toggleAllProductCheckboxes(this)" class="bulk-cb"></th>
     <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--primary);text-align:center;border-right:1px solid var(--border);text-transform:uppercase;letter-spacing:0.5px;width:80px;" data-i18n="image">${t('image')}</th>
     <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--primary);text-align:center;border-right:1px solid var(--border);text-transform:uppercase;letter-spacing:0.5px;" data-i18n="carName">${t('carName')}</th>
     <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--primary);text-align:center;border-right:1px solid var(--border);text-transform:uppercase;letter-spacing:0.5px;" data-i18n="colors">${t('colors')}</th>
@@ -7744,6 +7847,7 @@ function resetProductsTableHead(){
   const head = document.getElementById("productsTableHead");
   if(!head) return;
   head.innerHTML = `
+    <th style="padding:14px 12px;width:44px;text-align:center;border-right:1px solid var(--border);"><input type="checkbox" id="selectAllProducts" onchange="toggleAllProductCheckboxes(this)" class="bulk-cb"></th>
     <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--primary);text-align:center;border-right:1px solid var(--border);text-transform:uppercase;letter-spacing:0.5px;width:80px;" data-i18n="image">${t('image')}</th>
     <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--primary);text-align:center;border-right:1px solid var(--border);text-transform:uppercase;letter-spacing:0.5px;" data-i18n="productType">${t('productType')}</th>
     <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--primary);text-align:center;border-right:1px solid var(--border);text-transform:uppercase;letter-spacing:0.5px;" data-i18n="productName">${t('productName')}</th>
@@ -7760,7 +7864,10 @@ function renderCarProducts(products, container){
   const inputStyle = "width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;";
   container.innerHTML = products.map(product => `
     <tr data-id="${product.id}" style="border-bottom:1px solid var(--border);">
-      <td style="padding:8px;text-align:center;border-right:1px solid var(--border);">
+      <td data-label="" style="padding:8px;text-align:center;border-right:1px solid var(--border);">
+        <input type="checkbox" class="product-checkbox bulk-cb" value="${product.id}" onchange="updateProductSelection()">
+      </td>
+      <td data-label="الصورة" style="padding:8px;text-align:center;border-right:1px solid var(--border);">
         <div style="position:relative;width:55px;height:55px;margin:0 auto;">
           <label style="width:55px;height:55px;background:var(--bg-secondary);border:2px dashed var(--border);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden;">
             <input type="file" accept="image/*" style="display:none;" onchange="updateProductImage('${product.id}', this)">
@@ -7768,13 +7875,13 @@ function renderCarProducts(products, container){
           </label>
         </div>
       </td>
-      <td style="${cellStyle}"><input type="text" data-field="name" value="${product.name || ''}" onchange="saveProductField('${product.id}', 'name', this.value)" style="${inputStyle}font-weight:500;"></td>
-      <td style="${cellStyle}"><input type="text" data-field="colors" value="${product.colors || ''}" onchange="saveProductField('${product.id}', 'colors', this.value)" style="${inputStyle}"></td>
-      <td style="${cellStyle}"><input type="number" data-field="qty" value="${product.qty ?? ''}" onchange="saveProductField('${product.id}', 'qty', this.value)" style="${inputStyle}"></td>
-      <td style="${cellStyle}"><input type="text" data-field="price" value="${product.price || ''}" onchange="saveProductField('${product.id}', 'price', this.value)" style="${inputStyle}color:var(--primary);font-weight:600;"></td>
-      <td style="${cellStyle}"><input type="text" data-field="motor_type" value="${product.motor_type || ''}" onchange="saveProductField('${product.id}', 'motor_type', this.value)" style="${inputStyle}"></td>
-      <td style="${cellStyle}"><input type="text" data-field="description" value="${product.description || ''}" onchange="saveProductField('${product.id}', 'description', this.value)" style="${inputStyle}"></td>
-      <td style="padding:8px;text-align:center;">
+      <td data-label="السيارة" style="${cellStyle}"><input type="text" data-field="name" value="${product.name || ''}" onchange="saveProductField('${product.id}', 'name', this.value)" style="${inputStyle}font-weight:500;"></td>
+      <td data-label="اللون" style="${cellStyle}"><input type="text" data-field="colors" value="${product.colors || ''}" onchange="saveProductField('${product.id}', 'colors', this.value)" style="${inputStyle}"></td>
+      <td data-label="الكمية" style="${cellStyle}"><input type="number" data-field="qty" value="${product.qty ?? ''}" onchange="saveProductField('${product.id}', 'qty', this.value)" style="${inputStyle}"></td>
+      <td data-label="السعر" style="${cellStyle}"><input type="text" data-field="price" value="${product.price || ''}" onchange="saveProductField('${product.id}', 'price', this.value)" style="${inputStyle}color:var(--primary);font-weight:600;"></td>
+      <td data-label="المحرك" style="${cellStyle}"><input type="text" data-field="motor_type" value="${product.motor_type || ''}" onchange="saveProductField('${product.id}', 'motor_type', this.value)" style="${inputStyle}"></td>
+      <td data-label="الوصف" style="${cellStyle}"><input type="text" data-field="description" value="${product.description || ''}" onchange="saveProductField('${product.id}', 'description', this.value)" style="${inputStyle}"></td>
+      <td data-label="إجراءات" style="padding:8px;text-align:center;">
         <button onclick="deleteProduct('${product.id}')" style="width:32px;height:32px;background:rgba(239,68,68,0.1);border:none;border-radius:8px;color:#ef4444;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;" title="${t('delete')}">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
         </button>
@@ -7868,6 +7975,142 @@ async function deleteProduct(productId, botId = null){
       }
     }
   );
+}
+
+// === Bulk Select — Products ===
+function updateProductSelection(){
+  const checkboxes = document.querySelectorAll(".product-checkbox");
+  const checked = document.querySelectorAll(".product-checkbox:checked");
+  const count = checked.length;
+  const countEl = document.getElementById("productSelectionCount");
+  const btn = document.getElementById("bulkDeleteProductsBtn");
+  const selectAll = document.getElementById("selectAllProducts");
+  if(countEl){ countEl.textContent = count + " محدد"; countEl.style.display = count > 0 ? "inline-block" : "none"; }
+  if(btn){ btn.style.display = count > 0 ? "flex" : "none"; }
+  if(selectAll){ selectAll.indeterminate = count > 0 && count < checkboxes.length; selectAll.checked = count === checkboxes.length && checkboxes.length > 0; }
+}
+
+function toggleAllProductCheckboxes(master){
+  document.querySelectorAll(".product-checkbox").forEach(cb => { cb.checked = master.checked; });
+  updateProductSelection();
+}
+
+function bulkDeleteProducts(){
+  const checked = document.querySelectorAll(".product-checkbox:checked");
+  if(!checked.length) return;
+  document.getElementById("bulkDeleteProductsTitle").textContent = "هل تريد حذف " + checked.length + " منتجات؟";
+  document.getElementById("bulkDeleteProductsModal").style.display = "flex";
+}
+
+async function confirmBulkDeleteProducts(){
+  document.getElementById("bulkDeleteProductsModal").style.display = "none";
+  const checked = document.querySelectorAll(".product-checkbox:checked");
+  const ids = Array.from(checked).map(cb => cb.value);
+  if(!ids.length) return;
+  const botId = document.getElementById("productBotFilter").value;
+  try {
+    const { error } = await supabaseClient.from("products").delete().in("id", ids).eq("bot_id", botId);
+    if(error) throw error;
+    showToast("success", "تم الحذف", "تم حذف " + ids.length + " منتجات بنجاح.");
+    await loadAllProducts();
+  } catch(err){
+    console.error("Bulk delete products error:", err);
+    showToast("error", t('error'), t('failedToDeleteProduct'));
+  }
+}
+
+// === Bulk Select — Orders ===
+function updateOrderSelection(){
+  const checkboxes = document.querySelectorAll(".order-checkbox");
+  const checked = document.querySelectorAll(".order-checkbox:checked");
+  const count = checked.length;
+  const countEl = document.getElementById("orderSelectionCount");
+  const btn = document.getElementById("bulkConfirmOrdersBtn");
+  const selectAll = document.getElementById("selectAllOrders");
+  if(countEl){ countEl.textContent = count + " محدد"; countEl.style.display = count > 0 ? "inline-block" : "none"; }
+  if(btn){ btn.style.display = count > 0 ? "flex" : "none"; }
+  if(selectAll){ selectAll.indeterminate = count > 0 && count < checkboxes.length; selectAll.checked = count === checkboxes.length && checkboxes.length > 0; }
+}
+
+function toggleAllOrderCheckboxes(master){
+  document.querySelectorAll(".order-checkbox").forEach(cb => { cb.checked = master.checked; });
+  updateOrderSelection();
+}
+
+function bulkConfirmOrders(){
+  const checked = document.querySelectorAll(".order-checkbox:checked");
+  if(!checked.length) return;
+  document.getElementById("bulkConfirmOrdersTitle").textContent = "هل تريد تأكيد وحذف " + checked.length + " طلبيات؟";
+  document.getElementById("bulkConfirmOrdersModal").style.display = "flex";
+}
+
+async function confirmBulkOrders(){
+  document.getElementById("bulkConfirmOrdersModal").style.display = "none";
+  const checked = document.querySelectorAll(".order-checkbox:checked");
+  const ids = Array.from(checked).map(cb => cb.value);
+  if(!ids.length) return;
+  try {
+    const { error } = await supabaseClient.from("orders").delete().in("id", ids);
+    if(error) throw error;
+    ids.forEach(id => _deletedOrderIds.add(id));
+    allOrdersData = allOrdersData.filter(o => !_deletedOrderIds.has(o.id));
+    showToast("success", "تم التأكيد والحذف", "تم حذف " + ids.length + " طلبيات بنجاح.");
+    filterOrdersByBot();
+  } catch(err){
+    console.error("Bulk confirm orders error:", err);
+    showToast("error", t('error'), "فشل حذف الطلبيات.");
+  }
+}
+
+// === Bulk Select — FAQs ===
+function _resetFaqSelection(){
+  const countEl = document.getElementById("faqSelectionCount");
+  const btn = document.getElementById("bulkDeleteFaqsBtn");
+  const selectAll = document.getElementById("selectAllFaqs");
+  if(countEl){ countEl.style.display = "none"; }
+  if(btn){ btn.style.display = "none"; }
+  if(selectAll){ selectAll.checked = false; selectAll.indeterminate = false; }
+}
+
+function updateFaqSelection(){
+  const checkboxes = document.querySelectorAll(".faq-checkbox");
+  const checked = document.querySelectorAll(".faq-checkbox:checked");
+  const count = checked.length;
+  const countEl = document.getElementById("faqSelectionCount");
+  const btn = document.getElementById("bulkDeleteFaqsBtn");
+  const selectAll = document.getElementById("selectAllFaqs");
+  if(countEl){ countEl.textContent = count + " محدد"; countEl.style.display = count > 0 ? "inline-block" : "none"; }
+  if(btn){ btn.style.display = count > 0 ? "flex" : "none"; }
+  if(selectAll){ selectAll.indeterminate = count > 0 && count < checkboxes.length; selectAll.checked = count === checkboxes.length && checkboxes.length > 0; }
+}
+
+function toggleAllFaqCheckboxes(master){
+  document.querySelectorAll(".faq-checkbox").forEach(cb => { cb.checked = master.checked; });
+  updateFaqSelection();
+}
+
+function bulkDeleteFaqs(){
+  const checked = document.querySelectorAll(".faq-checkbox:checked");
+  if(!checked.length) return;
+  document.getElementById("bulkDeleteFaqsTitle").textContent = "هل تريد حذف " + checked.length + " أسئلة؟";
+  document.getElementById("bulkDeleteFaqsModal").style.display = "flex";
+}
+
+async function confirmBulkDeleteFaqs(){
+  document.getElementById("bulkDeleteFaqsModal").style.display = "none";
+  const checked = document.querySelectorAll(".faq-checkbox:checked");
+  const ids = Array.from(checked).map(cb => cb.value);
+  if(!ids.length) return;
+  try {
+    const { error } = await supabaseClient.from("faqs").delete().in("id", ids);
+    if(error) throw error;
+    allFaqsData = allFaqsData.filter(f => !ids.includes(f.id));
+    showToast("success", "تم الحذف", "تم حذف " + ids.length + " أسئلة بنجاح.");
+    renderFaqs(allFaqsData);
+  } catch(err){
+    console.error("Bulk delete faqs error:", err);
+    showToast("error", t('error'), t('failedToDeleteProduct'));
+  }
 }
 
 // === Load Bot Products (for bot editor) ===
