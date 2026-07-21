@@ -7953,6 +7953,7 @@ function setPhoneProductsTableHead(){
     th(t('colors')) +
     th(t('description')) +
     th(t('price')) +
+    th(t('quantity'), '90px') +
     `<th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--primary);text-align:center;width:100px;text-transform:uppercase;letter-spacing:0.5px;">${t('actions')}</th>`;
 }
 
@@ -7976,6 +7977,7 @@ function renderPhoneProducts(products, container){
       <td data-label="الألوان" style="${cellStyle}"><input type="text" data-field="colors" value="${product.colors || ''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}"></td>
       <td data-label="الوصف" style="${cellStyle}"><input type="text" data-field="description" value="${product.description || ''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}"></td>
       <td data-label="السعر" style="${cellStyle}"><input type="text" data-field="price" value="${product.price || ''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}color:var(--primary);font-weight:600;"></td>
+      <td data-label="الكمية" style="${cellStyle}"><input type="number" data-field="quantity" min="0" value="${product.quantity ?? ''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}"></td>
       <td data-label="إجراءات" style="padding:8px;text-align:center;">
         <button onclick="deleteProduct('${product.id}')" style="width:32px;height:32px;background:rgba(239,68,68,0.1);border:none;border-radius:8px;color:#ef4444;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;" title="${t('delete')}">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
