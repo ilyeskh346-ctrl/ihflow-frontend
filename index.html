@@ -8133,15 +8133,35 @@ async function deleteProduct(productId, botId = null){
     "سيتم حذف هذا المنتج نهائياً ولا يمكن التراجع عن هذا الإجراء.",
     async () => {
       try {
-        const { error } = await supabaseClient.from("products").delete().eq("id", productId);
-        if(error) throw error;
-        showToast("success", t('success'), t('productDeleted'));
-        if(botId){
-          await loadBotProducts(botId);
-        } else {
-          markPageDirty('products');
-          await loadAllProducts();
+        // Optimistic UI: remove row immediately before waiting for DB
+        _dirtyProductIds.delete(productId);
+        const row = document.querySelector(`tr[data-id="${productId}"]`);
+        const rowHTML = row ? row.outerHTML : null;
+        if(row) row.remove();
+        const container = document.getElementById("productsTableBody");
+        const wasEmpty = container && !container.querySelector('tr[data-id]');
+        if(wasEmpty && container){
+          container.innerHTML = `<tr><td colspan="8" style="padding:40px;text-align:center;color:var(--muted);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:16px;opacity:0.5;"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+            <p>${t('noProductsYet')}</p></td></tr>`;
         }
+        markPageDirty('products');
+        resetProductSelection();
+
+        const { error } = await supabaseClient.from("products").delete().eq("id", productId);
+        if(error){
+          // Rollback: restore the row and show error
+          if(wasEmpty && container) container.innerHTML = '';
+          if(rowHTML && container){
+            const emptyState = container.querySelector('td[colspan]');
+            if(emptyState) emptyState.closest('tr').remove();
+            container.insertAdjacentHTML('afterbegin', rowHTML);
+          }
+          _dirtyProductIds.add(productId);
+          throw error;
+        }
+        showToast("success", t('success'), t('productDeleted'));
+        if(botId) await loadBotProducts(botId);
       } catch(err){
         console.error("Delete product error:", err);
         showToast("error", t('error'), t('failedToDeleteProduct'));
