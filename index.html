@@ -8138,7 +8138,7 @@ async function deleteProduct(productId, botId = null){
         const row = document.querySelector(`tr[data-id="${productId}"]`);
         const rowHTML = row ? row.outerHTML : null;
         if(row) row.remove();
-        const container = document.getElementById("productsTableBody");
+        const container = document.getElementById("allProductsContainer");
         const wasEmpty = container && !container.querySelector('tr[data-id]');
         if(wasEmpty && container){
           container.innerHTML = `<tr><td colspan="8" style="padding:40px;text-align:center;color:var(--muted);">
@@ -8467,7 +8467,7 @@ async function addProductFromProductsView(){
 
     // Append the new row directly — do NOT call loadAllProducts() which would
     // re-render the whole table and wipe unsaved inputs in existing rows
-    const container = document.getElementById("productsTableBody");
+    const container = document.getElementById("allProductsContainer");
     if(container){
       // Remove the "no products" empty-state row if present
       const emptyRow = container.querySelector('td[colspan]');
