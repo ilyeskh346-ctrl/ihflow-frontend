@@ -8060,9 +8060,21 @@ async function updateProductImage(productId, input){
     const { error } = await supabaseClient.from("products").update({ image: uploadData.path }).eq("id", productId);
     if(error) throw error;
 
+    // Update image in-place — do NOT reload the whole table (would wipe unsaved inputs)
+    const publicUrl = getPublicImageUrl(uploadData.path, 'product-images');
+    const row = document.querySelector(`tr[data-id="${productId}"]`);
+    if(row){
+      const label = row.querySelector('label');
+      if(label){
+        // keep the hidden file input, replace everything else
+        const fileInput = label.querySelector('input[type="file"]');
+        label.innerHTML = `<img src="${publicUrl}" style="width:100%;height:100%;object-fit:cover;">`;
+        if(fileInput) label.appendChild(fileInput);
+      }
+    }
+
     showToast("success", t('success'), t('productUpdated'));
     markPageDirty('products');
-    await loadAllProducts();
   } catch(err){
     console.error("Update product image error:", err);
     showToast("error", t('error'), t('failedToUpdateProduct'));
