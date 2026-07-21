@@ -7660,6 +7660,7 @@ async function loadAllProducts(){
   const actType = botData && botData.activity_type ? botData.activity_type.toLowerCase() : "";
   const isCar   = actType === "car";
   const isPhone  = actType === "phones";
+  _currentProductBotType = actType; // store for addProductFromProductsView
 
   // Update table header based on bot type
   if(isCar){
@@ -7942,6 +7943,47 @@ function renderCarProducts(products, container){
   `).join('');
 }
 
+// Build HTML for a single product row based on current bot type
+function buildOneProductRowHTML(product){
+  const isCar   = _currentProductBotType === "car";
+  const isPhone  = _currentProductBotType === "phones";
+  const cellStyle  = "padding:6px;border-right:1px solid var(--border);";
+  const inputStyle = "width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;";
+  const delBtn = `<button onclick="deleteProduct('${product.id}')" style="width:32px;height:32px;background:rgba(239,68,68,0.1);border:none;border-radius:8px;color:#ef4444;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;" title="${t('delete')}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>`;
+  const imgCell = `<td style="padding:8px;text-align:center;border-right:1px solid var(--border);"><div style="position:relative;width:55px;height:55px;margin:0 auto;"><label style="width:55px;height:55px;background:var(--bg-secondary);border:2px dashed var(--border);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden;"><input type="file" accept="image/*" style="display:none;" onchange="updateProductImage('${product.id}', this)">${product.image ? `<img src="${getPublicImageUrl(product.image, 'product-images')}" style="width:100%;height:100%;object-fit:cover;">` : `<span style="color:var(--muted);font-size:20px;">+</span>`}</label></div></td>`;
+  const checkCell = `<td style="padding:8px;text-align:center;border-right:1px solid var(--border);"><input type="checkbox" class="product-checkbox bulk-cb" value="${product.id}" onchange="updateProductSelection()"></td>`;
+  const actCell  = `<td style="padding:8px;text-align:center;">${delBtn}</td>`;
+
+  if(isCar){
+    return `<tr data-id="${product.id}" style="border-bottom:1px solid var(--border);">${checkCell}${imgCell}
+      <td style="${cellStyle}"><input type="text" data-field="name" value="${product.name||''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}font-weight:500;"></td>
+      <td style="${cellStyle}"><input type="text" data-field="colors" value="${product.colors||''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}"></td>
+      <td style="${cellStyle}"><input type="number" data-field="qty" value="${product.qty??''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}"></td>
+      <td style="${cellStyle}"><input type="text" data-field="price" value="${product.price||''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}color:var(--primary);font-weight:600;"></td>
+      <td style="${cellStyle}"><input type="text" data-field="motor_type" value="${product.motor_type||''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}"></td>
+      <td style="${cellStyle}"><input type="text" data-field="description" value="${product.description||''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}"></td>
+      ${actCell}</tr>`;
+  }
+  if(isPhone){
+    return `<tr data-id="${product.id}" style="border-bottom:1px solid var(--border);">${checkCell}${imgCell}
+      <td style="${cellStyle}"><input type="text" data-field="name" value="${product.name||''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}font-weight:500;"></td>
+      <td style="${cellStyle}"><input type="text" data-field="colors" value="${product.colors||''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}"></td>
+      <td style="${cellStyle}"><input type="text" data-field="description" value="${product.description||''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}"></td>
+      <td style="${cellStyle}"><input type="text" data-field="price" value="${product.price||''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}color:var(--primary);font-weight:600;"></td>
+      <td style="${cellStyle}"><input type="number" data-field="quantity" min="0" value="${product.quantity??''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}"></td>
+      ${actCell}</tr>`;
+  }
+  // default
+  return `<tr data-id="${product.id}" style="border-bottom:1px solid var(--border);">${checkCell}${imgCell}
+    <td style="${cellStyle}"><input type="text" data-field="type" value="${product.type||''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}"></td>
+    <td style="${cellStyle}"><input type="text" data-field="name" value="${product.name||''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}font-weight:500;"></td>
+    <td style="${cellStyle}"><input type="text" data-field="sizes" value="${product.sizes||''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}font-size:12px;"></td>
+    <td style="${cellStyle}"><input type="text" data-field="colors" value="${product.colors||''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}font-size:12px;"></td>
+    <td style="${cellStyle}"><input type="number" data-field="qty" value="${product.qty??''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}"></td>
+    <td style="${cellStyle}"><input type="text" data-field="price" value="${product.price||''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}color:var(--primary);font-weight:600;"></td>
+    ${actCell}</tr>`;
+}
+
 function setPhoneProductsTableHead(){
   const head = document.getElementById("productsTableHead");
   if(!head) return;
@@ -7986,6 +8028,9 @@ function renderPhoneProducts(products, container){
     </tr>
   `).join('');
 }
+
+// === Current bot type for products view ===
+let _currentProductBotType = ""; // "car" | "phones" | ""
 
 // === Dirty tracking for Products manual save ===
 let _dirtyProductIds = new Set();
@@ -8399,7 +8444,17 @@ async function addProductFromProductsView(){
     // Onboarding: advance to FAQs step after first product added
     if(_obCurrentStep === 3) setTimeout(() => obGoToStep(4), 800);
     markPageDirty('products');
-    await loadAllProducts();
+
+    // Append the new row directly — do NOT call loadAllProducts() which would
+    // re-render the whole table and wipe unsaved inputs in existing rows
+    const container = document.getElementById("productsTableBody");
+    if(container){
+      // Remove the "no products" empty-state row if present
+      const emptyRow = container.querySelector('td[colspan]');
+      if(emptyRow) emptyRow.closest('tr').remove();
+      // Append the new blank row at the top
+      container.insertAdjacentHTML('afterbegin', buildOneProductRowHTML(newProduct));
+    }
   } catch(err){
     console.error("Add product error:", err);
     showToast("error", t('error'), t('failedToAddProduct'));
