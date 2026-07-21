@@ -173,11 +173,13 @@ nav.nav button:hover{
 .phone-mockup{
   position:relative;
   width:300px;
-  height:auto;
+  height:600px;
   background: #1c1c1e;
   border-radius:45px;
   padding:8px;
   box-shadow: 0 50px 100px rgba(0,0,0,0.5), 0 0 0 3px #2c2c2e, 0 0 0 4px #1c1c1e;
+  animation:none !important;
+  transform:none !important;
 }
 .phone-screen{
   background:#fff;
@@ -263,7 +265,6 @@ nav.nav button:hover{
   border-radius:22px;
   font-size:14px;
   line-height:1.4;
-  animation:fadeIn 0.3s ease;
 }
 .ig-msg.user{
   background:#3797f0;
@@ -2246,9 +2247,6 @@ window.addEventListener('resize', _hideMobilePhone);
 </h2>
 <p data-i18n="overviewDesc" style="color:var(--muted);font-size:14px;">Real-time insights across your bots</p>
 </div>
-<select id="dashBotFilter" onchange="loadDashboardStats()" style="padding:10px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;min-width:180px;">
-<option value="all">All Bots</option>
-</select>
 </div>
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-bottom:32px;">
@@ -2322,7 +2320,7 @@ window.addEventListener('resize', _hideMobilePhone);
 </button>
 <button id="saveProductsViewBtn" onclick="saveAllProductsView()" style="padding:10px 16px;background:var(--gradient);border:none;border-radius:8px;color:#fff;font-size:14px;cursor:pointer;display:none;align-items:center;gap:8px;font-weight:600;">
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-<span>Save</span>
+<span>💾 حفظ التغييرات</span>
 </button>
 <span id="productSelectionCount" style="display:none;padding:10px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-weight:600;"></span>
 <button id="bulkDeleteProductsBtn" onclick="bulkDeleteProducts()" style="display:none;padding:10px 16px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:8px;color:#ef4444;font-size:14px;cursor:pointer;font-weight:600;align-items:center;gap:8px;">
@@ -3093,6 +3091,8 @@ Log Out
 <datalist id="activityTypeList">
 <option value="Car">
 <option value="E-commerce">
+<option value="Clothing">
+<option value="Phones">
 </datalist>
 </div>
 <div>
@@ -3851,6 +3851,7 @@ const translations = {
     carActivityType: "Car",
     motorType: "Motor Type",
     carName: "Car Name",
+    phoneName: "Phone Name",
     description: "Description",
     motorTypeOrder: "Motor Type"
   },
@@ -4255,6 +4256,7 @@ const translations = {
     carActivityType: "سيارات",
     motorType: "نوع المحرك",
     carName: "اسم السيارة",
+    phoneName: "اسم الهاتف",
     description: "الوصف",
     motorTypeOrder: "نوع المحرك"
   },
@@ -4655,6 +4657,7 @@ const translations = {
     carActivityType: "Voiture",
     motorType: "Type de Moteur",
     carName: "Nom de la Voiture",
+    phoneName: "Nom du Téléphone",
     description: "Description",
     motorTypeOrder: "Type de Moteur"
   }
@@ -5900,6 +5903,14 @@ function pushToHistory(viewName, botId = null){
   currentView = viewName;
 }
 
+// Warn on page reload/close if products have unsaved changes
+window.addEventListener('beforeunload', function(e){
+  if(_dirtyProductIds.size > 0){
+    e.preventDefault();
+    e.returnValue = "لديك تغييرات غير محفوظة في صفحة المنتجات.";
+  }
+});
+
 // Handle browser back/forward buttons
 window.addEventListener('popstate', function(event){
   if(event.state && event.state.view){
@@ -5911,6 +5922,20 @@ window.addEventListener('popstate', function(event){
 });
 
 function navigateToView(viewName, botId = null, addToHistory = true){
+  // Warn if leaving products page with unsaved changes
+  if(currentView === 'products' && viewName !== 'products' && _dirtyProductIds.size > 0){
+    showConfirmModal(
+      "⚠️ تغييرات غير محفوظة",
+      "لديك تغييرات غير محفوظة في صفحة المنتجات. هل تريد المغادرة بدون حفظ؟",
+      () => {
+        _dirtyProductIds.clear();
+        const btn = document.getElementById("saveProductsViewBtn");
+        if(btn) btn.style.display = "none";
+        navigateToView(viewName, botId, addToHistory);
+      }
+    );
+    return;
+  }
   closeMobileSidebar();
   switch(viewName){
     case 'account':
@@ -5930,12 +5955,16 @@ function navigateToView(viewName, botId = null, addToHistory = true){
       currentView = 'dashboard';
       break;
     case 'bots':
-      hideAllViews();
-      document.getElementById("botsView").classList.add("show");
-      setActiveSidebar(document.getElementById('sidebarBots'));
-      loadBotsListView();
-      if(addToHistory) pushToHistory('bots');
-      currentView = 'bots';
+      if(pageStates.bots.view === 'edit' && pageStates.bots.botId){
+        openBot(pageStates.bots.botId);
+      } else {
+        hideAllViews();
+        document.getElementById("botsView").classList.add("show");
+        setActiveSidebar(document.getElementById('sidebarBots'));
+        loadBotsListView();
+        if(addToHistory) pushToHistory('bots');
+        currentView = 'bots';
+      }
       break;
     case 'products':
       hideAllViews();
@@ -5985,6 +6014,7 @@ function navigateToView(viewName, botId = null, addToHistory = true){
 
 // === Hide All Views Helper ===
 function hideAllViews(){
+  _saveCurrentViewScroll();
   if(ordersRealtimeChannel){ supabaseClient.removeChannel(ordersRealtimeChannel); ordersRealtimeChannel = null; }
   const views = ["welcomeView", "statsView", "autoRepliesView", "botsView", "botEditorView", "templatesView", "dynamicVarsView", "nicheView", "nicheTemplatesView", "productsView", "ordersView", "faqsView", "igConnectedView", "accountView"];
   document.querySelectorAll('.sidebar-subitem').forEach(el => el.classList.remove('active'));
@@ -7035,11 +7065,15 @@ async function createNewBotFromPendingTemplate(){
 
 // === Show Bots View ===
 async function showBotsView(){
-  hideAllViews();
-  document.getElementById("botsView").classList.add("show");
-  setActiveSidebar(document.getElementById('sidebarBots'));
-  pushToHistory('bots');
-  await loadBotsListView();
+  if(pageStates.bots.view === 'edit' && pageStates.bots.botId){
+    openBot(pageStates.bots.botId);
+  } else {
+    hideAllViews();
+    document.getElementById("botsView").classList.add("show");
+    setActiveSidebar(document.getElementById('sidebarBots'));
+    pushToHistory('bots');
+    await loadBotsListView();
+  }
 }
 
 // === Show Products View ===
@@ -7245,7 +7279,6 @@ function cancelSubscription(){
 }
 
 // === DASHBOARD STATS ===
-let dashBotsLoaded = false;
 
 async function loadDashboardStats(){
   try {
@@ -7259,45 +7292,22 @@ async function loadDashboardStats(){
       return;
     }
 
-    const select = document.getElementById("dashBotFilter");
-    if(!dashBotsLoaded){
-      select.innerHTML = '<option value="all">All Bots</option>';
-      bots.forEach(bot => {
-        const opt = document.createElement('option');
-        opt.value = bot.id;
-        opt.textContent = bot.name;
-        select.appendChild(opt);
-      });
-      dashBotsLoaded = true;
-    }
+    const botIds = bots.map(b => b.id);
 
-    const selectedBot = select.value;
-    const botIds = selectedBot === "all" ? bots.map(b => b.id) : [selectedBot];
-
-    let ordersQuery = supabaseClient
+    const { count: ordersCount } = await supabaseClient
       .from("orders")
-      .select("*", { count: "exact", head: true });
-    if(selectedBot === "all"){
-      ordersQuery = ordersQuery.in("bot_id", botIds);
-    } else {
-      ordersQuery = ordersQuery.eq("bot_id", selectedBot);
-    }
-    const { count: ordersCount } = await ordersQuery;
+      .select("*", { count: "exact", head: true })
+      .in("bot_id", botIds);
     document.getElementById("dashOrdersCount").textContent = ordersCount || 0;
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const todayISO = today.toISOString();
-    let messagesQuery = supabaseClient
+    const { count: messagesCount } = await supabaseClient
       .from("messages")
       .select("*", { count: "exact", head: true })
-      .gte("created_at", todayISO);
-    if(selectedBot === "all"){
-      messagesQuery = messagesQuery.in("bot_id", botIds);
-    } else {
-      messagesQuery = messagesQuery.eq("bot_id", selectedBot);
-    }
-    const { count: messagesCount } = await messagesQuery;
+      .gte("created_at", todayISO)
+      .in("bot_id", botIds);
     document.getElementById("dashTodayMessages").textContent = messagesCount || 0;
 
   } catch(e){
@@ -7315,6 +7325,20 @@ let orderBotsList = [];
 let ordersRealtimeChannel = null;
 const _deletedOrderIds = new Set();
 
+// === Page State Cache ===
+const pageStates = {
+  bots:     { data: null, dirty: true, scrollY: 0, view: 'list', botId: null },
+  products: { data: null, dirty: true, scrollY: 0, lastFilter: null },
+  orders:   { data: null, dirty: true, scrollY: 0 },
+  faqs:     { data: null, dirty: true, scrollY: 0 }
+};
+function markPageDirty(page){ if(pageStates[page]) pageStates[page].dirty = true; }
+function _saveCurrentViewScroll(){
+  const _scrollMap = { bots: 'bots', botEditor: 'bots', products: 'products', orders: 'orders', faqs: 'faqs' };
+  const page = _scrollMap[currentView];
+  if(page) pageStates[page].scrollY = window.scrollY;
+}
+
 async function setupOrdersRealtime(){
   if(ordersRealtimeChannel){
     await supabaseClient.removeChannel(ordersRealtimeChannel);
@@ -7329,6 +7353,10 @@ async function setupOrdersRealtime(){
 }
 
 async function loadOrders(){
+  if(!pageStates.orders.dirty && pageStates.orders.data !== null){
+    setTimeout(() => window.scrollTo(0, pageStates.orders.scrollY), 50);
+    return;
+  }
   try {
     const { data: { user } } = await supabaseClient.auth.getUser();
     if(!user) return;
@@ -7368,6 +7396,8 @@ async function loadOrders(){
       return;
     }
     allOrdersData = (orders || []).filter(o => !_deletedOrderIds.has(o.id));
+    pageStates.orders.data = allOrdersData;
+    pageStates.orders.dirty = false;
     filterOrdersByBot();
   } catch(e){
     console.error("Error loading orders:", e);
@@ -7594,6 +7624,11 @@ async function loadAllProducts(){
   const filterValue = document.getElementById("productBotFilter").value;
   const addBtn = document.getElementById("addProductBtn");
 
+  if(!pageStates.products.dirty && pageStates.products.data !== null && pageStates.products.lastFilter === filterValue){
+    setTimeout(() => window.scrollTo(0, pageStates.products.scrollY), 50);
+    return;
+  }
+
   // If "all" is selected, show message to select a bot and hide add button
   if(filterValue === "all"){
     if(addBtn) addBtn.style.display = "none";
@@ -7613,18 +7648,24 @@ async function loadAllProducts(){
   if(addBtn) addBtn.style.display = "flex";
   const igScrapeBtn = document.getElementById("igScrapeBtn");
   if(igScrapeBtn) igScrapeBtn.style.display = "flex";
+  // Reset dirty tracking on fresh load — Save button stays hidden until user edits
+  _dirtyProductIds.clear();
   const saveProductsViewBtn = document.getElementById("saveProductsViewBtn");
-  if(saveProductsViewBtn) saveProductsViewBtn.style.display = "flex";
+  if(saveProductsViewBtn) saveProductsViewBtn.style.display = "none";
 
   container.innerHTML = `<tr><td colspan="8" style="padding:40px;text-align:center;color:var(--muted);"><p>${t('loadingProducts')}</p></td></tr>`;
 
   // Fetch bot to check activity_type
   const { data: botData } = await supabaseClient.from("bots").select("activity_type").eq("id", filterValue).single();
-  const isCar = botData && botData.activity_type && botData.activity_type.toLowerCase() === "car";
+  const actType = botData && botData.activity_type ? botData.activity_type.toLowerCase() : "";
+  const isCar   = actType === "car";
+  const isPhone  = actType === "phones";
 
   // Update table header based on bot type
   if(isCar){
     setCarProductsTableHead();
+  } else if(isPhone){
+    setPhoneProductsTableHead();
   } else {
     resetProductsTableHead();
   }
@@ -7641,9 +7682,13 @@ async function loadAllProducts(){
     return;
   }
 
+  pageStates.products.data = products || [];
+  pageStates.products.lastFilter = filterValue;
+  pageStates.products.dirty = false;
+
   if(!products || products.length === 0){
     container.innerHTML = `<tr>
-      <td colspan="${isCar ? 8 : 8}" style="padding:40px;text-align:center;color:var(--muted);">
+      <td colspan="8" style="padding:40px;text-align:center;color:var(--muted);">
         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:16px;opacity:0.5;"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
         <p>${t('noProductsYet')}</p>
       </td>
@@ -7651,8 +7696,9 @@ async function loadAllProducts(){
     return;
   }
 
-  // Use Car-specific row if Car bot
-  if(isCar){ renderCarProducts(products, container); return; }
+  // Use type-specific renderer
+  if(isCar)   { renderCarProducts(products, container);   return; }
+  if(isPhone) { renderPhoneProducts(products, container); return; }
 
   container.innerHTML = products.map(product => `
     <tr data-id="${product.id}" style="border-bottom:1px solid var(--border);">
@@ -7667,12 +7713,12 @@ async function loadAllProducts(){
           </label>
         </div>
       </td>
-      <td data-label="النوع" style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="type" value="${product.type || ''}" onchange="saveProductField('${product.id}', 'type', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;"></td>
-      <td data-label="المنتج" style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="name" value="${product.name || ''}" onchange="saveProductField('${product.id}', 'name', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;font-weight:500;"></td>
-      <td data-label="المقاس" style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="sizes" value="${product.sizes || ''}" onchange="saveProductField('${product.id}', 'sizes', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;text-align:center;"></td>
-      <td data-label="اللون" style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="colors" value="${product.colors || ''}" onchange="saveProductField('${product.id}', 'colors', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;text-align:center;"></td>
-      <td data-label="الكمية" style="padding:6px;border-right:1px solid var(--border);"><input type="number" data-field="qty" value="${product.qty ?? ''}" onchange="saveProductField('${product.id}', 'qty', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;"></td>
-      <td data-label="السعر" style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="price" value="${product.price || ''}" onchange="saveProductField('${product.id}', 'price', this.value)" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--primary);font-size:13px;text-align:center;font-weight:600;"></td>
+      <td data-label="النوع" style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="type" value="${product.type || ''}" oninput="markProductsDirty('${product.id}')" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;"></td>
+      <td data-label="المنتج" style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="name" value="${product.name || ''}" oninput="markProductsDirty('${product.id}')" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;font-weight:500;"></td>
+      <td data-label="المقاس" style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="sizes" value="${product.sizes || ''}" oninput="markProductsDirty('${product.id}')" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;text-align:center;"></td>
+      <td data-label="اللون" style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="colors" value="${product.colors || ''}" oninput="markProductsDirty('${product.id}')" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;text-align:center;"></td>
+      <td data-label="الكمية" style="padding:6px;border-right:1px solid var(--border);"><input type="number" data-field="qty" value="${product.qty ?? ''}" oninput="markProductsDirty('${product.id}')" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;"></td>
+      <td data-label="السعر" style="padding:6px;border-right:1px solid var(--border);"><input type="text" data-field="price" value="${product.price || ''}" oninput="markProductsDirty('${product.id}')" style="width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--primary);font-size:13px;text-align:center;font-weight:600;"></td>
       <td data-label="إجراءات" style="padding:8px;text-align:center;">
         <button onclick="deleteProduct('${product.id}')" style="width:32px;height:32px;background:rgba(239,68,68,0.1);border:none;border-radius:8px;color:#ef4444;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;margin:0 auto;" title="${t('delete')}">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
@@ -7687,6 +7733,10 @@ let allFaqsData = [];
 let faqBotsList = [];
 
 async function loadFaqs(){
+  if(!pageStates.faqs.dirty && pageStates.faqs.data !== null){
+    setTimeout(() => window.scrollTo(0, pageStates.faqs.scrollY), 50);
+    return;
+  }
   try{
     const { data: { user } } = await supabaseClient.auth.getUser();
     if(!user) return;
@@ -7710,6 +7760,8 @@ async function loadFaqs(){
     });
     sel.value = faqBotsList[0].id;
     document.getElementById("addFaqBtn").style.display = "flex";
+    pageStates.faqs.data = faqBotsList;
+    pageStates.faqs.dirty = false;
     filterFaqsByBot();
   }catch(e){ console.error("loadFaqs error:", e); }
 }
@@ -7875,12 +7927,12 @@ function renderCarProducts(products, container){
           </label>
         </div>
       </td>
-      <td data-label="السيارة" style="${cellStyle}"><input type="text" data-field="name" value="${product.name || ''}" onchange="saveProductField('${product.id}', 'name', this.value)" style="${inputStyle}font-weight:500;"></td>
-      <td data-label="اللون" style="${cellStyle}"><input type="text" data-field="colors" value="${product.colors || ''}" onchange="saveProductField('${product.id}', 'colors', this.value)" style="${inputStyle}"></td>
-      <td data-label="الكمية" style="${cellStyle}"><input type="number" data-field="qty" value="${product.qty ?? ''}" onchange="saveProductField('${product.id}', 'qty', this.value)" style="${inputStyle}"></td>
-      <td data-label="السعر" style="${cellStyle}"><input type="text" data-field="price" value="${product.price || ''}" onchange="saveProductField('${product.id}', 'price', this.value)" style="${inputStyle}color:var(--primary);font-weight:600;"></td>
-      <td data-label="المحرك" style="${cellStyle}"><input type="text" data-field="motor_type" value="${product.motor_type || ''}" onchange="saveProductField('${product.id}', 'motor_type', this.value)" style="${inputStyle}"></td>
-      <td data-label="الوصف" style="${cellStyle}"><input type="text" data-field="description" value="${product.description || ''}" onchange="saveProductField('${product.id}', 'description', this.value)" style="${inputStyle}"></td>
+      <td data-label="السيارة" style="${cellStyle}"><input type="text" data-field="name" value="${product.name || ''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}font-weight:500;"></td>
+      <td data-label="اللون" style="${cellStyle}"><input type="text" data-field="colors" value="${product.colors || ''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}"></td>
+      <td data-label="الكمية" style="${cellStyle}"><input type="number" data-field="qty" value="${product.qty ?? ''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}"></td>
+      <td data-label="السعر" style="${cellStyle}"><input type="text" data-field="price" value="${product.price || ''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}color:var(--primary);font-weight:600;"></td>
+      <td data-label="المحرك" style="${cellStyle}"><input type="text" data-field="motor_type" value="${product.motor_type || ''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}"></td>
+      <td data-label="الوصف" style="${cellStyle}"><input type="text" data-field="description" value="${product.description || ''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}"></td>
       <td data-label="إجراءات" style="padding:8px;text-align:center;">
         <button onclick="deleteProduct('${product.id}')" style="width:32px;height:32px;background:rgba(239,68,68,0.1);border:none;border-radius:8px;color:#ef4444;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;" title="${t('delete')}">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
@@ -7890,43 +7942,103 @@ function renderCarProducts(products, container){
   `).join('');
 }
 
-// === Save Product Field (inline) ===
-async function saveProductField(productId, field, value){
-  try {
-    const updates = {};
-    if(field === 'qty' || field === 'quantity'){
-      // Always write to the correct column name 'qty'
-      updates['qty'] = value !== '' && value !== null ? parseInt(value) : null;
-    } else {
-      // colors, sizes, and all other fields are stored as plain text
-      updates[field] = value;
-    }
-
-    const { error } = await supabaseClient.from("products").update(updates).eq("id", productId);
-    if(error) throw error;
-
-    showToast("success", t('success'), t('productUpdated'));
-  } catch(err){
-    console.error("Save product field error:", err);
-    showToast("error", t('error'), t('failedToUpdateProduct'));
-  }
+function setPhoneProductsTableHead(){
+  const head = document.getElementById("productsTableHead");
+  if(!head) return;
+  const th = (label, width) => `<th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--primary);text-align:center;border-right:1px solid var(--border);text-transform:uppercase;letter-spacing:0.5px;${width ? 'width:'+width+';' : ''}">${label}</th>`;
+  head.innerHTML =
+    `<th style="padding:14px 12px;width:44px;text-align:center;border-right:1px solid var(--border);"><input type="checkbox" id="selectAllProducts" onchange="toggleAllProductCheckboxes(this)" class="bulk-cb"></th>` +
+    th(t('image'), '80px') +
+    th(t('phoneName')) +
+    th(t('colors')) +
+    th(t('description')) +
+    th(t('price')) +
+    `<th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--primary);text-align:center;width:100px;text-transform:uppercase;letter-spacing:0.5px;">${t('actions')}</th>`;
 }
 
-// === Save All Products (Save button) ===
-async function saveAllProductsView(){
+function renderPhoneProducts(products, container){
+  const cellStyle = "padding:6px;border-right:1px solid var(--border);";
+  const inputStyle = "width:100%;padding:8px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;";
+  container.innerHTML = products.map(product => `
+    <tr data-id="${product.id}" style="border-bottom:1px solid var(--border);">
+      <td data-label="" style="padding:8px;text-align:center;border-right:1px solid var(--border);">
+        <input type="checkbox" class="product-checkbox bulk-cb" value="${product.id}" onchange="updateProductSelection()">
+      </td>
+      <td data-label="الصورة" style="padding:8px;text-align:center;border-right:1px solid var(--border);">
+        <div style="position:relative;width:55px;height:55px;margin:0 auto;">
+          <label style="width:55px;height:55px;background:var(--bg-secondary);border:2px dashed var(--border);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+            <input type="file" accept="image/*" style="display:none;" onchange="updateProductImage('${product.id}', this)">
+            ${product.image ? `<img src="${getPublicImageUrl(product.image, 'product-images')}" style="width:100%;height:100%;object-fit:cover;">` : `<span style="color:var(--muted);font-size:20px;">+</span>`}
+          </label>
+        </div>
+      </td>
+      <td data-label="اسم الهاتف" style="${cellStyle}"><input type="text" data-field="name" value="${product.name || ''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}font-weight:500;"></td>
+      <td data-label="الألوان" style="${cellStyle}"><input type="text" data-field="colors" value="${product.colors || ''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}"></td>
+      <td data-label="الوصف" style="${cellStyle}"><input type="text" data-field="description" value="${product.description || ''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}"></td>
+      <td data-label="السعر" style="${cellStyle}"><input type="text" data-field="price" value="${product.price || ''}" oninput="markProductsDirty('${product.id}')" style="${inputStyle}color:var(--primary);font-weight:600;"></td>
+      <td data-label="إجراءات" style="padding:8px;text-align:center;">
+        <button onclick="deleteProduct('${product.id}')" style="width:32px;height:32px;background:rgba(239,68,68,0.1);border:none;border-radius:8px;color:#ef4444;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;" title="${t('delete')}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+// === Dirty tracking for Products manual save ===
+let _dirtyProductIds = new Set();
+
+function markProductsDirty(productId){
+  _dirtyProductIds.add(productId);
   const btn = document.getElementById("saveProductsViewBtn");
-  const inputs = document.querySelectorAll("#allProductsContainer input[onchange]");
-  if(!inputs.length){
-    showToast("success", t('success'), "لا توجد تغييرات للحفظ.");
+  if(btn) btn.style.display = "flex";
+}
+
+// === Save All Products (manual Save button) ===
+async function saveAllProductsView(){
+  if(!_dirtyProductIds.size){
+    showToast("info", "لا توجد تغييرات", "لا توجد تغييرات للحفظ.");
     return;
   }
-  if(btn){ btn.disabled = true; btn.querySelector('span').textContent = "Saving..."; }
-  // Dispatch change event on every input to trigger inline auto-save handlers
-  inputs.forEach(input => input.dispatchEvent(new Event('change')));
-  // Wait briefly for all async saves to settle
-  await new Promise(r => setTimeout(r, 800));
-  if(btn){ btn.disabled = false; btn.querySelector('span').textContent = "Save"; }
-  showToast("success", "تم الحفظ", "تم حفظ جميع التغييرات بنجاح.");
+
+  const btn = document.getElementById("saveProductsViewBtn");
+  const btnSpan = btn ? btn.querySelector('span') : null;
+  const btnSvg  = btn ? btn.querySelector('svg') : null;
+  const spinnerHTML = `<svg class="spinner" width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" stroke-dasharray="60" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" dur="1s" from="0 12 12" to="360 12 12" repeatCount="indefinite"/></circle></svg>`;
+
+  if(btn){ btn.disabled = true; if(btnSvg) btnSvg.style.display="none"; if(btnSpan) btnSpan.textContent = "جاري الحفظ..."; }
+
+  try {
+    const ids = Array.from(_dirtyProductIds);
+    const savePromises = ids.map(async productId => {
+      const row = document.querySelector(`#allProductsContainer tr[data-id="${productId}"]`);
+      if(!row) return;
+      const updates = {};
+      row.querySelectorAll("input[data-field]").forEach(input => {
+        const field = input.dataset.field;
+        if(field === 'qty' || field === 'quantity'){
+          updates['qty'] = input.value !== '' ? parseInt(input.value) : null;
+        } else {
+          updates[field] = input.value;
+        }
+      });
+      if(!Object.keys(updates).length) return;
+      const { error } = await supabaseClient.from("products").update(updates).eq("id", productId);
+      if(error) throw error;
+    });
+
+    await Promise.all(savePromises);
+
+    _dirtyProductIds.clear();
+    markPageDirty('products');
+    if(btn){ btn.style.display = "none"; btn.disabled = false; if(btnSvg) btnSvg.style.display=""; if(btnSpan) btnSpan.textContent = "حفظ التغييرات"; }
+    showToast("success", "✅ تم الحفظ", "تم حفظ جميع التغييرات بنجاح.");
+
+  } catch(err){
+    console.error("saveAllProductsView error:", err);
+    if(btn){ btn.disabled = false; if(btnSvg) btnSvg.style.display=""; if(btnSpan) btnSpan.textContent = "حفظ التغييرات"; }
+    showToast("error", "❌ حدث خطأ", "فشل حفظ بعض التغييرات، حاول مرة أخرى.");
+  }
 }
 
 // === Update Product Image ===
@@ -7947,6 +8059,7 @@ async function updateProductImage(productId, input){
     if(error) throw error;
 
     showToast("success", t('success'), t('productUpdated'));
+    markPageDirty('products');
     await loadAllProducts();
   } catch(err){
     console.error("Update product image error:", err);
@@ -7967,6 +8080,7 @@ async function deleteProduct(productId, botId = null){
         if(botId){
           await loadBotProducts(botId);
         } else {
+          markPageDirty('products');
           await loadAllProducts();
         }
       } catch(err){
@@ -8012,11 +8126,23 @@ async function confirmBulkDeleteProducts(){
     const { error } = await supabaseClient.from("products").delete().in("id", ids).eq("bot_id", botId);
     if(error) throw error;
     showToast("success", "تم الحذف", "تم حذف " + ids.length + " منتجات بنجاح.");
+    resetProductSelection();
+    markPageDirty('products');
     await loadAllProducts();
   } catch(err){
     console.error("Bulk delete products error:", err);
     showToast("error", t('error'), t('failedToDeleteProduct'));
   }
+}
+
+function resetProductSelection(){
+  document.querySelectorAll(".product-checkbox").forEach(cb => cb.checked = false);
+  const selectAll = document.getElementById("selectAllProducts");
+  if(selectAll){ selectAll.checked = false; selectAll.indeterminate = false; }
+  const countEl = document.getElementById("productSelectionCount");
+  if(countEl){ countEl.textContent = ""; countEl.style.display = "none"; }
+  const btn = document.getElementById("bulkDeleteProductsBtn");
+  if(btn) btn.style.display = "none";
 }
 
 // === Bulk Select — Orders ===
@@ -8055,11 +8181,22 @@ async function confirmBulkOrders(){
     ids.forEach(id => _deletedOrderIds.add(id));
     allOrdersData = allOrdersData.filter(o => !_deletedOrderIds.has(o.id));
     showToast("success", "تم التأكيد والحذف", "تم حذف " + ids.length + " طلبيات بنجاح.");
+    resetOrderSelection();
     filterOrdersByBot();
   } catch(err){
     console.error("Bulk confirm orders error:", err);
     showToast("error", t('error'), "فشل حذف الطلبيات.");
   }
+}
+
+function resetOrderSelection(){
+  document.querySelectorAll(".order-checkbox").forEach(cb => cb.checked = false);
+  const selectAll = document.getElementById("selectAllOrders");
+  if(selectAll){ selectAll.checked = false; selectAll.indeterminate = false; }
+  const countEl = document.getElementById("orderSelectionCount");
+  if(countEl){ countEl.textContent = ""; countEl.style.display = "none"; }
+  const btn = document.getElementById("bulkConfirmOrdersBtn");
+  if(btn) btn.style.display = "none";
 }
 
 // === Bulk Select — FAQs ===
@@ -8247,6 +8384,7 @@ async function addProductFromProductsView(){
     showToast("success", t('success'), t('productAdded'));
     // Onboarding: advance to FAQs step after first product added
     if(_obCurrentStep === 3) setTimeout(() => obGoToStep(4), 800);
+    markPageDirty('products');
     await loadAllProducts();
   } catch(err){
     console.error("Add product error:", err);
@@ -8326,6 +8464,7 @@ async function saveProductChanges(){
 
     showToast("success", t('success'), t('productUpdated'));
     closeModal(editProductModal);
+    markPageDirty('products');
     await loadAllProducts();
   } catch(err){
     console.error("Save product error:", err);
@@ -8338,10 +8477,16 @@ async function saveProductChanges(){
 
 // === Load Bots List View ===
 async function loadBotsListView(){
+  if(!pageStates.bots.dirty && pageStates.bots.data !== null){
+    setTimeout(() => window.scrollTo(0, pageStates.bots.scrollY), 50);
+    return;
+  }
   const { data: { user } } = await supabaseClient.auth.getUser();
   if(!user) return;
 
   const { data: bots } = await supabaseClient.from("bots").select("*").eq("user_id", user.id);
+  pageStates.bots.data = bots || [];
+  pageStates.bots.dirty = false;
   const container = document.getElementById("botsListView");
   const createBotSidebarBtn = document.getElementById("sidebarCreateBot");
 
@@ -9338,6 +9483,8 @@ window.closeEditor = function(){
 }
 
 window.openBot = async function(botId){
+  pageStates.bots.view = 'edit';
+  pageStates.bots.botId = botId;
   // Hide other views
   const welcomeView = document.getElementById("welcomeView");
   if(welcomeView) welcomeView.style.display = "none";
@@ -9377,6 +9524,7 @@ window.openBot = async function(botId){
 
   editorView.innerHTML = `
   <div class="editor-shell">
+    <button onclick="pageStates.bots.view='list';pageStates.bots.botId=null;navigateToView('bots')" style="display:flex;align-items:center;gap:8px;background:none;border:none;color:var(--text);font-size:20px;font-weight:600;cursor:pointer;padding:8px 0;margin-bottom:16px;opacity:0.7;transition:opacity 0.2s;">←</button>
     <div class="editor-header"><h2>${t('editBot')}</h2></div>
 
     <!-- Basic Info Section -->
@@ -9398,11 +9546,13 @@ window.openBot = async function(botId){
         <datalist id="editActivityTypeList">
     <option value="Car">
     <option value="E-commerce">
+    <option value="Clothing">
+    <option value="Phones">
     </datalist>
       </div>
       <div class="editor-section">
         <label>${t('phoneNumber')}</label>
-        <input id="editPhone" type="tel" value="${data.phone || ''}">
+        <input id="editPhone" type="tel" value="${data.phone_number || data.phone || ''}">
       </div>
     </div>
 
@@ -9431,6 +9581,8 @@ window.openBot = async function(botId){
 // === Save Bot Changes ===
 window.saveBotChanges = async function(botId){
 
+  console.log("[SaveBot] Save button clicked, botId:", botId);
+
   const btn = document.getElementById("saveBotBtn");
   const originalText = btn.textContent;
   btn.disabled = true;
@@ -9441,24 +9593,46 @@ window.saveBotChanges = async function(botId){
     const name = document.getElementById("editName").value;
     const business_name = document.getElementById("editBusinessName").value;
     const activity_type = document.getElementById("editActivityType").value;
-    const phone = document.getElementById("editPhone").value;
+    const phone_number = document.getElementById("editPhone").value;
     const working_hours = document.getElementById("editWorkingHours").value;
     const return_policy = document.getElementById("editReturnPolicy").value;
 
-    await supabaseClient.from("bots").update({ 
-      name, 
-      business_name,
-      activity_type,
-      phone,
-      working_hours,
-      return_policy
-    }).eq("id", botId);
+    const payload = { name, business_name, activity_type, phone_number, working_hours, return_policy };
+    console.log("[SaveBot] Payload to update:", payload);
 
-    showToast("success", t('saved'), t('changesSavedSuccess'));
-    loadBots();
+    const { data: authData, error: authError } = await supabaseClient.auth.getUser();
+    if (authError || !authData?.user) {
+      console.error("[SaveBot] Auth error:", authError);
+      showToast("error", t('error'), t('failedToSaveChanges'));
+      return;
+    }
+    const user = authData.user;
+    console.log("[SaveBot] Current user id:", user.id);
+
+    const { data: updatedRows, error } = await supabaseClient
+      .from("bots")
+      .update(payload)
+      .eq("id", botId)
+      .eq("user_id", user.id)
+      .select("id");
+
+    console.log("[SaveBot] Supabase response — error:", error, "updatedRows:", updatedRows);
+
+    if (error) {
+      console.error("[SaveBot] Update failed:", error);
+      showToast("error", t('error'), error.message || t('failedToSaveChanges'));
+    } else if (!updatedRows || updatedRows.length === 0) {
+      console.warn("[SaveBot] No rows updated — botId or user_id mismatch / RLS blocked");
+      showToast("error", t('error'), t('failedToSaveChanges'));
+    } else {
+      console.log("[SaveBot] Bot updated successfully, row:", updatedRows[0]);
+      markPageDirty('bots');
+      showToast("success", t('saved'), t('changesSavedSuccess'));
+      loadBots();
+    }
   } catch(err) {
     showToast("error", t('error'), t('failedToSaveChanges'));
-    console.error("Save error:", err);
+    console.error("[SaveBot] Exception:", err);
   } finally {
     btn.disabled = false;
     btn.textContent = originalText;
